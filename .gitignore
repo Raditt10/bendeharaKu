@@ -1,0 +1,33 @@
+/vendor/
+/node_modules/
+/.env
+/.idea/
+/.vscode/
+*.log
+*.cache
+.DS_Store
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.env.local
+.env.*.local
+/public/uploads/
+/public/temp/
+
+# PHPStorm
+/.idea/
+
+# Composer
+/vendor/
+
+# OS files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Laragon
+/tmp/
+
+# PHPUnit
+/phpunit.xml
+
