@@ -119,8 +119,4 @@ Project ini bebas digunakan dan dimodifikasi untuk keperluan pembelajaran atau p
 
 ---
 
-*Dikembangkan oleh [Raditt10]*
-
-```
-
-```
+*Hak cipta sepenuhnya milik pengembang Kanjirouu.*
