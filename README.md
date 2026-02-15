@@ -119,4 +119,4 @@ Project ini bebas digunakan dan dimodifikasi untuk keperluan pembelajaran atau p
 
 ---
 
-*Hak cipta sepenuhnya milik pengembang Kanjirouu.*
+*Hak cipta sepenuhnya milik pengembang Raditt10.*
