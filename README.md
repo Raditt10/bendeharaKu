@@ -48,24 +48,27 @@ Teknologi yang digunakan dalam pengembangan:
 
 ## 🖼️ Preview Antarmuka
 
-Berikut adalah tampilan antarmuka aplikasi BendeharaKu. Gambar disejajarkan untuk memudahkan pratinjau.
+Berikut adalah tampilan antarmuka aplikasi BendeharaKu:
 
 <table>
   <tr>
-    <td align="center" valign="top" width="38%">
-      <img src="screenshot/Screenshot%202026-02-17%20205909.png" alt="Dashboard Utama" style="border-radius:12px; box-shadow:0 4px 16px rgba(0,0,0,0.08); width: 100%;" />
+    <td width="50%" align="center" valign="top">
+      <img src="screenshot/Screenshot%202026-02-17%20205909.png" alt="Dashboard Utama" width="100%">
       <br>
-      <sub><b>Dashboard Statistik & Fitur</b></sub>
+      <sub><b>Dashboard Statistik & Landing Page</b></sub>
     </td>
-    <td align="center" valign="top" width="24%">
-       <img src="screenshot/Screenshot%202026-02-17%20210015.png" alt="Halaman Login" style="border-radius:12px; box-shadow:0 4px 16px rgba(0,0,0,0.08); height: 250px; width: auto;" />
+    <td width="50%" align="center" valign="top">
+      <img src="screenshot/Screenshot%202026-02-17%20210033.png" alt="Tabel Pengeluaran" width="100%">
       <br>
-      <sub><b>Halaman Login Mobile-Friendly</b></sub>
+      <sub><b>Manajemen Data Pengeluaran</b></sub>
     </td>
-    <td align="center" valign="top" width="38%">
-      <img src="screenshot/Screenshot%202026-02-17%20210033.png" alt="Data Pengeluaran" style="border-radius:12px; box-shadow:0 4px 16px rgba(0,0,0,0.08); width: 100%;" />
+  </tr>
+  <tr>
+    <td colspan="2" align="center" valign="top">
       <br>
-      <sub><b>Tabel Data Pengeluaran</b></sub>
+      <img src="screenshot/Screenshot%202026-02-17%20210015.png" alt="Login Mobile" height="450">
+      <br>
+      <sub><b>Tampilan Login (Mobile</b></sub>
     </td>
   </tr>
 </table>
