@@ -5,24 +5,20 @@
 ![Architecture](https://img.shields.io/badge/Architecture-MVC-orange)
 ![License](https://img.shields.io/badge/License-MIT-green)
 
-
 **BendeharaKu** adalah aplikasi manajemen keuangan kelas berbasis web yang dirancang dengan pola arsitektur **Model-View-Controller (MVC)**. Aplikasi ini bertujuan untuk membantu bendahara sekolah atau organisasi dalam mencatat iuran, pemasukan, dan pengeluaran secara transparan, akuntabel, dan sistematis.
 
-<div align="center" style="display:flex; gap:16px; flex-wrap:wrap; justify-content:center;">
-	<img src="screenshot/Screenshot%202026-02-17%20205909.png" alt="Dashboard" width="320" style="border-radius:12px; box-shadow:0 4px 16px rgba(0,0,0,0.08); margin:8px;" />
-	<img src="screenshot/Screenshot%202026-02-17%20210015.png" alt="Form Login" width="220" style="border-radius:12px; box-shadow:0 4px 16px rgba(0,0,0,0.08); margin:8px;" />
-	<img src="screenshot/Screenshot%202026-02-17%20210033.png" alt="Tabel Pengeluaran" width="320" style="border-radius:12px; box-shadow:0 4px 16px rgba(0,0,0,0.08); margin:8px;" />
-</div>
-
-<p align="center"><i>Semua gambar dapat ditemukan di folder <b>screenshot/</b> pada repository ini.</i></p>
+---
 
 ## 📌 Deskripsi Project
+
 Berbeda dengan sistem pencatatan tradisional, BendeharaKu memisahkan logika bisnis, antarmuka pengguna, dan akses database untuk memastikan kode yang lebih bersih dan mudah dikembangkan.
+
 * **Transparansi:** Seluruh anggota dapat melihat rekapitulasi keuangan secara real-time.
 * **Manajemen Data:** Memudahkan pengelolaan data siswa, riwayat iuran, serta kategori pengeluaran.
 * **Keamanan:** Dilengkapi dengan sistem autentikasi untuk membatasi akses fitur administratif.
 
 ## 🛠️ Tech Stack
+
 Teknologi yang digunakan dalam pengembangan:
 
 * **Language:** PHP Native
@@ -44,26 +40,42 @@ Teknologi yang digunakan dalam pengembangan:
 * **Manajemen Pemasukan:** Mencatat dana masuk dari berbagai sumber selain iuran rutin.
 * **Manajemen Pengeluaran:** Dokumentasi penggunaan dana untuk keperluan operasional kelas.
 
-
-## 📊 Laporan & Dashboard
+### 📊 Laporan & Dashboard
 * **Dashboard Statistik:** Ringkasan total saldo, pemasukan, dan pengeluaran di halaman utama.
 * **Laporan Kas:** Rekapitulasi transaksi dalam format yang rapi dan mudah dibaca.
 
-## 🖼️ Preview
+---
 
-Berikut adalah beberapa tampilan antarmuka aplikasi BendeharaKu:
+## 🖼️ Preview Antarmuka
 
-<div align="center">
-	<img src="screenshot/Screenshot%202026-02-17%20205909.png" alt="Dashboard" width="600" style="border-radius:12px; box-shadow:0 4px 16px rgba(0,0,0,0.08); margin-bottom:16px;" />
-	<br>
-	<img src="screenshot/Screenshot%202026-02-17%20210015.png" alt="Form Login" width="400" style="border-radius:12px; box-shadow:0 4px 16px rgba(0,0,0,0.08); margin-bottom:16px;" />
-	<br>
-	<img src="screenshot/Screenshot%202026-02-17%20210033.png" alt="Tabel Pengeluaran" width="600" style="border-radius:12px; box-shadow:0 4px 16px rgba(0,0,0,0.08);" />
-</div>
+Berikut adalah tampilan antarmuka aplikasi BendeharaKu. Gambar disejajarkan untuk memudahkan pratinjau.
 
-> Semua gambar dapat ditemukan di folder `screenshot/` pada repository ini.
+<table>
+  <tr>
+    <td align="center" valign="top" width="38%">
+      <img src="screenshot/Screenshot%202026-02-17%20205909.png" alt="Dashboard Utama" style="border-radius:12px; box-shadow:0 4px 16px rgba(0,0,0,0.08); width: 100%;" />
+      <br>
+      <sub><b>Dashboard Statistik & Fitur</b></sub>
+    </td>
+    <td align="center" valign="top" width="24%">
+       <img src="screenshot/Screenshot%202026-02-17%20210015.png" alt="Halaman Login" style="border-radius:12px; box-shadow:0 4px 16px rgba(0,0,0,0.08); height: 250px; width: auto;" />
+      <br>
+      <sub><b>Halaman Login Mobile-Friendly</b></sub>
+    </td>
+    <td align="center" valign="top" width="38%">
+      <img src="screenshot/Screenshot%202026-02-17%20210033.png" alt="Data Pengeluaran" style="border-radius:12px; box-shadow:0 4px 16px rgba(0,0,0,0.08); width: 100%;" />
+      <br>
+      <sub><b>Tabel Data Pengeluaran</b></sub>
+    </td>
+  </tr>
+</table>
+
+<p align="center"><i>Semua gambar resolusi penuh dapat ditemukan di folder <b>screenshot/</b> pada repository ini.</i></p>
+
+---
 
 ## 📁 Struktur Folder
+
 ```text
 bendeharaKu/
 ├── app/
