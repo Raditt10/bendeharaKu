@@ -5,7 +5,16 @@
 ![Architecture](https://img.shields.io/badge/Architecture-MVC-orange)
 ![License](https://img.shields.io/badge/License-MIT-green)
 
+
 **BendeharaKu** adalah aplikasi manajemen keuangan kelas berbasis web yang dirancang dengan pola arsitektur **Model-View-Controller (MVC)**. Aplikasi ini bertujuan untuk membantu bendahara sekolah atau organisasi dalam mencatat iuran, pemasukan, dan pengeluaran secara transparan, akuntabel, dan sistematis.
+
+<div align="center" style="display:flex; gap:16px; flex-wrap:wrap; justify-content:center;">
+	<img src="screenshot/Screenshot%202026-02-17%20205909.png" alt="Dashboard" width="320" style="border-radius:12px; box-shadow:0 4px 16px rgba(0,0,0,0.08); margin:8px;" />
+	<img src="screenshot/Screenshot%202026-02-17%20210015.png" alt="Form Login" width="220" style="border-radius:12px; box-shadow:0 4px 16px rgba(0,0,0,0.08); margin:8px;" />
+	<img src="screenshot/Screenshot%202026-02-17%20210033.png" alt="Tabel Pengeluaran" width="320" style="border-radius:12px; box-shadow:0 4px 16px rgba(0,0,0,0.08); margin:8px;" />
+</div>
+
+<p align="center"><i>Semua gambar dapat ditemukan di folder <b>screenshot/</b> pada repository ini.</i></p>
 
 ## 📌 Deskripsi Project
 Berbeda dengan sistem pencatatan tradisional, BendeharaKu memisahkan logika bisnis, antarmuka pengguna, dan akses database untuk memastikan kode yang lebih bersih dan mudah dikembangkan.
