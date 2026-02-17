@@ -53,22 +53,22 @@ Berikut adalah tampilan antarmuka aplikasi BendeharaKu:
 <table>
   <tr>
     <td width="50%" align="center" valign="top">
-      <img src="screenshot/Screenshot%202026-02-17%20205909.png" alt="Dashboard Utama" width="100%">
+      <img src="screenshot/Screenshot%202026-02-17%20205909.png" alt="Landing Page" width="100%">
       <br>
-      <sub><b>Dashboard Statistik & Landing Page</b></sub>
+      <sub><b>Landing Page</b></sub>
     </td>
     <td width="50%" align="center" valign="top">
-      <img src="screenshot/Screenshot%202026-02-17%20210033.png" alt="Tabel Pengeluaran" width="100%">
+      <img src="screenshot/Screenshot%202026-02-17%20210033.png" alt="Dashboard" width="100%">
       <br>
-      <sub><b>Manajemen Data Pengeluaran</b></sub>
+      <sub><b>Dashboard</b></sub>
     </td>
   </tr>
   <tr>
     <td colspan="2" align="center" valign="top">
       <br>
-      <img src="screenshot/Screenshot%202026-02-17%20210015.png" alt="Login Mobile" height="450">
+      <img src="screenshot/Screenshot%202026-02-17%20210015.png" alt="Data pengeluaran kelas" height="450">
       <br>
-      <sub><b>Tampilan Login (Mobile</b></sub>
+      <sub><b>Data Pengeluaran Kelas</b></sub>
     </td>
   </tr>
 </table>
