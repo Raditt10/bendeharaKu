@@ -59,11 +59,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // basic validation and insertion
         $bulan = mysqli_real_escape_string($conn, trim($_POST['bulan'] ?? ''));
+        $tahun = (int)date('Y');
         $jumlah = (float)($_POST['jumlah'] ?? 0);
         $keterangan = mysqli_real_escape_string($conn, trim($_POST['keterangan'] ?? ''));
 
         if ($bulan !== '' && $jumlah > 0) {
-            $sql = "INSERT INTO pemasukan (bulan, jumlah, keterangan) VALUES ('{$bulan}', '{$jumlah}', '{$keterangan}')";
+            $sql = "INSERT INTO pemasukan (bulan, tahun, jumlah, keterangan) VALUES ('{$bulan}', '{$tahun}', '{$jumlah}', '{$keterangan}')";
             if (mysqli_query($conn, $sql)) {
                 $_SESSION['success_msg'] = 'Pemasukan berhasil ditambahkan.';
             } else {
@@ -111,6 +112,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         // logout() will redirect
         exit;
     }
+}
+
+// Handler hapus pemasukan (GET) sebelum output HTML
+if ($page === 'income' && isset($_GET['id']) && is_numeric($_GET['id'])) {
+    require_once __DIR__ . '/../app/Models/Database.php';
+    $conn = Database::getInstance()->getConnection();
+    $id = (int)$_GET['id'];
+    $query = "DELETE FROM pemasukan WHERE id_pemasukan = '$id'";
+    if (mysqli_query($conn, $query)) {
+        $_SESSION['success_msg'] = 'Data pemasukan berhasil dihapus.';
+    } else {
+        $_SESSION['error_msg'] = 'Gagal menghapus data pemasukan.';
+    }
+    header('Location: ' . ($_SERVER['PHP_SELF'] ?? './') . '?page=income');
+    exit;
 }
 
 $error_msg = $error_msg ?? '';

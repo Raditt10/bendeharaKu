@@ -60,9 +60,11 @@ $result = mysqli_query($koneksi, $query);
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Laporan Kas</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
    <link rel="stylesheet" href="assets/css/style.css"/>
   <style>
     /* styles copied from original */
+    body{font-family:'Plus Jakarta Sans',sans-serif;}
   </style>
 </head>
 <body>

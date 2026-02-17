@@ -7,7 +7,7 @@
         border-top: 1px solid #e2e8f0;
         padding: 64px 0 32px;
         margin-top: 80px;
-        font-family: 'Inter', sans-serif;
+        font-family: 'Plus Jakarta Sans', sans-serif;
     }
 
     .footer-container {

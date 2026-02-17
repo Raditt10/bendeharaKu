@@ -1,4 +1,18 @@
 <?php
+// Proses hapus pemasukan jika ada parameter id
+if (isset($_GET['id']) && is_numeric($_GET['id'])) {
+    require_once __DIR__ . '/../Models/Database.php';
+    $koneksi = Database::getInstance()->getConnection();
+    $id = (int)$_GET['id'];
+    $query = "DELETE FROM pemasukan WHERE id_pemasukan = '$id'";
+    if (mysqli_query($koneksi, $query)) {
+        $_SESSION['success_msg'] = 'Data pemasukan berhasil dihapus.';
+    } else {
+        $_SESSION['error_msg'] = 'Gagal menghapus data pemasukan.';
+    }
+    header('Location: ?page=income');
+    exit;
+}
 // Pastikan tidak ada output sebelum header
 // Bersihkan pesan session
 $success_msg = $_SESSION['success_msg'] ?? null;
@@ -10,15 +24,38 @@ require_once __DIR__ . '/../../config/config.php';
 require_once __DIR__ . '/../Models/Database.php';
 $koneksi = Database::getInstance()->getConnection();
 
-// Ambil Data
-$query = "SELECT * FROM pemasukan ORDER BY id_pemasukan DESC"; 
+// Ambil daftar tahun dari database
+$tahunList = [];
+$tahunQ = mysqli_query($koneksi, "SELECT DISTINCT tahun FROM pemasukan ORDER BY tahun DESC");
+while ($t = mysqli_fetch_assoc($tahunQ)) {
+    if (!empty($t['tahun'])) $tahunList[] = $t['tahun'];
+}
+
+// Tahun aktif dari filter (GET), default tahun sekarang jika ada di list, jika tidak pakai tahun pertama di list
+$tahun_aktif = $tahunList[0] ?? date('Y');
+if (isset($_GET['tahun']) && $_GET['tahun'] !== '') {
+    // Jika tahun tidak ada di list, tetap tampilkan halaman dengan pesan kosong, jangan redirect
+    if (in_array($_GET['tahun'], $tahunList)) {
+        $tahun_aktif = $_GET['tahun'];
+    } else {
+        // Tahun tidak valid, tetap tampilkan halaman dengan data kosong
+        $tahun_aktif = $_GET['tahun'];
+    }
+}
+
+// Ambil data pemasukan sesuai tahun
+$query = "SELECT * FROM pemasukan WHERE tahun = '" . mysqli_real_escape_string($koneksi, $tahun_aktif) . "' ORDER BY id_pemasukan DESC";
 $result = mysqli_query($koneksi, $query);
 
-// Hitung Total
-$total_query = "SELECT SUM(jumlah) AS total FROM pemasukan";
-$total_result = mysqli_query($koneksi, $total_query);
-$total_row = mysqli_fetch_assoc($total_result);
-$total_pemasukan = $total_row['total'] ?? 0;
+// Hitung total pemasukan sesuai filter
+$total_pemasukan = 0;
+$filteredRows = [];
+if ($result && mysqli_num_rows($result) > 0) {
+    while ($row = mysqli_fetch_assoc($result)) {
+        $filteredRows[] = $row;
+        $total_pemasukan += $row['jumlah'];
+    }
+}
 ?>
 
 <style>
@@ -180,6 +217,145 @@ $total_pemasukan = $total_row['total'] ?? 0;
         <div class="page-title">
             <h2>Data Pemasukan</h2>
             <p>Kelola uang kas masuk dan donasi kelas.</p>
+                <?php if (count($tahunList)): ?>
+                <form method="GET" action="" class="filter-bar" id="customYearForm">
+                    <input type="hidden" name="page" value="income">
+                    <label class="filter-label">Tahun</label>
+                    <div class="custom-dropdown" id="customDropdown">
+                        <div class="custom-dropdown-selected" id="dropdownSelected">
+                            <?= htmlspecialchars($tahun_aktif) ?>
+                            <span class="custom-dropdown-arrow">&#9662;</span>
+                        </div>
+                        <div class="custom-dropdown-list" id="dropdownList" style="display:none;">
+                            <?php foreach ($tahunList as $th): ?>
+                                <div class="custom-dropdown-item<?= $th == $tahun_aktif ? ' selected' : '' ?>" data-value="<?= $th ?>"><?= $th ?></div>
+                            <?php endforeach; ?>
+                        </div>
+                        <input type="hidden" name="tahun" id="dropdownInput" value="<?= htmlspecialchars($tahun_aktif) ?>">
+                    </div>
+                </form>
+                <script>
+                // Custom Dropdown JS
+                const dropdown = document.getElementById('customDropdown');
+                const selected = document.getElementById('dropdownSelected');
+                const list = document.getElementById('dropdownList');
+                const input = document.getElementById('dropdownInput');
+                const form = document.getElementById('customYearForm');
+                selected.onclick = function(e) {
+                    e.stopPropagation();
+                    list.style.display = list.style.display === 'block' ? 'none' : 'block';
+                    dropdown.classList.toggle('open');
+                };
+                document.addEventListener('click', function() {
+                    list.style.display = 'none';
+                    dropdown.classList.remove('open');
+                });
+                list.querySelectorAll('.custom-dropdown-item').forEach(function(item) {
+                    item.onclick = function(e) {
+                        e.stopPropagation();
+                        input.value = this.dataset.value;
+                        // Pastikan value input hidden sudah benar sebelum submit
+                        setTimeout(function(){ form.submit(); }, 10);
+                    };
+                });
+                </script>
+                <?php endif; ?>
+        <style>
+            /* Filter Bar Styling */
+            /* Filter Bar Styling */
+            .filter-bar {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                margin-bottom: 18px;
+                background: #f8fafc;
+                padding: 12px 20px;
+                border-radius: 10px;
+                box-shadow: 0 1px 4px rgba(37,99,235,0.04);
+                width: fit-content;
+            }
+            .filter-label {
+                font-weight: 600;
+                color: #2563eb;
+                font-size: 1rem;
+                margin-right: 2px;
+                letter-spacing: 0.01em;
+            }
+            .custom-dropdown {
+                position: relative;
+                min-width: 110px;
+                user-select: none;
+            }
+            .custom-dropdown-selected {
+                font-weight: 600;
+                color: #2563eb;
+                background: #fff;
+                border: 2px solid #2563eb;
+                border-radius: 8px;
+                padding: 8px 36px 8px 16px;
+                font-size: 1.08rem;
+                cursor: pointer;
+                transition: border-color 0.22s, box-shadow 0.22s;
+                box-shadow: 0 2px 8px rgba(37,99,235,0.07);
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                min-width: 110px;
+            }
+            .custom-dropdown.open .custom-dropdown-selected,
+            .custom-dropdown-selected:hover {
+                border-color: #1d4ed8;
+                background: #f3f6fd;
+                box-shadow: 0 4px 16px rgba(37,99,235,0.13);
+            }
+            .custom-dropdown-arrow {
+                margin-left: 10px;
+                font-size: 1.1em;
+                color: #2563eb;
+                pointer-events: none;
+            }
+            .custom-dropdown-list {
+                position: absolute;
+                top: 110%;
+                left: 0;
+                right: 0;
+                background: #fff;
+                border: 2px solid #2563eb;
+                border-radius: 0 0 10px 10px;
+                box-shadow: 0 8px 32px rgba(37,99,235,0.13);
+                z-index: 10;
+                max-height: 220px;
+                overflow-y: auto;
+                animation: fadeInDropdown 0.18s;
+            }
+            @keyframes fadeInDropdown {
+                from { opacity: 0; transform: translateY(-8px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+            .custom-dropdown-item {
+                padding: 10px 18px;
+                font-size: 1.05rem;
+                color: #2563eb;
+                font-weight: 600;
+                cursor: pointer;
+                transition: background 0.15s, color 0.15s;
+            }
+            .custom-dropdown-item.selected,
+            .custom-dropdown-item:hover {
+                background: #2563eb;
+                color: #fff;
+            }           
+            .filter-select-wrap::after {
+                content: '\25BC';
+                position: absolute;
+                right: 10px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: #2563eb;
+                font-size: 0.8em;
+                pointer-events: none;
+            }
+        </style>
         </div>
         <div class="action-bar">
             <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
@@ -210,7 +386,7 @@ $total_pemasukan = $total_row['total'] ?? 0;
             <thead>
                 <tr>
                     <th style="width: 50px;">No</th>
-                    <th>Bulan / Periode</th>
+                    <th>Bulan</th>
                     <th>Nominal</th>
                     <th>Keterangan</th>
                     <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
@@ -221,23 +397,24 @@ $total_pemasukan = $total_row['total'] ?? 0;
             <tbody>
                 <?php
                 $no = 1;
-                if ($result && mysqli_num_rows($result) > 0) {
-                    while ($row = mysqli_fetch_assoc($result)) {
+                if (count($filteredRows)) {
+                    foreach ($filteredRows as $row) {
                 ?>
                 <tr>
                     <td data-label="No"><?= $no++ ?></td>
-                    <td data-label="Bulan" style="font-weight: 600;"><?= htmlspecialchars($row['bulan']) ?></td>
+                    <td data-label="Bulan" style="font-weight: 600;">
+                        <?= htmlspecialchars($row['bulan']) ?>
+                    </td>
                     <td data-label="Jumlah" style="color: #10b981; font-weight: 600;">
                         + Rp <?= number_format($row['jumlah'], 2, ',', '.') ?>
                     </td>
                     <td data-label="Keterangan"><?= htmlspecialchars($row['keterangan']) ?></td>
-                    
                     <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
                     <td data-label="Aksi" class="action-cell" style="text-align: right;">
                         <a href="?page=edit_income&id=<?= $row['id_pemasukan'] ?>" class="action-btn btn-edit">
                             Edit
                         </a>
-                        <a href="?page=delete_income&id=<?= $row['id_pemasukan'] ?>" class="action-btn btn-delete" onclick="return confirm('Yakin ingin menghapus data ini?');">
+                        <a href="#" class="action-btn btn-delete" onclick="openWarning('?page=income&id=<?= $row['id_pemasukan'] ?>'); return false;">
                             Hapus
                         </a>
                     </td>
@@ -260,6 +437,7 @@ $total_pemasukan = $total_row['total'] ?? 0;
 
 </div>
 
+<?php include __DIR__ . '/partials/warning.php'; ?>
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => {

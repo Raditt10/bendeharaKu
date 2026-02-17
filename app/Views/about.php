@@ -7,9 +7,9 @@ if (session_status() === PHP_SESSION_NONE) session_start();
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>About</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="assets/css/style.css"/>
-  <style>body{font-family:Poppins, sans-serif;background:#f9fafb;padding:24px}.card{max-width:900px;margin:32px auto;background:#fff;padding:24px;border-radius:10px}</style>
+  <style>body{font-family:'Plus Jakarta Sans',sans-serif;background:#f9fafb;padding:24px}.card{max-width:900px;margin:32px auto;background:#fff;padding:24px;border-radius:10px}</style>
 </head>
 <body>
 <!-- header is included centrally in public/index.php -->

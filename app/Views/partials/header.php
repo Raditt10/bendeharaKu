@@ -10,25 +10,24 @@ if (!function_exists('isActive')) {
 }
 ?>
 
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
     /* =========================================
        HEADER STYLES
        ========================================= */
     .site-header {
-        background: rgba(255, 255, 255, 0.85); /* Glass effect */
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
+        background: #fff;
         position: sticky;
         top: 0;
         z-index: 1000;
-        border-bottom: 1px solid rgba(226, 232, 240, 0.8);
-        transition: box-shadow 0.3s ease;
+        border-bottom: 1px solid #e5e7eb;
+        box-shadow: 0 2px 12px 0 rgba(0,0,0,0.03);
+        transition: box-shadow 0.3s ease, background 0.3s;
     }
 
-    /* Shadow muncul saat di-scroll (opsional via JS, tapi default halus saja) */
     .site-header.scrolled {
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-        background: rgba(255, 255, 255, 0.95);
+        box-shadow: 0 4px 16px -2px rgba(0,0,0,0.06);
+        background: #fff;
     }
 
     .header-inner {
@@ -44,6 +43,7 @@ if (!function_exists('isActive')) {
         display: flex;
         align-items: center;
         gap: 10px;
+        font-family: 'Plus Jakarta Sans', sans-serif;
         font-weight: 800;
         font-size: 1.15rem;
         color: var(--text-main, #0f172a);
@@ -56,8 +56,8 @@ if (!function_exists('isActive')) {
     .brand-icon {
         width: 32px;
         height: 32px;
-        background: var(--primary, #2563eb);
-        color: white;
+        background: #2563eb;
+        color: #fff;
         border-radius: 8px;
         display: flex;
         align-items: center;
@@ -65,9 +65,11 @@ if (!function_exists('isActive')) {
     }
 
     .brand span {
-        background: linear-gradient(135deg, var(--text-main, #0f172a) 0%, var(--primary, #2563eb) 100%);
+        background: linear-gradient(135deg, #0f172a 0%, #2563eb 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-fill-color: transparent;
     }
 
     /* --- Navigation (Desktop) --- */
