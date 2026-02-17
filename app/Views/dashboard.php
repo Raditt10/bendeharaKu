@@ -29,7 +29,9 @@ $res_income = mysqli_query($koneksi, $q_income_month);
 $income_month = ($res_income) ? (mysqli_fetch_assoc($res_income)['total'] ?? 0) : 0;
 
 // B. Pengeluaran
-$expense_month = 0; 
+$q_expense_month = "SELECT SUM(jumlah) as total FROM pengeluaran WHERE tahun = '$tahun_ini' AND MONTH(tanggal) = '$bulan_ini_angka'";
+$res_expense = mysqli_query($koneksi, $q_expense_month);
+$expense_month = ($res_expense) ? (mysqli_fetch_assoc($res_expense)['total'] ?? 0) : 0;
 
 // C. Siswa
 $q_siswa = "SELECT COUNT(*) as total FROM siswa";

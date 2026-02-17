@@ -178,7 +178,7 @@
                     <li><a href="?page=home">Beranda</a></li>
                     <li><a href="#features">Fitur Utama</a></li>
                     <li><a href="?page=login">Login Siswa</a></li>
-                    <li><a href="?page=register">Daftar Guru</a></li>
+                    <li><a href="?page=register">Daftar</a></li>
                 </ul>
             </div>
 
@@ -195,7 +195,7 @@
 
         <div class="footer-bottom">
             <div class="copyright">
-                &copy; <?php echo date('Y'); ?> Bendehara Kelas. Dibuat dengan ❤️ untuk Pendidikan Indonesia.
+                &copy; <?php echo date('Y'); ?> BendeharaKu. Dibuat dengan ❤️ oleh Raditt10.
             </div>
             
             <div class="status-badge">

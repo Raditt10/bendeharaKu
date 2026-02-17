@@ -1,77 +1,199 @@
 <?php
-require_once __DIR__ . '/../../config/config.php';
-require_once __DIR__ . '/../Models/Database.php';
-$koneksi = Database::getInstance()->getConnection();
+// --- LOGIKA PHP (BACKEND) ---
+if (session_status() === PHP_SESSION_NONE) session_start();
+require_once dirname(__DIR__, 3) . '/config/config.php';
+require_once dirname(__DIR__, 3) . '/app/Models/Database.php';
 
-// Ambil id_siswa dari URL
-$id_siswa = $_GET['id'] ?? null;
-if (!$id_siswa) {
-    echo "ID tidak diberikan.";
+// 1. Cek Role (Hanya Admin)
+if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
+    echo "<script>window.location='?page=students';</script>";
     exit;
 }
 
-// Query ambil data siswa
-$query = "SELECT * FROM siswa WHERE id_siswa = $id_siswa";
-$result = mysqli_query($koneksi, $query);
+$conn = Database::getInstance()->getConnection();
+$error = '';
+$id_siswa = $_GET['id'] ?? null;
 
-// Cek hasil query
-if (!$result) {
-    die("Query gagal: " . mysqli_error($koneksi));
+// 2. Cek ID Siswa
+if (!$id_siswa) {
+    echo "<script>alert('ID Siswa tidak ditemukan!'); window.location='?page=students';</script>";
+    exit;
 }
 
-if (mysqli_num_rows($result) == 0) {
-    echo "Data tidak ditemukan.";
-    exit();
+// 3. Ambil Data Lama (Prepared Statement)
+$stmt = $conn->prepare("SELECT * FROM siswa WHERE id_siswa = ?");
+$stmt->bind_param("i", $id_siswa);
+$stmt->execute();
+$result = $stmt->get_result();
+
+if ($result->num_rows === 0) {
+    echo "<script>alert('Data siswa tidak ditemukan di database.'); window.location='?page=students';</script>";
+    exit;
 }
-$data = mysqli_fetch_assoc($result);
+$data = $result->fetch_assoc();
 
-// Proses update saat form disubmit
-if (isset($_POST['submit'])) {
-    $nis = $_POST['nis'];
-    $nama = $_POST['nama'];
-    $kontak = $_POST['kontak_orangtua'];
 
-    if ($nis && $nama && $kontak) {
-    $update = "UPDATE siswa SET nis='$nis', nama='$nama', kontak_orangtua='$kontak' WHERE id_siswa=$id_siswa";
-    if (mysqli_query($koneksi, $update)) {
-      if (session_status() === PHP_SESSION_NONE) session_start();
-      $_SESSION['success_msg'] = "Data siswa berhasil diupdate!";
-      header("Location: ?page=students");
-      exit();
-    } else {
-      $error = "Gagal mengupdate data: " . mysqli_error($koneksi);
+// 4. Proses Update Data
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Ambil data & Sanitasi
+    $nis = trim($_POST['nis'] ?? '');
+    $nama = trim($_POST['nama'] ?? '');
+    $kontak = trim($_POST['kontak'] ?? '');
+
+    // Ubah kontak 08xx jadi 628xx (Opsional)
+    if (substr($kontak, 0, 1) === '0') {
+        $kontak = '62' . substr($kontak, 1);
     }
+
+    // Validasi
+    if (empty($nis) || empty($nama)) {
+        $error = 'NIS dan Nama Siswa tidak boleh kosong.';
+    } else {
+        // Cek duplikasi NIS (kecuali punya sendiri)
+        $cekStmt = $conn->prepare("SELECT id_siswa FROM siswa WHERE nis = ? AND id_siswa != ?");
+        $cekStmt->bind_param("si", $nis, $id_siswa);
+        $cekStmt->execute();
+        
+        if ($cekStmt->get_result()->num_rows > 0) {
+            $error = "NIS '$nis' sudah digunakan siswa lain.";
+        } else {
+            // Update Data
+            $updateStmt = $conn->prepare("UPDATE siswa SET nis = ?, nama = ?, kontak_orangtua = ? WHERE id_siswa = ?");
+            $updateStmt->bind_param("sssi", $nis, $nama, $kontak, $id_siswa);
+            
+            if ($updateStmt->execute()) {
+                $_SESSION['success_msg'] = 'Data siswa berhasil diperbarui.';
+                echo "<script>window.location='?page=students';</script>";
+                exit;
+            } else {
+                $error = 'Gagal mengupdate data: ' . $conn->error;
+            }
+        }
     }
 }
 ?>
 
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Edit Student</title>
-</head>
-<body>
-  <div class="container">
-    <h2>Edit Data Siswa</h2>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-    <?php if (isset($error)) echo "<div class='error'>".htmlspecialchars($error)."</div>"; ?>
+<div class="container" style="max-width: 600px; margin: 0 auto; padding-bottom: 80px;">
+    
+    <div style="margin-bottom: 20px;">
+        <a href="?page=students" style="text-decoration: none; display: inline-flex; align-items: center; gap: 8px; color: #64748b; font-weight: 600; transition: color 0.2s;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            Kembali
+        </a>
+    </div>
 
-    <form method="POST" action="?page=edit_student&id=<?= htmlspecialchars($id_siswa) ?>">
-      <label for="nis">NIS/NISN</label>
-      <input type="text" id="nis" name="nis" placeholder="NIS/NISN" required value="<?= htmlspecialchars($data['nis']) ?>" />
+    <div class="form-wrapper">
+        <div class="card">
+            <div class="card-header">
+                <h2>Edit Data Siswa</h2>
+                <p>Perbarui informasi siswa kelas XI RPL 1.</p>
+            </div>
 
-      <label for="nama">Nama Siswa</label>
-      <input type="text" id="nama" name="nama" placeholder="Nama Siswa" required value="<?= htmlspecialchars($data['nama']) ?>" />
+            <?php if ($error): ?>
+                <div class="alert alert-error">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                    <span><?= $error ?></span>
+                </div>
+            <?php endif; ?>
 
-      <label for="kontak_orangtua">Kontak Orang Tua</label>
-      <input type="text" id="kontak_orangtua" name="kontak_orangtua" placeholder="Kontak Orang Tua" required value="<?= htmlspecialchars($data['kontak_orangtua']) ?>" />
+            <form method="POST" action="" id="formEditStudent">
+                
+                <div class="form-group">
+                    <label class="form-label">NIS / NISN</label>
+                    <div class="input-icon-wrapper">
+                        <span class="input-icon">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                        </span>
+                        <input type="number" name="nis" class="form-input with-icon" placeholder="Contoh: 232410..." required value="<?= htmlspecialchars($data['nis']) ?>">
+                    </div>
+                </div>
 
-      <button type="submit" name="submit">Simpan Perubahan</button>
-    </form>
+                <div class="form-group">
+                    <label class="form-label">Nama Lengkap</label>
+                    <div class="input-icon-wrapper">
+                        <span class="input-icon">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                        </span>
+                        <input type="text" name="nama" class="form-input with-icon" placeholder="Nama Siswa" required style="text-transform: capitalize;" value="<?= htmlspecialchars($data['nama']) ?>">
+                    </div>
+                </div>
 
-    <a href="?page=students" class="back-link">Kembali ke Data Siswa</a>
-  </div>
-</body>
-</html>
+                <div class="form-group">
+                    <label class="form-label">No. HP / WhatsApp Orang Tua</label>
+                    <div class="input-icon-wrapper">
+                        <span class="input-icon">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                        </span>
+                        <input type="number" name="kontak" class="form-input with-icon" placeholder="08..." value="<?= htmlspecialchars($data['kontak_orangtua']) ?>">
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <a href="?page=students" class="btn btn-secondary">Batal</a>
+                    <button type="submit" class="btn btn-primary">
+                        Simpan Perubahan
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* GLOBAL RESET */
+    * { box-sizing: border-box; }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; color: #0f172a; }
+
+    /* CARD STYLES */
+    .card { background: #fff; border-radius: 16px; box-shadow: 0 4px 20px -5px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; overflow: hidden; }
+    .card-header { padding: 24px; border-bottom: 1px solid #f1f5f9; background: #fff; }
+    .card-header h2 { margin: 0; font-size: 1.25rem; color: #1e293b; font-weight: 800; letter-spacing: -0.02em; }
+    .card-header p { margin: 4px 0 0 0; font-size: 0.9rem; color: #64748b; }
+
+    /* FORM ELEMENTS */
+    .form-group { margin-bottom: 24px; }
+    .form-label { display: block; margin-bottom: 8px; font-weight: 600; color: #334155; font-size: 0.95rem; }
+
+    /* Input with Icon */
+    .input-icon-wrapper { position: relative; }
+    .input-icon {
+        position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
+        color: #6366f1; pointer-events: none; display: flex; align-items: center;
+    }
+    
+    .form-input {
+        width: 100%; padding: 14px 16px;
+        border: 1px solid #cbd5e1; border-radius: 12px;
+        font-size: 1rem; color: #0f172a; background: #fff;
+        transition: all 0.2s; font-family: inherit;
+    }
+    .form-input.with-icon { padding-left: 48px; }
+    
+    /* Indigo Focus for Student */
+    .form-input:focus { border-color: #6366f1; outline: none; box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15); }
+
+    /* Buttons */
+    .form-actions { display: flex; gap: 12px; margin-top: 32px; }
+    .btn {
+        flex: 1; padding: 14px; border-radius: 12px;
+        font-weight: 700; font-size: 1rem; cursor: pointer;
+        border: none; text-align: center; text-decoration: none;
+        transition: all 0.2s;
+    }
+    .btn-secondary { background: #f1f5f9; color: #64748b; }
+    .btn-secondary:hover { background: #e2e8f0; color: #334155; }
+    
+    /* Indigo Button for Primary */
+    .btn-primary { background: #6366f1; color: #fff; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25); }
+    .btn-primary:hover { background: #4f46e5; transform: translateY(-2px); box-shadow: 0 6px 15px rgba(99, 102, 241, 0.35); }
+
+    /* Alert */
+    .alert-error {
+        background: #fef2f2; border: 1px solid #fecaca; color: #b91c1c;
+        padding: 12px 16px; border-radius: 10px; margin: 24px;
+        display: flex; align-items: center; gap: 10px; font-size: 0.9rem;
+    }
+</style>

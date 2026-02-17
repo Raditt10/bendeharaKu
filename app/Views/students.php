@@ -303,7 +303,7 @@ $result = mysqli_stmt_get_result($stmt);
                     <?php if ($_SESSION['role'] == 'admin'): ?>
                     <td class="td-action" style="text-align: right;">
                         <a href="?page=edit_student&id=<?= $row['id_siswa'] ?>" class="action-btn btn-edit">Edit</a>
-                        <a href="?page=delete_student&id=<?= $row['id_siswa'] ?>" class="action-btn btn-delete" onclick="return confirm('Yakin ingin menghapus data siswa ini?');">Hapus</a>
+                        <a href="#" class="action-btn btn-delete" onclick="openWarning('?page=students&id_siswa=<?= $row['id_siswa'] ?>'); return false;">Hapus</a>
                     </td>
                     <?php endif; ?>
                 </tr>
@@ -371,4 +371,10 @@ if ($result instanceof mysqli_result) {
 if (isset($stmt) && $stmt instanceof mysqli_stmt) {
     mysqli_stmt_close($stmt);
 }
+?>
+
+<?php
+// Include warning modal (modal konfirmasi hapus)
+$requireWarning = __DIR__ . '/partials/warning.php';
+if (file_exists($requireWarning)) require $requireWarning;
 ?>

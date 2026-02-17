@@ -35,9 +35,24 @@ Teknologi yang digunakan dalam pengembangan:
 * **Manajemen Pemasukan:** Mencatat dana masuk dari berbagai sumber selain iuran rutin.
 * **Manajemen Pengeluaran:** Dokumentasi penggunaan dana untuk keperluan operasional kelas.
 
-### 📊 Laporan & Dashboard
+
+## 📊 Laporan & Dashboard
 * **Dashboard Statistik:** Ringkasan total saldo, pemasukan, dan pengeluaran di halaman utama.
 * **Laporan Kas:** Rekapitulasi transaksi dalam format yang rapi dan mudah dibaca.
+
+## 🖼️ Preview
+
+Berikut adalah beberapa tampilan antarmuka aplikasi BendeharaKu:
+
+<div align="center">
+	<img src="screenshot/Screenshot%202026-02-17%20205909.png" alt="Dashboard" width="600" style="border-radius:12px; box-shadow:0 4px 16px rgba(0,0,0,0.08); margin-bottom:16px;" />
+	<br>
+	<img src="screenshot/Screenshot%202026-02-17%20210015.png" alt="Form Login" width="400" style="border-radius:12px; box-shadow:0 4px 16px rgba(0,0,0,0.08); margin-bottom:16px;" />
+	<br>
+	<img src="screenshot/Screenshot%202026-02-17%20210033.png" alt="Tabel Pengeluaran" width="600" style="border-radius:12px; box-shadow:0 4px 16px rgba(0,0,0,0.08);" />
+</div>
+
+> Semua gambar dapat ditemukan di folder `screenshot/` pada repository ini.
 
 ## 📁 Struktur Folder
 ```text

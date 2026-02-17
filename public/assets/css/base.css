@@ -155,6 +155,7 @@ h1, h2, h3 {
 
 .btn-primary:hover {
   background-color: var(--primary-700);
+  color: white;
   transform: translateY(-1px);
 }
 

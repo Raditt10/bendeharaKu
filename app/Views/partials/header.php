@@ -135,6 +135,7 @@ if (!function_exists('isActive')) {
     }
     .btn-register:hover {
         background: #1d4ed8;
+        color: #fff !important;
         transform: translateY(-1px);
         box-shadow: 0 6px 15px rgba(37, 99, 235, 0.3);
     }
@@ -347,8 +348,8 @@ if (!function_exists('isActive')) {
                 <a href="#about" class="nav-link">Tentang</a>
 
                 <div class="auth-actions">
-                    <a href="?page=login" class="btn-header btn-login">Masuk</a>
-                    <a href="?page=register" class="btn-header btn-register">Daftar Sekarang</a>
+                    <a href="?page=register" class="btn-header btn-login">Daftar Sekarang</a>
+                    <a href="?page=login" class="btn-header btn-register">Masuk</a>
                 </div>
 
             <?php else: ?>
@@ -362,9 +363,10 @@ if (!function_exists('isActive')) {
                 <?php endif; ?>
 
                 <div class="auth-actions">
-                    <a href="?page=logout" class="btn-header btn-login" style="color: #ef4444; border-color: #fecaca; background: #fef2f2;" onclick="return confirm('Yakin ingin keluar?');">
+                    <a href="#" class="btn-header btn-login" style="color: #ef4444; border-color: #fecaca; background: #fef2f2;" onclick="openWarning('?page=logout', 'logout'); return false;">
                         Keluar Akun
                     </a>
+                    <?php include_once __DIR__ . '/warning.php'; ?>
                 </div>
             <?php endif; ?>
         </nav>
