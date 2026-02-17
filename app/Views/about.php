@@ -12,7 +12,7 @@ if (session_status() === PHP_SESSION_NONE) session_start();
   <style>body{font-family:Poppins, sans-serif;background:#f9fafb;padding:24px}.card{max-width:900px;margin:32px auto;background:#fff;padding:24px;border-radius:10px}</style>
 </head>
 <body>
-<?php include __DIR__ . '/partials/header.php'; ?>
+<!-- header is included centrally in public/index.php -->
 <div class="card">
   <h1>About This Application</h1>
   <p>This is a simple school cash-management application migrated into a framework-like folder structure (views, controllers, models).</p>

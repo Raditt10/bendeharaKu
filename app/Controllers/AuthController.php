@@ -29,17 +29,44 @@ class AuthController extends BaseController
             $stmt->close();
         }
 
-        if ($user && password_verify($password, $user['password'])) {
-            $_SESSION['nis'] = $user['nis'];
-            $_SESSION['role'] = $user['role'];
-            $_SESSION['nama'] = $user['nama'];
-            $_SESSION['login_success'] = true;
-            $_SESSION['success_msg'] = "Anda berhasil login!";
-            header('Location: ./');
-            exit;
+        if ($user) {
+            $passwordOk = false;
+
+            // Normal case: hashed password stored in DB
+            if (password_verify($password, $user['password'])) {
+                $passwordOk = true;
+            } else {
+                // Fallback for legacy accounts that still have plaintext passwords
+                if (hash_equals($user['password'], $password)) {
+                    $passwordOk = true;
+                    // Re-hash the plaintext password and update the DB to improve security
+                    $newHash = password_hash($password, PASSWORD_DEFAULT);
+                    if ($updateStmt = $db->prepare("UPDATE users SET password = ? WHERE nis = ?")) {
+                        $updateStmt->bind_param('ss', $newHash, $nis);
+                        $updateStmt->execute();
+                        $updateStmt->close();
+                    }
+                }
+            }
+
+            if ($passwordOk) {
+                $_SESSION['nis'] = $user['nis'];
+                $_SESSION['role'] = $user['role'];
+                $_SESSION['nama'] = $user['nama'];
+                $_SESSION['login_success'] = true;
+                $_SESSION['success_msg'] = "Anda berhasil login!";
+                // Redirect explicitly to the dashboard after successful login
+                $script = $_SERVER['PHP_SELF'] ?? './';
+                header('Location: ' . $script . '?page=dashboard');
+                exit;
+            }
         }
 
-        $this->showLogin(['error_msg' => 'NIS atau password salah!']);
+        // On failure, redirect back with an error message (use query param as fallback)
+        $script = $_SERVER['PHP_SELF'] ?? './';
+        $msg = urlencode('NIS atau password salah!');
+        header('Location: ' . $script . '?page=login&err=' . $msg);
+        exit;
     }
 
     public function logout()
@@ -47,7 +74,8 @@ class AuthController extends BaseController
         if (session_status() === PHP_SESSION_NONE) session_start();
         session_unset();
         session_destroy();
-        header('Location: ./');
+        $script = $_SERVER['PHP_SELF'] ?? './';
+        header('Location: ' . $script . '?page=home');
         exit;
     }
 }

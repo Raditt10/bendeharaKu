@@ -1,12 +1,19 @@
+<?php
+if (session_status() === PHP_SESSION_NONE) session_start();
+// Prefer explicit query error (from redirect), then session-stored error, then any pre-set $error_msg
+$error_msg = $_GET['err'] ?? ($_SESSION['error_msg'] ?? ($error_msg ?? null));
+if (isset($_SESSION['error_msg'])) unset($_SESSION['error_msg']);
+?>
+
 <div class="auth-page">
     <div class="form-box">
-        <div style="text-align: center; margin-bottom: 24px;">
-            <h2 style="margin:0; font-size: 1.5rem;">Selamat Datang</h2>
-            <p style="color: var(--text-muted); font-size: 0.9rem;">Silakan masuk ke akun Anda</p>
-        </div>
+        <div class="auth-header">
+                <h2>Selamat Datang</h2>
+                <p>Silakan masuk ke akun Anda</p>
+            </div>
 
         <?php if ($error_msg): ?>
-            <div style="background: #fee2e2; color: #b91c1c; padding: 12px; border-radius: 8px; margin-bottom: 20px; font-size: 0.85rem;">
+            <div class="error-box">
                 <?= htmlspecialchars($error_msg) ?>
             </div>
         <?php endif; ?>
@@ -22,13 +29,13 @@
                 <input type="password" name="password" id="password" placeholder="••••••••" required>
             </div>
 
-            <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 10px;">
+            <button type="submit" class="btn btn-primary auth-submit">
                 Masuk ke Dashboard
             </button>
         </form>
 
-        <p style="text-align: center; margin-top: 24px; font-size: 0.9rem; color: var(--text-muted);">
-            Belum punya akun? <a href="?page=register" style="color: var(--primary); font-weight: 600; text-decoration: none;">Daftar Sekarang</a>
+        <p class="auth-help">
+            Belum punya akun? <a href="?page=register">Daftar Sekarang</a>
         </p>
     </div>
 </div>

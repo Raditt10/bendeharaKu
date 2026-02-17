@@ -1,0 +1,258 @@
+/* ============================
+   1. VARIABLES & RESET
+   ============================ */
+:root {
+  /* Color Palette */
+  --primary-600: #2563eb;
+  --primary-700: #1d4ed8;
+  --primary-light: rgba(37, 99, 235, 0.1);
+  
+  --bg-body: #f3f4f6;       /* Abu-abu muda untuk background halaman */
+  --card-bg: #ffffff;       /* Putih untuk kartu */
+  
+  --text-primary: #111827;  /* Hitam pekat */
+  --text-secondary: #4b5563;/* Abu-abu tua */
+  --text-tertiary: #9ca3af; /* Abu-abu muda */
+  
+  --border-light: #e5e7eb;  /* Garis border halus */
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  
+  --error-bg: #fee2e2;
+  --error-text: #b91c1c;
+}
+
+/* Reset penting agar layout tidak berantakan */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  color: var(--text-primary);
+  background-color: var(--bg-body);
+  line-height: 1.5;
+  margin: 0;
+  padding: 0;
+}
+
+/* ============================
+   2. LAYOUT & CONTAINERS
+   ============================ */
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+/* Wrapper agar form ada di tengah */
+.form-wrapper {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Card Style */
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  box-shadow: var(--shadow-sm);
+  padding: 2rem;
+}
+
+.card-header {
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.card-header h2 {
+  margin-bottom: 0.5rem;
+  font-size: 1.5rem;
+}
+
+/* ============================
+   3. TYPOGRAPHY
+   ============================ */
+h1, h2, h3 {
+  color: var(--text-primary);
+  font-weight: 700;
+  margin-top: 0;
+}
+
+.text-muted {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+/* ============================
+   4. FORMS
+   ============================ */
+.form-group {
+  margin-bottom: 1.25rem;
+}
+
+.form-label {
+  display: block;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.form-control {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-light);
+  background-color: #fff;
+  color: var(--text-primary);
+  transition: all 0.2s ease-in-out;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: var(--primary-600);
+  box-shadow: 0 0 0 3px var(--primary-light);
+}
+
+.form-control::placeholder {
+  color: var(--text-tertiary);
+}
+
+/* Actions (Buttons) */
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border-light);
+}
+
+/* ============================
+   5. BUTTONS
+   ============================ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid transparent;
+  text-decoration: none;
+  font-size: 0.95rem;
+  transition: all 0.2s;
+}
+
+.btn-primary {
+  background-color: var(--primary-600);
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-700);
+  transform: translateY(-1px);
+}
+
+.btn-outline {
+  background-color: white;
+  border-color: var(--border-light);
+  color: var(--text-secondary);
+}
+
+.btn-outline:hover {
+  background-color: #f9fafb;
+  border-color: #d1d5db;
+  color: var(--text-primary);
+}
+
+/* ============================
+   6. ALERTS & UTILS
+   ============================ */
+.alert {
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.alert-error {
+  background-color: var(--error-bg);
+  color: var(--error-text);
+  border: 1px solid rgba(185, 28, 28, 0.1);
+}
+
+/* Animation */
+.fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Tambahan untuk komponen baru */
+.form-card {
+  background: var(--card-bg);
+  border-radius: 12px;
+  box-shadow: var(--shadow-md);
+  padding: 2rem;
+}
+
+/* Dropdown sejajar */
+.row {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.row .form-group {
+  flex: 1;
+  margin-bottom: 0;
+}
+
+/* Input Rupiah styling */
+.input-rupiah {
+  position: relative;
+}
+
+.input-rupiah .currency-symbol {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.input-rupiah .form-control {
+  padding-left: 2.5rem; /* ruang untuk simbol Rp */
+}
+
+/* Loading spinner */
+.btn-loading {
+  position: relative;
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+.btn-loading .spinner {
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 0.6s linear infinite;
+  margin-right: 0.5rem;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

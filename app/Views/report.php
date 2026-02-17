@@ -66,7 +66,7 @@ $result = mysqli_query($koneksi, $query);
   </style>
 </head>
 <body>
-<?php include __DIR__ . '/partials/header.php'; ?>
+<!-- header is included centrally in public/index.php -->
 
 <div class="container">
   <h2>Laporan Kas XI RPL 1</h2>

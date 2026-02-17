@@ -1,141 +1,279 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) session_start();
-
+// Pastikan tidak ada output sebelum header
+// Bersihkan pesan session
 $success_msg = $_SESSION['success_msg'] ?? null;
-if ($success_msg) unset($_SESSION['success_msg']);
 $error_msg = $_SESSION['error_msg'] ?? null;
-if ($error_msg) unset($_SESSION['error_msg']);
+unset($_SESSION['success_msg'], $_SESSION['error_msg']);
 
+// Koneksi Database
 require_once __DIR__ . '/../../config/config.php';
 require_once __DIR__ . '/../Models/Database.php';
 $koneksi = Database::getInstance()->getConnection();
 
-$query = "SELECT * FROM pemasukan ORDER BY bulan DESC";
+// Ambil Data
+$query = "SELECT * FROM pemasukan ORDER BY id_pemasukan DESC"; 
 $result = mysqli_query($koneksi, $query);
+
+// Hitung Total
 $total_query = "SELECT SUM(jumlah) AS total FROM pemasukan";
 $total_result = mysqli_query($koneksi, $total_query);
 $total_row = mysqli_fetch_assoc($total_result);
 $total_pemasukan = $total_row['total'] ?? 0;
 ?>
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Data Pemasukan</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="assets/css/style.css"/>
-  <style>
-    /* styles copied from original */
-  </style>
-</head>
-<body>
-<?php include __DIR__ . '/partials/header.php'; ?>
-<div class="container">
-  <h2>Data Pemasukan Kas</h2>
-  <div class="nav-buttons">
-    <a href="?page=home">Kembali</a>
-    <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
-    <a href="?page=add_income">Tambah data</a>
-    <?php endif; ?>
-    <a href="?page=income">Muat Ulang</a>
-  </div>
-  <?php if ($success_msg): ?>
-<div id="notif-success" class="notif-success show">
-  <span><?= htmlspecialchars($success_msg) ?></span>
-  <button onclick="closeNotif()" aria-label="Tutup notifikasi">&times;</button>
-</div>
-<?php endif; ?>
-<?php if ($error_msg): ?>
-<div id="notif-error" class="notif-error show">
-  <span><?= htmlspecialchars($error_msg) ?></span>
-  <button onclick="closeNotifError()" aria-label="Tutup notifikasi">&times;</button>
-</div>
-<?php endif; ?>
-  <div style="overflow-x: auto;">
-    <table>
-      <tr>
-        <th>No</th>
-        <th>Bulan</th>
-        <th>Jumlah</th>
-        <th>Keterangan</th>
-        <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
-        <th>Aksi</th>
-        <?php endif; ?>
-      </tr>
-      <?php
-      $no = 1;
-      if ($result && mysqli_num_rows($result) > 0) {
-    while ($row = mysqli_fetch_assoc($result)) {
-        echo "<tr>";
-        echo "<td>" . $no++ . "</td>";
-        echo "<td>" . $row['bulan'] . "</td>";
-        echo "<td>Rp " . number_format($row['jumlah'], 2, ',', '.') . "</td>";
-        echo "<td>" . htmlspecialchars($row['keterangan']) . "</td>";
-        if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
-          echo "<td class='aksi'>
-            <a href='?page=edit_income&id=" . $row['id_pemasukan'] . "' style='background:linear-gradient(90deg,#3498db,#f1c40f);'>Edit</a>
-            <a href='?page=delete_income&id=" . $row['id_pemasukan'] . "' style='background:linear-gradient(90deg,#e74c3c,#f1c40f);' onclick=\"return confirm('Yakin ingin menghapus data ini?');\">Hapus</a>
-          </td>";
-        }
-        echo "</tr>";
-    }
-} else {
-    echo "<tr><td colspan='5'>Tidak ada data pemasukan.</td></tr>";
-}
 
+<style>
+    /* Layout Utama */
+    .page-header {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+    
+    @media (min-width: 768px) {
+        .page-header {
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+        }
+    }
+
+    .page-title h2 { margin: 0; font-size: 1.75rem; color: var(--text-main, #1e293b); }
+    .page-title p { margin: 5px 0 0; color: var(--text-muted, #64748b); font-size: 0.95rem; }
+
+    /* Summary Card (DIPERBAIKI) */
+    .stats-card {
+        /* Menggunakan warna Hardcode agar pasti muncul backgroundnya */
+        background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+        color: #ffffff;
+        padding: 28px;
+        border-radius: 16px;
+        box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.4);
+        margin-bottom: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .stats-info { z-index: 2; }
+    .stats-info span { display: block; font-size: 1rem; color: rgba(255,255,255,0.9); font-weight: 500; margin-bottom: 8px; }
+    .stats-info h3 { margin: 0; font-size: 2.5rem; font-weight: 800; color: #ffffff; letter-spacing: -0.02em; }
+    
+    .stats-icon { 
+        color: rgba(255,255,255,0.15); 
+        transform: scale(2) rotate(-10deg);
+        position: absolute;
+        right: 20px;
+        bottom: -10px;
+        z-index: 1;
+    }
+
+    /* Action Buttons */
+    .action-bar { display: flex; gap: 10px; flex-wrap: wrap; }
+    
+    /* Table Container */
+    .table-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        border: 1px solid #e2e8f0;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+    }
+
+    thead { background-color: #f8fafc; border-bottom: 1px solid #e2e8f0; }
+    th { padding: 16px 20px; font-weight: 600; color: #64748b; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; }
+    td { padding: 16px 20px; border-bottom: 1px solid #f1f5f9; color: #1e293b; font-size: 0.95rem; vertical-align: middle; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover { background-color: #f8fafc; }
+
+    /* Badges & Actions */
+    .action-btn {
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-size: 0.8rem;
+        text-decoration: none;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        transition: all 0.2s;
+    }
+    .btn-edit { background: #eff6ff; color: #2563eb; }
+    .btn-edit:hover { background: #dbeafe; }
+    
+    .btn-delete { background: #fef2f2; color: #ef4444; }
+    .btn-delete:hover { background: #fee2e2; }
+
+    /* ALERT NOTIFICATION */
+    .alert {
+        padding: 16px;
+        border-radius: 12px;
+        margin-bottom: 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        animation: slideIn 0.3s ease;
+    }
+    .alert-success { background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; }
+    .alert-error { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
+    .close-alert { background: transparent; border: none; cursor: pointer; font-size: 1.2rem; color: inherit; opacity: 0.7; }
+
+    @keyframes slideIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* RESPONSIVE TABLE (Mobile Card View) */
+    @media (max-width: 768px) {
+        .page-header { align-items: flex-start; }
+        
+        .stats-card { 
+            overflow: hidden; /* Mencegah scrollbar horizontal karena icon */
+        }
+        
+        /* Hide Table Header */
+        thead { display: none; }
+        
+        /* Make rows look like cards */
+        tr { display: block; margin-bottom: 16px; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; background: white; }
+        tr:last-child { margin-bottom: 0; }
+        td { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f1f5f9; padding: 10px 0; text-align: right; }
+        td:last-child { border-bottom: none; padding-bottom: 0; }
+        td:first-child { padding-top: 0; }
+
+        /* Add labels using data-label attribute */
+        td::before {
+            content: attr(data-label);
+            font-weight: 600;
+            color: #64748b;
+            font-size: 0.85rem;
+            text-align: left;
+            margin-right: 15px;
+        }
+        
+        .action-cell { justify-content: flex-end; gap: 10px; }
+    }
+</style>
+
+<div class="container" style="padding-top: 40px; padding-bottom: 60px;">
+    
+    <?php if ($success_msg): ?>
+    <div class="alert alert-success" id="alert-success">
+        <span><?= htmlspecialchars($success_msg) ?></span>
+        <button class="close-alert" onclick="document.getElementById('alert-success').style.display='none'">&times;</button>
+    </div>
+    <?php endif; ?>
+
+    <?php if ($error_msg): ?>
+    <div class="alert alert-error" id="alert-error">
+        <span><?= htmlspecialchars($error_msg) ?></span>
+        <button class="close-alert" onclick="document.getElementById('alert-error').style.display='none'">&times;</button>
+    </div>
+    <?php endif; ?>
+
+    <div class="page-header">
+        <div class="page-title">
+            <h2>Data Pemasukan</h2>
+            <p>Kelola uang kas masuk dan donasi kelas.</p>
+        </div>
+        <div class="action-bar">
+            <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
+                <a href="?page=add_income" class="btn btn-primary">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    Tambah Data
+                </a>
+            <?php endif; ?>
+            <a href="?page=income" class="btn btn-outline">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px"><path d="M23 4v6h-6"></path><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+                Refresh
+            </a>
+        </div>
+    </div>
+
+    <div class="stats-card reveal slide-in-left">
+        <div class="stats-info">
+            <span>Total Dana Terkumpul</span>
+            <h3>Rp <?= number_format($total_pemasukan, 0, ',', '.') ?></h3>
+        </div>
+        <div class="stats-icon">
+            <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+        </div>
+    </div>
+
+    <div class="table-card">
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 50px;">No</th>
+                    <th>Bulan / Periode</th>
+                    <th>Nominal</th>
+                    <th>Keterangan</th>
+                    <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
+                    <th style="text-align: right;">Aksi</th>
+                    <?php endif; ?>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                $no = 1;
+                if ($result && mysqli_num_rows($result) > 0) {
+                    while ($row = mysqli_fetch_assoc($result)) {
+                ?>
+                <tr>
+                    <td data-label="No"><?= $no++ ?></td>
+                    <td data-label="Bulan" style="font-weight: 600;"><?= htmlspecialchars($row['bulan']) ?></td>
+                    <td data-label="Jumlah" style="color: #10b981; font-weight: 600;">
+                        + Rp <?= number_format($row['jumlah'], 2, ',', '.') ?>
+                    </td>
+                    <td data-label="Keterangan"><?= htmlspecialchars($row['keterangan']) ?></td>
+                    
+                    <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
+                    <td data-label="Aksi" class="action-cell" style="text-align: right;">
+                        <a href="?page=edit_income&id=<?= $row['id_pemasukan'] ?>" class="action-btn btn-edit">
+                            Edit
+                        </a>
+                        <a href="?page=delete_income&id=<?= $row['id_pemasukan'] ?>" class="action-btn btn-delete" onclick="return confirm('Yakin ingin menghapus data ini?');">
+                            Hapus
+                        </a>
+                    </td>
+                    <?php endif; ?>
+                </tr>
+                <?php 
+                    }
+                } else { 
+                ?>
+                <tr>
+                    <td colspan="5" style="text-align:center; padding: 40px; color: #64748b;">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#e2e8f0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:block; margin: 0 auto 10px;"><circle cx="12" cy="12" r="10"></circle><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+                        Belum ada data pemasukan.
+                    </td>
+                </tr>
+                <?php } ?>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        setTimeout(() => {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(alert => {
+                alert.style.opacity = '0';
+                setTimeout(() => alert.style.display = 'none', 300);
+            });
+        }, 3000);
+    });
+</script>
+
+<?php
 if ($result instanceof mysqli_result) {
     mysqli_free_result($result);
 }
-mysqli_close($koneksi);
-        ?>
-    </table>
-  </div>
-  <div style="text-align:center;margin:32px 0 0 0;font-size:1rem;font-weight:600;color:#27ae60;">
-    Jumlah Dana Terkumpul: Rp <?= number_format($total_pemasukan, 0, ',', '.') ?>
-  </div>
-</div>
-<script>
-  function closeNotif() {
-    const notif = document.getElementById("notif-success");
-    if (notif) {
-      notif.classList.remove("show");
-      notif.style.display = 'none';
-      notif.innerHTML = '';
-      localStorage.setItem('notifSuccessClosed', '1');
-    }
-  }
-  function closeNotifError() {
-    const notif = document.getElementById("notif-error");
-    if (notif) {
-      notif.classList.remove("show");
-      notif.style.display = 'none';
-      notif.innerHTML = '';
-      localStorage.setItem('notifErrorClosed', '1');
-    }
-  }
-  window.addEventListener('DOMContentLoaded', () => {
-    const notif = document.getElementById("notif-success");
-    if (notif) {
-      notif.classList.add("show");
-      setTimeout(() => {
-        notif.classList.remove("show");
-        notif.style.display = 'none';
-        notif.innerHTML = '';
-        localStorage.setItem('notifSuccessClosed', '1');
-      }, 3000);
-    }
-    const notifError = document.getElementById("notif-error");
-    if (notifError) {
-      notifError.classList.add("show");
-      setTimeout(() => {
-        notifError.classList.remove("show");
-        notifError.style.display = 'none';
-        notifError.innerHTML = '';
-        localStorage.setItem('notifErrorClosed', '1');
-      }, 3000);
-    }
-  });
-</script>
-</body>
-</html>
+?>
