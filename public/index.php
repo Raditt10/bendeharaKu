@@ -129,6 +129,21 @@ if ($page === 'income' && isset($_GET['id']) && is_numeric($_GET['id'])) {
     exit;
 }
 
+// Handler hapus pengeluaran (GET) sebelum output HTML
+if ($page === 'expenses' && isset($_GET['id_pengeluaran']) && is_numeric($_GET['id_pengeluaran'])) {
+    require_once __DIR__ . '/../app/Models/Database.php';
+    $conn = Database::getInstance()->getConnection();
+    $id = (int)$_GET['id_pengeluaran'];
+    $query = "DELETE FROM pengeluaran WHERE id_pengeluaran = '$id'";
+    if (mysqli_query($conn, $query)) {
+        $_SESSION['success_msg'] = 'Data pengeluaran berhasil dihapus.';
+    } else {
+        $_SESSION['error_msg'] = 'Gagal menghapus data pengeluaran.';
+    }
+    header('Location: ' . ($_SERVER['PHP_SELF'] ?? './') . '?page=expenses');
+    exit;
+}
+
 $error_msg = $error_msg ?? '';
 ?>
 <!doctype html>

@@ -44,66 +44,30 @@ $result = mysqli_stmt_get_result($stmt);
 ?>
 
 <style>
-    /* Layout Utama */
-    .page-header {
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-        margin-bottom: 30px;
-    }
+    /* =========================================
+       1. DESKTOP STYLES
+       ========================================= */
+    .page-header { display: flex; flex-direction: column; gap: 20px; margin-bottom: 30px; }
+    @media (min-width: 768px) { .page-header { flex-direction: row; justify-content: space-between; align-items: center; } }
     
-    @media (min-width: 768px) {
-        .page-header {
-            flex-direction: row;
-            justify-content: space-between;
-            align-items: center;
-        }
-    }
-
     .page-title h2 { margin: 0; font-size: 1.75rem; color: #1e293b; }
     .page-title p { margin: 5px 0 0; color: #64748b; font-size: 0.95rem; }
 
-    /* Stats Card - Indigo Theme for Users */
+    /* Stats Card (Indigo Theme) */
     .stats-card {
-        /* Hardcoded Gradient agar background pasti muncul */
-        background: linear-gradient(135deg, #6366f1 0%, #4338ca 100%); 
-        color: #ffffff;
-        padding: 28px;
-        border-radius: 16px;
+        background: linear-gradient(135deg, #6366f1 0%, #4338ca 100%);
+        color: #ffffff; padding: 28px; border-radius: 16px;
         box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.4);
-        margin-bottom: 30px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        position: relative;
-        overflow: hidden;
+        margin-bottom: 30px; display: flex; align-items: center; justify-content: space-between;
+        position: relative; overflow: hidden;
     }
-    
     .stats-info { z-index: 2; }
     .stats-info span { display: block; font-size: 1rem; color: rgba(255,255,255,0.9); font-weight: 500; margin-bottom: 8px; }
     .stats-info h3 { margin: 0; font-size: 2.5rem; font-weight: 800; color: #ffffff; letter-spacing: -0.02em; }
-    
-    .stats-icon { 
-        color: rgba(255,255,255,0.15); 
-        transform: scale(2) rotate(-10deg);
-        position: absolute;
-        right: 20px;
-        bottom: -10px;
-        z-index: 1;
-    }
+    .stats-icon { color: rgba(255,255,255,0.15); transform: scale(2) rotate(-10deg); position: absolute; right: 20px; bottom: -10px; z-index: 1; }
 
-    /* Action Buttons */
-    .action-bar { display: flex; gap: 10px; flex-wrap: wrap; }
-
-    /* Table & Card Styles */
-    .table-card {
-        background: white;
-        border-radius: 16px;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        overflow: hidden;
-        border: 1px solid #e2e8f0;
-    }
-
+    /* Table Styles */
+    .table-card { background: white; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); overflow: hidden; border: 1px solid #e2e8f0; }
     table { width: 100%; border-collapse: collapse; text-align: left; }
     thead { background-color: #f8fafc; border-bottom: 1px solid #e2e8f0; }
     th { padding: 16px 20px; font-weight: 600; color: #64748b; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; }
@@ -111,77 +75,125 @@ $result = mysqli_stmt_get_result($stmt);
     tr:last-child td { border-bottom: none; }
     tr:hover { background-color: #f8fafc; }
 
-    /* User Avatar & Name Styling */
+    /* Avatar & Profile */
     .student-profile { display: flex; align-items: center; gap: 12px; }
-    /* avatar styles are provided globally in base.css */
+    .avatar {
+        width: 40px; height: 40px; background: #e0e7ff; color: #4338ca;
+        border-radius: 50%; display: flex; align-items: center; justify-content: center;
+        font-weight: 700; font-size: 0.9rem; border: 1px solid #c7d2fe; flex-shrink: 0;
+    }
     .student-info { display: flex; flex-direction: column; }
     .student-name { font-weight: 600; color: #1e293b; }
     .student-nis { font-size: 0.8rem; color: #64748b; margin-top: 2px; }
 
-    /* Buttons */
-    .action-btn {
-        padding: 6px 12px;
-        border-radius: 6px;
-        font-size: 0.8rem;
-        text-decoration: none;
-        font-weight: 600;
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
-        transition: all 0.2s;
-    }
-    .btn-edit { background: #eff6ff; color: #2563eb; }
-    .btn-edit:hover { background: #dbeafe; }
-    .btn-delete { background: #fef2f2; color: #ef4444; }
-    .btn-delete:hover { background: #fee2e2; }
-
-    /* Alert */
-    .alert {
-        padding: 16px;
-        border-radius: 12px;
-        margin-bottom: 24px;
+    /* Buttons & Search */
+    .action-bar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+    
+    /* FIX: Form pencarian agar sejajar (Input + Tombol) */
+    .action-bar form {
         display: flex;
-        justify-content: space-between;
         align-items: center;
-        animation: slideIn 0.3s ease;
+        gap: 8px;
     }
+
+    .btn { padding: 10px 18px; border-radius: 8px; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s; font-size: 0.95rem; border: none; cursor: pointer; }
+    .btn-primary { background: #6366f1; color: white; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2); }
+    .btn-primary:hover { background: #4f46e5; transform: translateY(-1px); }
+    .btn-outline { background: white; border: 1px solid #cbd5e1; color: #475569; }
+    .btn-outline:hover { background: #f1f5f9; color: #1e293b; }
+
+    .search-input {
+        padding: 10px 16px; border: 1px solid #cbd5e1; border-radius: 8px;
+        font-size: 0.95rem; width: 220px; transition: border-color 0.2s;
+        height: 42px; box-sizing: border-box; /* Pastikan tinggi konsisten */
+    }
+    .search-input:focus { border-color: #6366f1; outline: none; }
+    
+    /* Agar tombol search icon kotak rapi */
+    .btn-search-icon {
+        width: 42px; height: 42px; padding: 0;
+        display: flex; align-items: center; justify-content: center;
+    }
+
+    /* Action Buttons in Table */
+    .action-btn { padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 5px; transition: all 0.2s; }
+    .btn-edit { background: #eff6ff; color: #2563eb; } .btn-edit:hover { background: #dbeafe; }
+    .btn-delete { background: #fef2f2; color: #ef4444; } .btn-delete:hover { background: #fee2e2; }
+
+    /* Pagination */
+    .pagination { display: flex; gap: 6px; align-items: center; margin-top: 20px; justify-content: center; }
+    .page-link {
+        padding: 8px 14px; border-radius: 8px; background: white; border: 1px solid #e2e8f0;
+        color: #64748b; text-decoration: none; font-weight: 600; font-size: 0.9rem; transition: all 0.2s;
+    }
+    .page-link:hover { background: #f8fafc; color: #1e293b; }
+    .page-link.active { background: #6366f1; color: white; border-color: #6366f1; }
+
+    /* Alerts */
+    .alert { padding: 16px; border-radius: 12px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; animation: slideIn 0.3s ease; }
     .alert-success { background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; }
     .alert-error { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
     .close-alert { background: transparent; border: none; cursor: pointer; font-size: 1.2rem; color: inherit; opacity: 0.7; }
-
     @keyframes slideIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* RESPONSIVE (MOBILE) */
+    /* =========================================
+       2. MOBILE ONLY STYLES (CARD VIEW)
+       ========================================= */
     @media (max-width: 768px) {
-        .page-header { align-items: flex-start; }
-        .stats-card { overflow: hidden; }
+        .container { padding-top: 20px !important; }
+        .page-header { gap: 15px; margin-bottom: 20px; }
         
+        /* Mobile Search Bar Full Width */
+        .action-bar { width: 100%; flex-direction: row; flex-wrap: wrap; }
+        .action-bar form { width: 100%; display: flex; gap: 8px; margin-bottom: 8px; }
+        .search-input { flex: 1; width: auto; } 
+
+        /* Hilangkan Table Header */
+        .table-card { background: transparent; box-shadow: none; border: none; }
         thead { display: none; }
+        tbody { display: flex; flex-direction: column; gap: 12px; }
         
-        tr { display: block; margin-bottom: 16px; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; background: white; }
-        tr:last-child { margin-bottom: 0; }
-        
-        td { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f1f5f9; padding: 12px 0; text-align: right; }
-        td:last-child { border-bottom: none; }
-        td:first-child { padding-top: 0; }
-        
-        /* Specific adjustments for profile in mobile */
-        .student-profile { flex-direction: row-reverse; text-align: right; }
-        .student-info { align-items: flex-end; }
-        
-        td::before {
-            content: attr(data-label);
-            font-weight: 600;
-            color: #64748b;
-            font-size: 0.85rem;
-            text-align: left;
-            margin-right: 15px;
+        /* Ubah TR (Baris) menjadi Kartu Grid */
+        tr {
+            display: grid;
+            grid-template-areas: 
+                "profile profile"
+                "contact contact"
+                "actions actions";
+            background: #ffffff;
+            padding: 16px;
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            border: 1px solid #f1f5f9;
+            position: relative;
         }
-        .action-cell { justify-content: flex-end; gap: 10px; }
+
+        td { border-bottom: none; padding: 0; display: block; }
+        td.td-no { display: none; } 
+        
+        td.td-profile { 
+            grid-area: profile; margin-bottom: 12px; 
+            border-bottom: 1px dashed #e2e8f0; padding-bottom: 12px;
+        }
+        
+        td.td-contact { 
+            grid-area: contact; margin-bottom: 12px; font-size: 0.95rem; color: #475569; 
+            display: flex; align-items: center; gap: 8px; font-weight: 500;
+        }
+
+        td.td-action { 
+            grid-area: actions; 
+            display: flex; gap: 8px; 
+        }
+        
+        .action-btn { 
+            padding: 10px 16px; font-size: 0.9rem; flex: 1; justify-content: center; 
+            border-radius: 8px;
+        }
     }
 </style>
 
-<div class="container mt-12 mb-12">
+<div class="container" style="padding-top: 40px; padding-bottom: 60px;">
 
     <?php if ($success_msg): ?>
     <div class="alert alert-success" id="alert-success">
@@ -203,26 +215,32 @@ $result = mysqli_stmt_get_result($stmt);
             <p>Manajemen data anggota kelas XI RPL 1.</p>
         </div>
         <div class="action-bar">
-            <form method="get" action="" style="display:flex; gap:8px; align-items:center;">
+            <form method="get" action="">
                 <input type="hidden" name="page" value="students" />
-                <input type="text" name="q" value="<?= htmlspecialchars($q) ?>" placeholder="Cari nama atau NIS..." class="form-control" style="width:220px;" />
-                <button type="submit" class="btn btn-primary">Cari</button>
+                <input type="text" name="q" value="<?= htmlspecialchars($q) ?>" placeholder="Cari Nama / NIS..." class="search-input" />
+                <button type="submit" class="btn btn-primary btn-search-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                </button>
             </form>
 
             <?php if ($_SESSION['role'] == 'admin'): ?>
                 <a href="?page=add_student" class="btn btn-primary">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                    Tambah Siswa
+                    Tambah
                 </a>
             <?php endif; ?>
-            <a href="?page=students" class="btn btn-outline">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px"><path d="M23 4v6h-6"></path><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
-                Refresh
+            
+            <?php if(!empty($q)): ?>
+            <a href="?page=students" class="btn btn-outline">Reset</a>
+            <?php else: ?>
+            <a href="?page=students" class="btn btn-outline btn-search-icon" title="Refresh">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"></path><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
             </a>
+            <?php endif; ?>
         </div>
     </div>
 
-    <div class="stats-card card">
+    <div class="stats-card">
         <div class="stats-info">
             <span>Total Siswa Terdaftar</span>
             <h3><?= $total_siswa ?> Siswa</h3>
@@ -246,18 +264,19 @@ $result = mysqli_stmt_get_result($stmt);
             </thead>
             <tbody>
                 <?php
-                $no = 1;
+                $no = $offset + 1;
                 if ($result && mysqli_num_rows($result) > 0) {
                     while ($row = mysqli_fetch_assoc($result)) {
-                        // Ambil inisial nama untuk avatar
+                        // Generate Initials (DS, AB, dll)
                         $initials = '';
                         $parts = explode(' ', $row['nama']);
                         foreach($parts as $part) { $initials .= strtoupper(substr($part, 0, 1)); }
                         $initials = substr($initials, 0, 2);
                 ?>
                 <tr>
-                    <td data-label="No"><?= $no++ ?></td>
-                    <td data-label="Identitas">
+                    <td class="td-no"><?= $no++ ?></td>
+                    
+                    <td class="td-profile">
                         <div class="student-profile">
                             <div class="avatar"><?= $initials ?></div>
                             <div class="student-info">
@@ -266,25 +285,25 @@ $result = mysqli_stmt_get_result($stmt);
                             </div>
                         </div>
                     </td>
-                    <td data-label="Kontak">
+                    
+                    <td class="td-contact">
                         <?php if(!empty($row['kontak_orangtua'])): ?>
-                            <a href="tel:<?= htmlspecialchars($row['kontak_orangtua']) ?>" style="text-decoration:none; color:#2563eb; font-weight:500;">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle; margin-right:4px;"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                            <a href="https://wa.me/<?= preg_replace('/^0/', '62', preg_replace('/[^0-9]/', '', $row['kontak_orangtua'])) ?>" target="_blank" style="text-decoration:none; color:#4338ca; display:flex; align-items:center; gap:8px;">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
                                 <?= htmlspecialchars($row['kontak_orangtua']) ?>
                             </a>
                         <?php else: ?>
-                            <span style="color:#94a3b8; font-style:italic;">-</span>
+                            <span style="color:#94a3b8; font-style:italic; display:flex; align-items:center; gap:6px;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                                Tidak ada kontak
+                            </span>
                         <?php endif; ?>
                     </td>
                     
                     <?php if ($_SESSION['role'] == 'admin'): ?>
-                    <td data-label="Aksi" class="action-cell" style="text-align: right;">
-                        <a href="?page=edit_student&id=<?= $row['id_siswa'] ?>" class="action-btn btn-edit">
-                            Edit
-                        </a>
-                        <a href="?page=delete_student&id=<?= $row['id_siswa'] ?>" class="action-btn btn-delete" onclick="return confirm('Yakin ingin menghapus data siswa ini? Semua data pembayaran terkait juga akan terhapus.');">
-                            Hapus
-                        </a>
+                    <td class="td-action" style="text-align: right;">
+                        <a href="?page=edit_student&id=<?= $row['id_siswa'] ?>" class="action-btn btn-edit">Edit</a>
+                        <a href="?page=delete_student&id=<?= $row['id_siswa'] ?>" class="action-btn btn-delete" onclick="return confirm('Yakin ingin menghapus data siswa ini?');">Hapus</a>
                     </td>
                     <?php endif; ?>
                 </tr>
@@ -295,7 +314,7 @@ $result = mysqli_stmt_get_result($stmt);
                 <tr>
                     <td colspan="<?= ($_SESSION['role'] == 'admin' ? 4 : 3) ?>" style="text-align:center; padding: 40px; color: #64748b;">
                         <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#e2e8f0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:block; margin: 0 auto 10px;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-                        Belum ada data siswa.
+                        Tidak ditemukan data siswa.
                     </td>
                 </tr>
                 <?php } ?>
@@ -304,30 +323,29 @@ $result = mysqli_stmt_get_result($stmt);
     </div>
 
     <?php
-    // Pagination controls
+    // Pagination Controls
     $totalPages = max(1, (int)ceil($total_siswa / $perPage));
     if ($totalPages > 1):
     ?>
-    <div class="pagination mt-12">
+    <div class="pagination">
         <?php if ($pageNum > 1): ?>
-            <a class="page-link" href="?page=students&q=<?= urlencode($q) ?>&p=<?= $pageNum-1 ?>">&laquo; Prev</a>
+            <a class="page-link" href="?page=students&q=<?= urlencode($q) ?>&p=<?= $pageNum-1 ?>">&laquo;</a>
         <?php endif; ?>
 
-        <div style="display:flex; gap:6px; align-items:center;">
-            <?php
-            $start = max(1, $pageNum - 2);
-            $end = min($totalPages, $pageNum + 2);
-            for ($i = $start; $i <= $end; $i++):
-            ?>
-                <?php if ($i == $pageNum): ?>
-                    <span class="page-link active"><?= $i ?></span>
-                <?php else: ?>
-                    <a class="page-link" href="?page=students&q=<?= urlencode($q) ?>&p=<?= $i ?>"><?= $i ?></a>
-                <?php endif; ?>
-            <?php endfor; ?>
-        </div>
+        <?php
+        $start = max(1, $pageNum - 2);
+        $end = min($totalPages, $pageNum + 2);
+        for ($i = $start; $i <= $end; $i++):
+        ?>
+            <?php if ($i == $pageNum): ?>
+                <span class="page-link active"><?= $i ?></span>
+            <?php else: ?>
+                <a class="page-link" href="?page=students&q=<?= urlencode($q) ?>&p=<?= $i ?>"><?= $i ?></a>
+            <?php endif; ?>
+        <?php endfor; ?>
+
         <?php if ($pageNum < $totalPages): ?>
-            <a class="page-link" href="?page=students&q=<?= urlencode($q) ?>&p=<?= $pageNum+1 ?>">Next &raquo;</a>
+            <a class="page-link" href="?page=students&q=<?= urlencode($q) ?>&p=<?= $pageNum+1 ?>">&raquo;</a>
         <?php endif; ?>
     </div>
     <?php endif; ?>
