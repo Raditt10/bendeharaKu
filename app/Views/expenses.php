@@ -10,15 +10,75 @@ require_once __DIR__ . '/../Models/Database.php';
 $koneksi = Database::getInstance()->getConnection();
 
 // Ambil Data Pengeluaran
-$query = "SELECT * FROM pengeluaran ORDER BY tanggal DESC";
+// Ambil daftar tahun dari database pengeluaran
+$tahunList = [];
+$tahunQ = mysqli_query($koneksi, "SELECT DISTINCT tahun FROM pengeluaran ORDER BY tahun DESC");
+while ($t = mysqli_fetch_assoc($tahunQ)) {
+    if (!empty($t['tahun'])) $tahunList[] = $t['tahun'];
+}
+
+// Tahun aktif dari filter (GET), default tahun sekarang jika ada di list, jika tidak pakai tahun pertama di list
+$tahun_aktif = $tahunList[0] ?? date('Y');
+if (isset($_GET['tahun']) && $_GET['tahun'] !== '') {
+    if (in_array($_GET['tahun'], $tahunList)) {
+        $tahun_aktif = $_GET['tahun'];
+    } else {
+        $tahun_aktif = $_GET['tahun'];
+    }
+}
+
+// Query data pengeluaran sesuai tahun
+$query = "SELECT * FROM pengeluaran WHERE tahun = '" . mysqli_real_escape_string($koneksi, $tahun_aktif) . "' ORDER BY tanggal DESC";
 $result = mysqli_query($koneksi, $query);
 
-// Hitung Total Pengeluaran
-$total_query = "SELECT SUM(jumlah) AS total FROM pengeluaran";
+// Hitung Total Pengeluaran sesuai filter
+$total_query = "SELECT SUM(jumlah) AS total FROM pengeluaran WHERE tahun = '" . mysqli_real_escape_string($koneksi, $tahun_aktif) . "'";
 $total_result = mysqli_query($koneksi, $total_query);
 $total_row = mysqli_fetch_assoc($total_result);
 $total_pengeluaran = $total_row['total'] ?? 0;
 ?>
+    <div class="page-header">
+        <div class="page-title">
+            <h2>Data Pengeluaran</h2>
+            <p>Kelola uang kas keluar dan pengeluaran kelas.</p>
+            <?php if (count($tahunList)): ?>
+            <form method="GET" action="" class="filter-bar" id="customYearForm">
+                <input type="hidden" name="page" value="expenses">
+                <label class="filter-label">Tahun</label>
+                <div class="custom-dropdown" id="customDropdown">
+                    <div class="custom-dropdown-selected" id="dropdownSelected">
+                        <?= htmlspecialchars($tahun_aktif) ?>
+                        <span class="custom-dropdown-arrow">&#9662;</span>
+                    </div>
+                    <div class="custom-dropdown-list" id="dropdownList" style="display:none;">
+                        <?php foreach ($tahunList as $th): ?>
+                            <div class="custom-dropdown-item<?= $th == $tahun_aktif ? ' selected' : '' ?>" data-value="<?= $th ?>"><?= $th ?></div>
+                        <?php endforeach; ?>
+                    </div>
+                    <input type="hidden" name="tahun" id="dropdownInput" value="<?= htmlspecialchars($tahun_aktif) ?>">
+                </div>
+            </form>
+            <script>
+            // Custom Dropdown JS (copy dari income)
+            const dropdown = document.getElementById('customDropdown');
+            const selected = document.getElementById('dropdownSelected');
+            const list = document.getElementById('dropdownList');
+            const input = document.getElementById('dropdownInput');
+            selected.onclick = function(e) {
+                list.style.display = list.style.display === 'none' ? 'block' : 'none';
+                e.stopPropagation();
+            };
+            document.addEventListener('click', function() { list.style.display = 'none'; });
+            list.querySelectorAll('.custom-dropdown-item').forEach(function(item) {
+                item.onclick = function() {
+                    input.value = this.dataset.value;
+                    document.getElementById('customYearForm').submit();
+                };
+            });
+            </script>
+            <?php endif; ?>
+        </div>
+    </div>
 
 <style>
     /* Layout Utama */
