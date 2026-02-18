@@ -168,7 +168,7 @@
                     BendeharaKu
                 </a>
                 <p class="footer-desc">
-                    Platform manajemen keuangan kelas modern. Transparansi total untuk guru, bendahara, dan orang tua siswa dalam satu aplikasi.
+                    Platform manajemen keuangan kelas modern. Transparansi total dalam satu aplikasi.
                 </p>
             </div>
 
