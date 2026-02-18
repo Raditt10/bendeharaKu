@@ -48,17 +48,17 @@ Teknologi yang digunakan dalam pengembangan:
 
 ## 🖼️ Preview Antarmuka
 
-Berikut adalah tampilan antarmuka aplikasi BendeharaKu:
+Berikut adalah tampilan antarmuka aplikasi BendeharaKU:
 
 <table>
   <tr>
     <td width="50%" align="center" valign="top">
-      <img src="screenshot/Screenshot%2026-02-19%051911.png" alt="Landing Page" width="100%">
+      <img src="screenshot/Screenshot 2026-02-19 051911.png" alt="Landing Page" width="100%">
       <br>
       <sub><b>Landing Page</b></sub>
     </td>
     <td width="50%" align="center" valign="top">
-      <img src="screenshot/Screenshot%2026-02-19%051945.png" alt="Dashboard" width="100%">
+      <img src="screenshot/Screenshot 2026-02-19 051945.png" alt="Dashboard" width="100%">
       <br>
       <sub><b>Dashboard</b></sub>
     </td>
@@ -66,7 +66,7 @@ Berikut adalah tampilan antarmuka aplikasi BendeharaKu:
   <tr>
     <td colspan="2" align="center" valign="top">
       <br>
-      <img src="screenshot/Screenshot%2026-02-19%052003.png" alt="Data pengeluaran kelas" height="450">
+      <img src="screenshot/Screenshot 2026-02-19 052003.png" alt="Data pengeluaran kelas" height="450">
       <br>
       <sub><b>Data Pengeluaran Kelas</b></sub>
     </td>
