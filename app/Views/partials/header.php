@@ -23,7 +23,7 @@ if (!function_exists('isActive')) {
         --text-muted: #64748b;
         --z-overlay: 1040;
         --z-drawer: 1055;      /* menu lebih tinggi dari overlay */
-        --z-toggle: 1060;       /* tombol di atas segalanya */
+        --z-toggle: 1060;      /* tombol di atas segalanya */
     }
 
     /* Mencegah konten tertutup header fixed */
@@ -303,13 +303,11 @@ if (!function_exists('isActive')) {
     }
 </style>
 
-<!-- Overlay -->
 <div class="mobile-overlay" id="mobileOverlay"></div>
 
 <header class="site-header" id="mainHeader">
     <div class="header-inner">
 
-        <!-- Logo -->
         <a class="brand" href="?page=home">
             <div class="brand-icon">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M7 15h0M2 9.5h20"/></svg>
@@ -317,7 +315,6 @@ if (!function_exists('isActive')) {
             <span>BendeharaKu</span>
         </a>
 
-        <!-- Tombol Hamburger (dengan ikon berganti) -->
         <button class="mobile-toggle" id="mobileToggle" aria-label="Menu">
             <span class="icon-menu">
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
@@ -327,10 +324,8 @@ if (!function_exists('isActive')) {
             </span>
         </button>
 
-        <!-- Navigasi Menu -->
         <nav class="nav-menu" id="navMenu">
 
-            <!-- Profile Header (khusus mobile) -->
             <div class="mobile-profile-header">
                 <?php if (isset($_SESSION['nama'])): ?>
                     <span class="user-greeting">Halo, <?= htmlspecialchars(explode(' ', $_SESSION['nama'])[0]) ?>! 👋</span>
@@ -342,7 +337,6 @@ if (!function_exists('isActive')) {
             </div>
 
             <?php if (!isset($_SESSION['nis']) && !isset($_SESSION['user_id'])): ?>
-                <!-- Menu untuk tamu -->
                 <a href="?page=home" class="nav-link <?= isActive('home') ?>">Beranda</a>
                 <a href="#features" class="nav-link">Fitur</a>
                 <a href="#about" class="nav-link">Tentang</a>
@@ -353,7 +347,6 @@ if (!function_exists('isActive')) {
                 </div>
 
             <?php else: ?>
-                <!-- Menu untuk user yang sudah login -->
                 <a href="?page=dashboard" class="nav-link <?= isActive('dashboard') ?>">Dashboard</a>
                 <a href="?page=income" class="nav-link <?= isActive('income') ?>">Pemasukan</a>
                 <a href="?page=expenses" class="nav-link <?= isActive('expenses') ?>">Pengeluaran</a>
@@ -367,7 +360,6 @@ if (!function_exists('isActive')) {
                     <a href="#" class="btn-header btn-login" style="color: #ef4444; border-color: #fecaca; background: #fef2f2;" onclick="openWarning('?page=logout', 'logout'); return false;">
                         Keluar Akun
                     </a>
-                    <?php include_once __DIR__ . '/warning.php'; ?>
                 </div>
             <?php endif; ?>
         </nav>
@@ -445,3 +437,5 @@ if (!function_exists('isActive')) {
         });
     });
 </script>
+
+<?php include_once __DIR__ . '/warning.php'; ?>

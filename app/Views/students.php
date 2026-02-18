@@ -106,6 +106,9 @@ $result = mysqli_stmt_get_result($stmt);
     .action-bar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
     .action-bar form { display: flex; align-items: center; gap: 8px; }
 
+    /* Container Tombol Header (Desktop) */
+    .action-bar-header { display: flex; gap: 10px; flex-wrap: wrap; }
+
     .btn { padding: 10px 18px; border-radius: 8px; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s; font-size: 0.95rem; border: none; cursor: pointer; }
     .btn-primary { background: #6366f1; color: white; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2); }
     .btn-primary:hover { background: #4f46e5; transform: translateY(-1px); }
@@ -120,7 +123,7 @@ $result = mysqli_stmt_get_result($stmt);
     .search-input:focus { border-color: #6366f1; outline: none; }
     .btn-search-icon { width: 42px; height: 42px; padding: 0; display: flex; align-items: center; justify-content: center; }
 
-    /* --- STYLING TOMBOL AKSI (GAYA BARU) --- */
+    /* --- STYLING TOMBOL AKSI ROW (GAYA BARU) --- */
     .action-btns { 
         display: flex; 
         gap: 8px; 
@@ -163,13 +166,23 @@ $result = mysqli_stmt_get_result($stmt);
         .container { padding-top: 20px !important; }
         .page-header { gap: 15px; margin-bottom: 20px; }
         
+        /* Tombol Floating Add (KANAN BAWAH) */
+        .action-bar-header { width: 100%; position: fixed; bottom: 20px; right: 20px; z-index: 90; justify-content: flex-end; pointer-events: none; }
+        .action-bar-header .btn-primary { 
+            pointer-events: auto; border-radius: 50px; padding: 14px 24px; 
+            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.4); font-size: 1rem;
+        }
+        /* Sembunyikan tombol Reset/Refresh di mobile agar tidak menumpuk */
+        .action-bar-header .btn-outline { display: none; }
+
+        /* Search Bar Full Width */
         .action-bar { width: 100%; flex-direction: row; flex-wrap: wrap; }
         .action-bar form { width: 100%; display: flex; gap: 8px; margin-bottom: 8px; }
         .search-input { flex: 1; width: auto; } 
 
         .table-card { background: transparent; box-shadow: none; border: none; }
         thead { display: none; }
-        tbody { display: flex; flex-direction: column; gap: 16px; }
+        tbody { display: flex; flex-direction: column; gap: 16px; padding-bottom: 80px; } /* Padding bottom agar tidak ketutup tombol floating */
         
         tr {
             display: grid;
@@ -244,6 +257,7 @@ $result = mysqli_stmt_get_result($stmt);
             <h2>Data Siswa</h2>
             <p>Manajemen data anggota kelas XI RPL 1.</p>
         </div>
+        
         <div class="action-bar">
             <form method="get" action="">
                 <input type="hidden" name="page" value="students" />
@@ -252,11 +266,13 @@ $result = mysqli_stmt_get_result($stmt);
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
                 </button>
             </form>
+        </div>
 
+        <div class="action-bar-header">
             <?php if ($_SESSION['role'] == 'admin'): ?>
                 <a href="?page=add_student" class="btn btn-primary">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                    Tambah
+                    Tambah Data
                 </a>
             <?php endif; ?>
             

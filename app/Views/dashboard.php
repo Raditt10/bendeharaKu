@@ -248,7 +248,39 @@ $values_bulan = json_encode(array_values($data_bulan));
             display: flex;
             align-items: center;
             gap: 10px;
-            animation: slideDown 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: top 0.5s cubic-bezier(0.4,0,0.2,1), opacity 0.5s cubic-bezier(0.4,0,0.2,1);
+            width: max-content;
+            min-width: 180px;
+            max-width: 96vw;
+            text-align: center;
+            word-break: keep-all;
+            overflow-wrap: anywhere;
+            justify-content: center;
+            padding-left: 24px;
+            padding-right: 24px;
+        }
+        .alert-float.show {
+            animation: slideDown 0.5s cubic-bezier(0.4,0,0.2,1);
+        }
+        .alert-float.hide {
+            top: -80px !important;
+            opacity: 0 !important;
+            pointer-events: none;
+        }
+        @media (max-width: 480px) {
+            .alert-float {
+                font-size: 0.98rem;
+                padding: 10px 4vw;
+                width: max-content;
+                min-width: 140px;
+                max-width: 96vw;
+                left: 50%;
+                transform: translateX(-50%);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 10px;
+            }
         }
         @keyframes slideDown { from { top: -60px; } to { top: 20px; } }
 
@@ -413,12 +445,16 @@ $values_bulan = json_encode(array_values($data_bulan));
             }
         });
 
+        // --- SHOW ANIMATION ON LOAD ---
+        const alertBox = document.getElementById('alertBox');
+        if(alertBox) {
+            alertBox.classList.add('show');
+        }
         // --- AUTO HIDE ALERT ---
         setTimeout(() => {
-            const alertBox = document.getElementById('alertBox');
             if(alertBox) {
-                alertBox.style.top = '-100px';
-                alertBox.style.opacity = '0';
+                alertBox.classList.remove('show');
+                alertBox.classList.add('hide');
             }
         }, 4000);
     </script>
