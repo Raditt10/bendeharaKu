@@ -263,7 +263,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
 
             <div class="form-group">
-                <label for="nis">NIS</label>
+                <label for="nis">NIS (Nomor Induk Siswa)</label>
                 <div class="input-wrapper">
                     <input type="number" id="nis" name="nis" placeholder="Nomor Induk Siswa" autocomplete="off" required value="<?= htmlspecialchars($_POST['nis'] ?? '') ?>">
                 </div>

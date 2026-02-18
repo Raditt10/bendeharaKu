@@ -249,7 +249,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <form method="POST" action="">
             <div class="form-group">
-                <label for="nis">NIS</label>
+                <label for="nis">NIS (Nomor Induk Siswa)</label>
                 <div class="input-wrapper">
                     <input type="text" id="nis" name="nis" placeholder="Masukkan NIS Anda" pattern="[0-9]+" title="Hanya angka" required value="<?= htmlspecialchars($_POST['nis'] ?? '') ?>">
                 </div>
