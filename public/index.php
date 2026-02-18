@@ -1,40 +1,26 @@
 <?php
-// index.php - Router Utama Bendehara Kelas (Versi Profesional)
-
-// Mulai session lebih awal
+// ==========================================
+// 1. SESSION & CONFIGURATION (MUST BE FIRST)
+// ==========================================
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Load configuration (DB credentials, paths)
+// Load configuration
 require_once __DIR__ . '/../config/config.php';
 
+// Helper: Get Page
 $page = isset($_GET['page']) && is_string($_GET['page']) ? trim($_GET['page']) : 'home';
 $safePage = basename($page); 
 
-// Primary view path (try top-level views)
-$viewPath = __DIR__ . '/../app/Views/' . $safePage . '.php';
+// ==========================================
+// 2. ROUTING LOGIC & AUTHENTICATION
+// ==========================================
 
-// Fallbacks: try admin subfolder if top-level view missing
-$altAdminView = __DIR__ . '/../app/Views/admin/' . $safePage . '.php';
-if (!is_file($viewPath) && is_file($altAdminView)) {
-    $viewPath = $altAdminView;
-}
+// Daftar halaman yang butuh login
+$authRequired = ['dashboard','income','expenses','students','add_income','add_expense','add_student','edit_income','edit_expense','edit_student','report', 'add_dues', 'edit_dues', 'delete_report'];
 
-// Daftar halaman yang ditangani oleh controller saja (tidak perlu file view)
-$controllerOnly = ['logout'];
-
-// Cek file view (kecuali halaman controller-only seperti logout)
-if ($page !== 'home' && !in_array($page, $controllerOnly, true) && !is_file($viewPath)) {
-    http_response_code(404);
-    echo "<h1>404 Not Found</h1><p>Halaman tidak ditemukan.</p>";
-    exit;
-}
-
-// Protect certain pages and redirect to login if user not authenticated
-$authRequired = ['dashboard','income','expenses','students','add_income','add_expense','add_student','edit_income','edit_expense','edit_student','report'];
 if (in_array($page, $authRequired, true)) {
-    if (session_status() === PHP_SESSION_NONE) session_start();
     if (!isset($_SESSION['nis'])) {
         $script = $_SERVER['PHP_SELF'] ?? './';
         header('Location: ' . $script . '?page=login');
@@ -42,33 +28,27 @@ if (in_array($page, $authRequired, true)) {
     }
 }
 
-// Simple POST handler for forms that map to controllers (e.g., login)
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if ($page === 'login') {
-        // Route POST /?page=login -> AuthController::login()
-        require_once __DIR__ . '/../app/Controllers/AuthController.php';
-        $auth = new AuthController();
-        $auth->login();
-        // AuthController will redirect on success or render login on failure
-        exit;
-    }
-    
-    // --- NOTE: Logic POST untuk add_student, add_income, dll sebaiknya ada di dalam file view masing-masing
-    // atau controller terpisah. Di sini kita biarkan agar file view yang menangani logic-nya sendiri (self-processing form).
+// Handler Khusus Controller (Tanpa View)
+if ($page === 'logout') {
+    require_once __DIR__ . '/../app/Controllers/AuthController.php';
+    $auth = new AuthController();
+    $auth->logout();
+    exit;
 }
 
-// GET actions that map to controllers
-if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    if ($page === 'logout') {
-        require_once __DIR__ . '/../app/Controllers/AuthController.php';
-        $auth = new AuthController();
-        $auth->logout();
-        // logout() will redirect
-        exit;
-    }
+// ==========================================
+// 3. BACKEND HANDLERS (POST/GET ACTIONS)
+// ==========================================
+
+// A. Handler Login (POST)
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $page === 'login') {
+    require_once __DIR__ . '/../app/Controllers/AuthController.php';
+    $auth = new AuthController();
+    $auth->login();
+    exit;
 }
 
-// Handler hapus pemasukan (GET) - DELETE ACTION
+// B. Handler Hapus Pemasukan (GET)
 if ($page === 'income' && isset($_GET['id']) && is_numeric($_GET['id'])) {
     require_once __DIR__ . '/../app/Models/Database.php';
     $conn = Database::getInstance()->getConnection();
@@ -87,7 +67,7 @@ if ($page === 'income' && isset($_GET['id']) && is_numeric($_GET['id'])) {
     exit;
 }
 
-// Handler hapus pengeluaran (GET)
+// C. Handler Hapus Pengeluaran (GET)
 if ($page === 'expenses' && isset($_GET['id_pengeluaran']) && is_numeric($_GET['id_pengeluaran'])) {
     require_once __DIR__ . '/../app/Models/Database.php';
     $conn = Database::getInstance()->getConnection();
@@ -95,7 +75,7 @@ if ($page === 'expenses' && isset($_GET['id_pengeluaran']) && is_numeric($_GET['
 
     $id = (int)$_GET['id_pengeluaran'];
     
-    // Hapus foto dulu
+    // Hapus foto fisik jika ada
     $qFoto = $conn->prepare("SELECT bukti_foto FROM pengeluaran WHERE id_pengeluaran = ?");
     $qFoto->bind_param("i", $id);
     $qFoto->execute();
@@ -118,13 +98,16 @@ if ($page === 'expenses' && isset($_GET['id_pengeluaran']) && is_numeric($_GET['
     exit;
 }
 
-// Handler hapus siswa (GET) - Route: ?page=delete_student&id=...
+// D. Handler Hapus Siswa (GET)
 if ($page === 'delete_student' && isset($_GET['id']) && is_numeric($_GET['id'])) {
     require_once __DIR__ . '/../app/Models/Database.php';
     $conn = Database::getInstance()->getConnection();
     if ($_SESSION['role'] !== 'admin') { header('Location: ?page=students'); exit; }
 
     $id = (int)$_GET['id'];
+    // Hapus data iuran terkait siswa dulu
+    $conn->query("DELETE FROM iuran WHERE id_siswa = $id");
+
     $stmt = $conn->prepare("DELETE FROM siswa WHERE id_siswa = ?");
     $stmt->bind_param("i", $id);
     
@@ -137,6 +120,76 @@ if ($page === 'delete_student' && isset($_GET['id']) && is_numeric($_GET['id']))
     exit;
 }
 
+// --- [BARU] E. Handler Hapus Report/Iuran (GET - Single) ---
+if ($page === 'report' && isset($_GET['delete_id']) && is_numeric($_GET['delete_id'])) {
+    require_once __DIR__ . '/../app/Models/Database.php';
+    $conn = Database::getInstance()->getConnection();
+    
+    // Cek admin
+    if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') { 
+        header('Location: ?page=report'); exit; 
+    }
+
+    $id = (int)$_GET['delete_id'];
+    $stmt = $conn->prepare("DELETE FROM iuran WHERE id_iuran = ?");
+    $stmt->bind_param("i", $id);
+
+    if ($stmt->execute()) {
+        $_SESSION['success_msg'] = 'Data iuran berhasil dihapus.';
+    } else {
+        $_SESSION['error_msg'] = 'Gagal menghapus data iuran.';
+    }
+    header('Location: ?page=report');
+    exit;
+}
+
+// --- [BARU] F. Handler Hapus Report/Iuran (POST - Bulk/Banyak) ---
+if ($page === 'report' && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_ids'])) {
+    require_once __DIR__ . '/../app/Models/Database.php';
+    $conn = Database::getInstance()->getConnection();
+
+    if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') { 
+        header('Location: ?page=report'); exit; 
+    }
+
+    $ids = $_POST['delete_ids'];
+    if (is_array($ids) && !empty($ids)) {
+        // Sanitasi input array menjadi integer untuk keamanan
+        $ids = array_map('intval', $ids);
+        $idList = implode(',', $ids);
+        
+        // Eksekusi hapus
+        $query = "DELETE FROM iuran WHERE id_iuran IN ($idList)";
+        if (mysqli_query($conn, $query)) {
+            $_SESSION['success_msg'] = 'Data iuran terpilih berhasil dihapus.';
+        } else {
+            $_SESSION['error_msg'] = 'Gagal menghapus data terpilih.';
+        }
+    }
+    header('Location: ?page=report');
+    exit;
+}
+
+// ==========================================
+// 4. VIEW RENDERING PREPARATION
+// ==========================================
+
+// Tentukan Path View
+$viewPath = __DIR__ . '/../app/Views/' . $safePage . '.php';
+$altAdminView = __DIR__ . '/../app/Views/admin/' . $safePage . '.php';
+
+if (!is_file($viewPath) && is_file($altAdminView)) {
+    $viewPath = $altAdminView;
+}
+
+// Jika view tidak ditemukan
+if ($page !== 'home' && !is_file($viewPath)) {
+    http_response_code(404);
+    echo "<h1>404 Not Found</h1><p>Halaman '$safePage' tidak ditemukan.</p>";
+    exit;
+}
+
+// Ambil error dari session untuk ditampilkan
 $error_msg = $_SESSION['error_msg'] ?? '';
 unset($_SESSION['error_msg']);
 ?>
@@ -146,22 +199,19 @@ unset($_SESSION['error_msg']);
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Bendehara Kelas — Manajemen Keuangan Sekolah Profesional</title>
-    <meta name="description" content="Sistem manajemen iuran kelas yang transparan, mudah, dan aman untuk guru dan bendahara.">
-    <meta name="author" content="Bendehara Kelas">
+    <meta name="description" content="Sistem manajemen iuran kelas yang transparan, mudah, dan aman.">
     <link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📘</text></svg>">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/base.css">
-    <link rel="stylesheet" href="assets/css/auth.css">
     
     <style>
         /* =========================================
-           DESIGN SYSTEM & RESET
+           DESIGN SYSTEM & RESET (INDIGO THEME)
            ========================================= */
         :root {
-            /* Indigo Palette (Primary) */
+            /* Indigo Palette */
             --primary-50: #eef2ff;
             --primary-100: #e0e7ff;
             --primary-200: #c7d2fe;
@@ -171,7 +221,6 @@ unset($_SESSION['error_msg']);
             --primary-600: #4f46e5;
             --primary-700: #4338ca;
             --primary-800: #3730a3;
-            --primary-900: #312e81;
             
             /* Netral */
             --gray-50: #f9fafb;
@@ -192,31 +241,11 @@ unset($_SESSION['error_msg']);
             --text-tertiary: var(--gray-500);
             --border-light: var(--gray-200);
             
-            /* Spacing */
-            --space-1: 0.25rem;
-            --space-2: 0.5rem;
-            --space-3: 0.75rem;
-            --space-4: 1rem;
-            --space-6: 1.5rem;
-            --space-8: 2rem;
-            
-            /* Typography */
-            --text-xs: 0.75rem;
-            --text-sm: 0.875rem;
-            --text-base: 1rem;
-            --text-lg: 1.125rem;
-            --text-xl: 1.25rem;
-            --text-2xl: 1.5rem;
-            --text-3xl: 1.875rem;
-            --text-4xl: 2.25rem;
-            
-            /* Borders */
+            /* Borders & Shadows */
             --radius-md: 0.375rem;
             --radius-lg: 0.5rem;
             --radius-xl: 0.75rem;
             --radius-2xl: 1rem;
-            
-            /* Shadows */
             --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
             --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
             --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
@@ -235,141 +264,38 @@ unset($_SESSION['error_msg']);
             -webkit-font-smoothing: antialiased;
         }
 
-        /* Heading styles */
-        h1, h2, h3, h4, h5, h6 {
-            color: var(--text-primary);
-            font-weight: 700;
-            line-height: 1.2;
-            letter-spacing: -0.02em;
-        }
-
-        a {
-            color: var(--primary-600);
-            text-decoration: none;
-            transition: var(--transition-base);
-        }
+        h1, h2, h3, h4, h5, h6 { color: var(--text-primary); font-weight: 700; letter-spacing: -0.02em; }
+        a { color: var(--primary-600); text-decoration: none; transition: var(--transition-base); }
         a:hover { color: var(--primary-700); }
 
-        /* Container */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 var(--space-4);
-        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 1rem; }
 
-        /* Buttons (Global) */
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 10px 20px;
-            border-radius: var(--radius-lg);
-            font-weight: 600;
-            font-size: var(--text-sm);
-            cursor: pointer;
-            border: 1px solid transparent;
-            transition: var(--transition-base);
-            white-space: nowrap;
-        }
-        .btn-primary {
-            background-color: var(--primary-600);
-            color: white;
-            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
-        }
-        .btn-primary:hover {
-            background-color: var(--primary-700);
-            color: white !important;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(79, 70, 229, 0.4);
-        }
-        .btn-outline {
-            background-color: white;
-            border-color: var(--gray-300);
-            color: var(--text-primary);
-        }
-        .btn-outline:hover {
-            border-color: var(--primary-600);
-            color: var(--primary-600);
-            background-color: var(--primary-50);
-        }
+        /* Buttons Global */
+        .btn { display: inline-flex; align-items: center; justify-content: center; padding: 10px 20px; border-radius: var(--radius-lg); font-weight: 600; font-size: 0.9rem; cursor: pointer; border: 1px solid transparent; transition: var(--transition-base); white-space: nowrap; }
+        .btn-primary { background-color: var(--primary-600); color: white; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3); }
+        .btn-primary:hover { background-color: var(--primary-700); transform: translateY(-2px); box-shadow: 0 6px 15px rgba(79, 70, 229, 0.4); color: white; }
+        .btn-outline { background-color: white; border-color: var(--gray-300); color: var(--text-primary); }
+        .btn-outline:hover { border-color: var(--primary-600); color: var(--primary-600); background-color: var(--primary-50); }
 
-        /* Form Card (Shared) */
-        .form-card {
-            background: white;
-            padding: 24px;
-            border-radius: var(--radius-xl);
-            box-shadow: var(--shadow-sm);
-            border: 1px solid var(--border-light);
-        }
-        .form-label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 6px;
-            color: var(--text-primary);
-            font-size: 0.95rem;
-        }
-        .form-control {
-            width: 100%;
-            padding: 10px 14px;
-            border: 1px solid var(--gray-300);
-            border-radius: var(--radius-lg);
-            font-size: 1rem;
-            transition: var(--transition-base);
-            margin-bottom: 16px;
-        }
-        .form-control:focus {
-            border-color: var(--primary-500);
-            outline: none;
-            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
-        }
+        /* Form Card */
+        .form-card { background: white; padding: 24px; border-radius: var(--radius-xl); box-shadow: var(--shadow-sm); border: 1px solid var(--border-light); }
+        .form-label { display: block; font-weight: 600; margin-bottom: 6px; color: var(--text-primary); font-size: 0.95rem; }
+        .form-control { width: 100%; padding: 10px 14px; border: 1px solid var(--gray-300); border-radius: var(--radius-lg); font-size: 1rem; transition: var(--transition-base); margin-bottom: 16px; }
+        .form-control:focus { border-color: var(--primary-500); outline: none; box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1); }
 
-        /* Hero Section (Home) */
-        .hero {
-            padding: 80px 0;
-            background: radial-gradient(circle at top right, var(--primary-50), transparent 70%);
-            text-align: center;
-        }
-        .hero h1 {
-            font-size: 3rem;
-            margin-bottom: 16px;
-            background: linear-gradient(135deg, var(--text-primary) 0%, var(--primary-600) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .hero p {
-            font-size: 1.125rem;
-            color: var(--text-tertiary);
-            max-width: 600px;
-            margin: 0 auto 32px;
-        }
+        /* Hero (Home) */
+        .hero { padding: 80px 0; background: radial-gradient(circle at top right, var(--primary-50), transparent 70%); text-align: center; }
+        .hero h1 { font-size: 3rem; margin-bottom: 16px; background: linear-gradient(135deg, var(--text-primary) 0%, var(--primary-600) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero p { font-size: 1.125rem; color: var(--text-tertiary); max-width: 600px; margin: 0 auto 32px; }
 
-        /* Features Section */
+        /* Features */
         .features { padding: 60px 0; }
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 24px;
-            margin-top: 40px;
-        }
-        .feature-card {
-            background: white;
-            padding: 32px;
-            border-radius: var(--radius-2xl);
-            border: 1px solid var(--border-light);
-            transition: var(--transition-base);
-        }
-        .feature-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-lg);
-            border-color: var(--primary-200);
-        }
-        .feature-card h3 {
-            font-size: 1.25rem;
-            margin-bottom: 12px;
-            color: var(--primary-700);
-        }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; margin-top: 40px; }
+        .feature-card { background: white; padding: 32px; border-radius: var(--radius-2xl); border: 1px solid var(--border-light); transition: var(--transition-base); }
+        .feature-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); border-color: var(--primary-200); }
+        .feature-card h3 { font-size: 1.25rem; margin-bottom: 12px; color: var(--primary-700); }
 
-        /* Mobile Adjustments */
+        /* Mobile */
         @media (max-width: 768px) {
             .hero { padding: 60px 0; }
             .hero h1 { font-size: 2.25rem; }
@@ -393,11 +319,17 @@ unset($_SESSION['error_msg']);
             <section class="hero">
                 <div class="container">
                     <h1>Kelola Keuangan Kelas<br>Lebih Profesional</h1>
-                    <p>Sistem manajemen keuangan kelas yang transparan, mudah, dan aman. Pantau kas masuk dan keluar dalam satu Aplikasi.</p>
-                    <div style="display:flex; gap:12px; justify-content:center;">
-                        <a href="?page=login" class="btn btn-primary">Mulai Sekarang</a>
-                        <a href="#features" class="btn btn-outline">Pelajari Fitur</a>
-                    </div>
+                    <p>Sistem manajemen iuran yang transparan, mudah, dan aman. Pantau kas masuk dan keluar dalam satu dashboard.</p>
+                    <?php if (!isset($_SESSION['nis'])): ?>
+                        <div style="display:flex; gap:12px; justify-content:center;">
+                            <a href="?page=login" class="btn btn-primary">Mulai Sekarang</a>
+                            <a href="#features" class="btn btn-outline">Pelajari Fitur</a>
+                        </div>
+                    <?php else: ?>
+                        <div style="display:flex; gap:12px; justify-content:center;">
+                            <a href="?page=dashboard" class="btn btn-primary">Buka Dashboard</a>
+                        </div>
+                    <?php endif; ?>
                 </div>
             </section>
 
@@ -439,15 +371,5 @@ unset($_SESSION['error_msg']);
     }
     ?>
 
-    <script>
-        // Auto-close alerts
-        setTimeout(() => {
-            const alerts = document.querySelectorAll('.alert');
-            alerts.forEach(alert => {
-                alert.style.opacity = '0';
-                setTimeout(() => alert.style.display = 'none', 300);
-            });
-        }, 4000);
-    </script>
 </body>
 </html>

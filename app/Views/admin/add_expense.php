@@ -59,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-<div class="container" style="max-width: 600px; margin: 0 auto; padding-bottom: 80px;">
+<div class="container" style="max-width: 720px; margin: 64px auto 64px auto; padding-bottom: 80px;">
     
     <div style="margin-bottom: 20px;">
         <a href="?page=expenses" style="text-decoration: none; display: inline-flex; align-items: center; gap: 8px; color: #64748b; font-weight: 600; transition: color 0.2s;">
@@ -150,7 +150,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; color: #0f172a; }
 
     /* CARD STYLES */
-    .card { background: #fff; border-radius: 16px; box-shadow: 0 4px 20px -5px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; overflow: hidden; }
+    .card { background: #fff; border-radius: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.12); border: 1px solid #e2e8f0; overflow: hidden; padding: 48px 40px 40px 40px; margin-bottom: 32px; }
     .card-header { padding: 24px; border-bottom: 1px solid #f1f5f9; background: #fff; }
     .card-header h2 { margin: 0; font-size: 1.25rem; color: #1e293b; font-weight: 800; letter-spacing: -0.02em; }
     .card-header p { margin: 4px 0 0 0; font-size: 0.9rem; color: #64748b; }

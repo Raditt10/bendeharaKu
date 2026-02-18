@@ -111,17 +111,33 @@ $total_pengeluaran = $total_row['total'] ?? 0;
     tr:hover { background-color: #f8fafc; }
     .amount-expense { color: #dc2626; font-weight: 700; }
 
-    /* Buttons */
-    .action-bar { display: flex; gap: 10px; flex-wrap: wrap; }
+    /* Buttons Header */
+    .action-bar-header { display: flex; gap: 10px; flex-wrap: wrap; }
     .btn { padding: 10px 18px; border-radius: 8px; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s; font-size: 0.95rem; }
     .btn-primary { background: #2563eb; color: white; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2); }
     .btn-primary:hover { background: #1d4ed8; transform: translateY(-1px); }
     .btn-outline { background: white; border: 1px solid #cbd5e1; color: #475569; }
     .btn-outline:hover { background: #f1f5f9; color: #1e293b; }
     
-    .action-btn { padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 5px; transition: all 0.2s; }
-    .btn-edit { background: #eff6ff; color: #2563eb; } .btn-edit:hover { background: #dbeafe; }
-    .btn-delete { background: #fef2f2; color: #ef4444; } .btn-delete:hover { background: #fee2e2; }
+    /* --- STYLING TOMBOL AKSI (GAYA BARU) --- */
+    .action-btns { 
+        display: flex; 
+        gap: 8px; 
+        justify-content: flex-end; 
+    }
+    .icon-btn {
+        width: 32px; height: 32px; border-radius: 8px; 
+        display: flex; align-items: center; justify-content: center;
+        transition: all 0.2s; border: none; cursor: pointer;
+        text-decoration: none;
+    }
+    /* Warna Edit (Indigo style) */
+    .btn-edit-row { background: #eef2ff; color: #4f46e5; }
+    .btn-edit-row:hover { background: #e0e7ff; color: #4338ca; }
+    /* Warna Hapus (Red style) */
+    .btn-del-row { background: #fef2f2; color: #ef4444; }
+    .btn-del-row:hover { background: #fee2e2; color: #b91c1c; }
+
 
     /* Alerts */
     .alert { padding: 16px; border-radius: 12px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; animation: slideIn 0.3s ease; }
@@ -134,99 +150,95 @@ $total_pengeluaran = $total_row['total'] ?? 0;
     @media (max-width: 768px) {
         .container { padding-top: 20px !important; }
         
-        /* 1. Header & Filters Adjustment */
         .page-header { gap: 15px; margin-bottom: 20px; }
         .page-title { width: 100%; }
 
-        /* WRAPPER FILTER: Paksa sejajar (Side-by-side) */
+        /* Filter Wrapper */
         .filter-wrapper {
-            display: flex !important;
-            flex-direction: row !important; /* Baris, bukan kolom */
-            flex-wrap: nowrap !important;   /* Jangan turun ke bawah */
-            gap: 10px !important;
-            width: 100%;
-            margin-top: 10px !important;
+            display: flex !important; flex-direction: row !important;
+            flex-wrap: nowrap !important; gap: 10px !important;
+            width: 100%; margin-top: 10px !important;
         }
 
-        /* CARD FILTER KECIL */
+        /* Filter Bar Compact */
         .filter-bar { 
-            flex: 1; /* Bagi rata lebar 50:50 */
-            min-width: 0; /* Mencegah overflow */
-            margin-bottom: 0;
-            padding: 8px 12px; /* Padding lebih kecil */
-            flex-direction: column; /* Label di atas angka */
-            align-items: flex-start;
-            gap: 2px;
-            justify-content: center;
-            border: 1px solid #e2e8f0;
-            background: #fff;
+            flex: 1; min-width: 0; margin-bottom: 0;
+            padding: 8px 12px; flex-direction: column; align-items: flex-start;
+            gap: 2px; justify-content: center; border: 1px solid #e2e8f0; background: #fff;
         }
 
-        /* LABEL KECIL DI ATAS */
-        .filter-label {
-            font-size: 0.65rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: #64748b;
-            margin-right: 0;
-        }
-
-        /* DROPDOWN COMPACT */
-        .custom-dropdown { width: 100%; }
+        .filter-label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.5px; color: #64748b; margin-right: 0; }
         
+        .custom-dropdown { width: 100%; }
         .custom-dropdown-selected { 
-            width: 100%; 
-            box-sizing: border-box;
-            padding: 4px 0; /* Hilangkan padding samping biar lega */
-            border: none; /* Hilangkan border kotak */
-            background: transparent;
-            font-size: 0.95rem; /* Font agak kecil */
-            color: #0f172a;
-            justify-content: space-between;
+            width: 100%; box-sizing: border-box; padding: 4px 0; border: none; 
+            background: transparent; font-size: 0.95rem; color: #0f172a; justify-content: space-between;
         }
 
-        .custom-dropdown-arrow { font-size: 0.8rem; opacity: 0.6; }
-
-        /* 2. Tombol Catat (Floating look) */
-        .action-bar { width: 100%; position: fixed; bottom: 20px; right: 20px; z-index: 90; justify-content: flex-end; pointer-events: none; }
-        .action-bar .btn-primary { 
-            pointer-events: auto;
-            border-radius: 50px; 
-            padding: 14px 24px; 
-            box-shadow: 0 10px 25px rgba(37, 99, 235, 0.4); 
-            font-size: 1rem;
+        /* Tombol Floating Add */
+        .action-bar-header { width: 100%; position: fixed; bottom: 20px; right: 20px; z-index: 90; justify-content: flex-end; pointer-events: none; }
+        .action-bar-header .btn-primary { 
+            pointer-events: auto; border-radius: 50px; padding: 14px 24px; 
+            box-shadow: 0 10px 25px rgba(37, 99, 235, 0.4); font-size: 1rem;
         }
-        .action-bar .btn-outline { display: none; }
+        .action-bar-header .btn-outline { display: none; }
 
-        /* 3. Table to Cards Transformation */
+        /* Table to Cards Transformation */
         .table-card { background: transparent; box-shadow: none; border: none; }
         thead { display: none; } 
-        tbody { display: flex; flex-direction: column; gap: 12px; padding-bottom: 80px; }
+        tbody { display: flex; flex-direction: column; gap: 16px; padding-bottom: 80px; }
         
+        /* Layout Grid Kartu Pemasukan Mobile */
         tr {
             display: grid;
             grid-template-areas: 
                 "date amount"
                 "desc desc"
-                "meta actions";
+                "img img"
+                "actions actions"; /* Aksi paling bawah */
             grid-template-columns: 1fr auto;
             background: #ffffff;
-            padding: 14px;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-            border: 1px solid #f1f5f9;
+            padding: 20px;
+            border-radius: 18px;
+            box-shadow: 0 4px 18px 0 rgba(60,72,100,0.10);
+            border: none;
+            gap: 12px;
         }
 
         td.td-no { display: none; }
-        td { border-bottom: none; padding: 0; display: block; }
+        td { border-bottom: none; padding: 0; display: block; background: transparent; }
 
-        td.td-date { grid-area: date; font-size: 0.75rem; color: #94a3b8; margin-bottom: 2px; font-weight: 500; }
+        td.td-date { grid-area: date; font-size: 1rem; color: #1e293b; font-weight: 700; margin-bottom: 2px; }
         td.td-amount { grid-area: amount; text-align: right; font-size: 1rem; font-weight: 700; color: #dc2626; }
-        td.td-desc { grid-area: desc; font-size: 0.95rem; color: #334155; font-weight: 500; margin-bottom: 12px; margin-top: 4px; line-height: 1.4; }
-        td.td-img { grid-area: meta; align-self: end; }
-        td.td-action { grid-area: actions; justify-self: end; align-self: end; display: flex; gap: 8px; }
+        td.td-desc { grid-area: desc; font-size: 0.9rem; color: #64748b; font-weight: 500; line-height: 1.5; }
         
-        .action-btn { padding: 6px 12px; font-size: 0.8rem; }
+        /* Area Image */
+        td.td-img { grid-area: img; margin-bottom: 5px; }
+        td.td-img img { width: 60px !important; height: 60px !important; }
+
+        /* --- STYLE AKSI MOBILE (FULL WIDTH TOMBOL BESAR) --- */
+        td.td-action {
+            grid-area: actions;
+            width: 100%;
+            margin-top: 10px;
+            padding-top: 0;
+            border-top: none;
+        }
+        .action-btns { 
+            display: flex; 
+            width: 100%;
+            justify-content: stretch;
+            gap: 14px;
+        }
+        .icon-btn {
+            flex: 1; /* Melar penuh */
+            height: 48px; /* Tinggi tombol mobile */
+            border-radius: 14px;
+            font-size: 1.1rem;
+        }
+        .icon-btn svg {
+            width: 20px; height: 20px;
+        }
     }
 </style>
 
@@ -295,7 +307,7 @@ $total_pengeluaran = $total_row['total'] ?? 0;
             </div>
         </div>
 
-        <div class="action-bar">
+        <div class="action-bar-header">
             <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
                 <a href="?page=add_expense" class="btn btn-primary">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
@@ -385,13 +397,15 @@ $total_pengeluaran = $total_row['total'] ?? 0;
                         <?php endif; ?>
                     </td>
                     <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
-                    <td class="td-action" style="text-align: right;">
-                        <a href="?page=edit_expense&id_pengeluaran=<?= $row['id_pengeluaran'] ?>" class="action-btn btn-edit">
-                           Edit
-                        </a>
-                        <a href="#" class="action-btn btn-delete" onclick="openWarning('?page=expenses&id_pengeluaran=<?= $row['id_pengeluaran'] ?>'); return false;">
-                           Hapus
-                        </a>
+                    <td class="td-action">
+                        <div class="action-btns">
+                            <a href="?page=edit_expense&id_pengeluaran=<?= $row['id_pengeluaran'] ?>" class="icon-btn btn-edit-row" title="Edit">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                            </a>
+                            <a href="#" class="icon-btn btn-del-row" title="Hapus" onclick="openWarning('?page=expenses&id_pengeluaran=<?= $row['id_pengeluaran'] ?>'); return false;">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                            </a>
+                        </div>
                     </td>
                     <?php endif; ?>
                 </tr>

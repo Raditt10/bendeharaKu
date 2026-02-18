@@ -338,24 +338,7 @@ $values_bulan = json_encode(array_values($data_bulan));
         </div>
     </div>
 
-    <nav class="bottom-nav">
-        <a href="?page=dashboard" class="nav-item active">
-            <i class="fas fa-home"></i>
-            <span>Beranda</span>
-        </a>
-        <a href="?page=pemasukan" class="nav-item">
-            <i class="fas fa-arrow-down"></i>
-            <span>Masuk</span>
-        </a>
-        <a href="?page=pengeluaran" class="nav-item">
-            <i class="fas fa-arrow-up"></i>
-            <span>Keluar</span>
-        </a>
-        <a href="?page=laporan" class="nav-item">
-            <i class="fas fa-file-invoice"></i>
-            <span>Laporan</span>
-        </a>
-    </nav>
+    <!-- Bottom navigation bar removed as requested -->
 
     <script>
         // --- CONFIG CHART.JS ---

@@ -120,7 +120,7 @@ define('WARNING_MODAL_LOADED', true);
         display: flex; align-items: center; justify-content: center;
         transition: all 0.2s; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
     }
-    .btn-confirm-modal:hover { background: #dc2626; transform: translateY(-1px); }
+    .btn-confirm-modal:hover { background: #dc2626; color: #fff; transform: translateY(-1px); }
     
     /* Disabled State untuk Tombol Hapus */
     .btn-confirm-modal.disabled {

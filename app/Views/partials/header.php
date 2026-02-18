@@ -357,6 +357,7 @@ if (!function_exists('isActive')) {
                 <a href="?page=dashboard" class="nav-link <?= isActive('dashboard') ?>">Dashboard</a>
                 <a href="?page=income" class="nav-link <?= isActive('income') ?>">Pemasukan</a>
                 <a href="?page=expenses" class="nav-link <?= isActive('expenses') ?>">Pengeluaran</a>
+                <a href="?page=report" class="nav-link <?= isActive('report') ?>">Laporan Kas</a>
 
                 <?php if(isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
                 <a href="?page=students" class="nav-link <?= isActive('students') ?>">Data Siswa</a>

@@ -7,16 +7,32 @@ if (!isset($_SESSION['nis'])) {
     exit;
 }
 
+require_once __DIR__ . '/../../config/config.php';
+require_once __DIR__ . '/../Models/Database.php';
+$koneksi = Database::getInstance()->getConnection();
+
+// --- 1. LOGIKA HAPUS DATA (Backend) ---
+if (isset($_GET['delete_id']) && isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
+    $id_hapus = mysqli_real_escape_string($koneksi, $_GET['delete_id']);
+    
+    $deleteQuery = "DELETE FROM siswa WHERE id_siswa = '$id_hapus'";
+    if (mysqli_query($koneksi, $deleteQuery)) {
+        $_SESSION['success_msg'] = "Data siswa berhasil dihapus.";
+    } else {
+        $_SESSION['error_msg'] = "Gagal menghapus data siswa.";
+    }
+    
+    // Redirect agar URL bersih
+    echo "<script>window.location.href='?page=students';</script>";
+    exit;
+}
+
 // Bersihkan Flash Message
 $success_msg = $_SESSION['success_msg'] ?? null;
 $error_msg = $_SESSION['error_msg'] ?? null;
 unset($_SESSION['success_msg'], $_SESSION['error_msg']);
 
-require_once __DIR__ . '/../../config/config.php';
-require_once __DIR__ . '/../Models/Database.php';
-$koneksi = Database::getInstance()->getConnection();
-
-// Search & Pagination
+// --- 2. SEARCH & PAGINATION ---
 $q = trim($_GET['q'] ?? '');
 $pageNum = max(1, (int)($_GET['p'] ?? 1));
 $perPage = 15;
@@ -79,7 +95,7 @@ $result = mysqli_stmt_get_result($stmt);
     .student-profile { display: flex; align-items: center; gap: 12px; }
     .avatar {
         width: 40px; height: 40px; background: #e0e7ff; color: #4338ca;
-        border-radius: 50%; display: flex; align-items: center; justify-content: center;
+        border-radius: 12px; display: flex; align-items: center; justify-content: center;
         font-weight: 700; font-size: 0.9rem; border: 1px solid #c7d2fe; flex-shrink: 0;
     }
     .student-info { display: flex; flex-direction: column; }
@@ -88,13 +104,7 @@ $result = mysqli_stmt_get_result($stmt);
 
     /* Buttons & Search */
     .action-bar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
-    
-    /* FIX: Form pencarian agar sejajar (Input + Tombol) */
-    .action-bar form {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
+    .action-bar form { display: flex; align-items: center; gap: 8px; }
 
     .btn { padding: 10px 18px; border-radius: 8px; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s; font-size: 0.95rem; border: none; cursor: pointer; }
     .btn-primary { background: #6366f1; color: white; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2); }
@@ -105,20 +115,30 @@ $result = mysqli_stmt_get_result($stmt);
     .search-input {
         padding: 10px 16px; border: 1px solid #cbd5e1; border-radius: 8px;
         font-size: 0.95rem; width: 220px; transition: border-color 0.2s;
-        height: 42px; box-sizing: border-box; /* Pastikan tinggi konsisten */
+        height: 42px; box-sizing: border-box;
     }
     .search-input:focus { border-color: #6366f1; outline: none; }
-    
-    /* Agar tombol search icon kotak rapi */
-    .btn-search-icon {
-        width: 42px; height: 42px; padding: 0;
-        display: flex; align-items: center; justify-content: center;
-    }
+    .btn-search-icon { width: 42px; height: 42px; padding: 0; display: flex; align-items: center; justify-content: center; }
 
-    /* Action Buttons in Table */
-    .action-btn { padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 5px; transition: all 0.2s; }
-    .btn-edit { background: #eff6ff; color: #2563eb; } .btn-edit:hover { background: #dbeafe; }
-    .btn-delete { background: #fef2f2; color: #ef4444; } .btn-delete:hover { background: #fee2e2; }
+    /* --- STYLING TOMBOL AKSI (GAYA BARU) --- */
+    .action-btns { 
+        display: flex; 
+        gap: 8px; 
+        justify-content: flex-end; 
+    }
+    .icon-btn {
+        width: 32px; height: 32px; border-radius: 8px; 
+        display: flex; align-items: center; justify-content: center;
+        transition: all 0.2s; border: none; cursor: pointer;
+        text-decoration: none;
+    }
+    /* Warna Edit (Indigo style) */
+    .btn-edit-row { background: #eef2ff; color: #4f46e5; }
+    .btn-edit-row:hover { background: #e0e7ff; color: #4338ca; }
+    /* Warna Hapus (Red style) */
+    .btn-del-row { background: #fef2f2; color: #ef4444; }
+    .btn-del-row:hover { background: #fee2e2; color: #b91c1c; }
+
 
     /* Pagination */
     .pagination { display: flex; gap: 6px; align-items: center; margin-top: 20px; justify-content: center; }
@@ -143,17 +163,14 @@ $result = mysqli_stmt_get_result($stmt);
         .container { padding-top: 20px !important; }
         .page-header { gap: 15px; margin-bottom: 20px; }
         
-        /* Mobile Search Bar Full Width */
         .action-bar { width: 100%; flex-direction: row; flex-wrap: wrap; }
         .action-bar form { width: 100%; display: flex; gap: 8px; margin-bottom: 8px; }
         .search-input { flex: 1; width: auto; } 
 
-        /* Hilangkan Table Header */
         .table-card { background: transparent; box-shadow: none; border: none; }
         thead { display: none; }
-        tbody { display: flex; flex-direction: column; gap: 12px; }
+        tbody { display: flex; flex-direction: column; gap: 16px; }
         
-        /* Ubah TR (Baris) menjadi Kartu Grid */
         tr {
             display: grid;
             grid-template-areas: 
@@ -161,35 +178,48 @@ $result = mysqli_stmt_get_result($stmt);
                 "contact contact"
                 "actions actions";
             background: #ffffff;
-            padding: 16px;
-            border-radius: 16px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-            border: 1px solid #f1f5f9;
+            padding: 20px;
+            border-radius: 18px;
+            box-shadow: 0 4px 18px 0 rgba(60,72,100,0.10);
+            border: none;
             position: relative;
+            gap: 12px;
         }
 
-        td { border-bottom: none; padding: 0; display: block; }
+        td { border-bottom: none; padding: 0; display: block; background: transparent; }
         td.td-no { display: none; } 
         
         td.td-profile { 
-            grid-area: profile; margin-bottom: 12px; 
-            border-bottom: 1px dashed #e2e8f0; padding-bottom: 12px;
+            grid-area: profile; 
+            border-bottom: 1px dashed #eef2ff; padding-bottom: 12px;
         }
         
         td.td-contact { 
-            grid-area: contact; margin-bottom: 12px; font-size: 0.95rem; color: #475569; 
+            grid-area: contact; font-size: 0.95rem; color: #475569; 
             display: flex; align-items: center; gap: 8px; font-weight: 500;
         }
 
-        td.td-action { 
-            grid-area: actions; 
-            display: flex; gap: 8px; 
+        /* --- STYLE AKSI MOBILE (FULL WIDTH TOMBOL BESAR) --- */
+        td.td-action {
+            grid-area: actions;
+            width: 100%;
+            margin-top: 4px;
+            padding-top: 0;
+            border-top: none;
         }
-        
-        .action-btn { 
-            padding: 10px 16px; font-size: 0.9rem; flex: 1; justify-content: center; 
-            border-radius: 8px;
+        .action-btns { 
+            display: flex; 
+            width: 100%;
+            justify-content: stretch;
+            gap: 14px;
         }
+        .icon-btn {
+            flex: 1; /* Melar penuh */
+            height: 48px; /* Tinggi tombol mobile */
+            border-radius: 14px;
+            font-size: 1.1rem;
+        }
+        .icon-btn svg { width: 20px; height: 20px; }
     }
 </style>
 
@@ -267,7 +297,7 @@ $result = mysqli_stmt_get_result($stmt);
                 $no = $offset + 1;
                 if ($result && mysqli_num_rows($result) > 0) {
                     while ($row = mysqli_fetch_assoc($result)) {
-                        // Generate Initials (DS, AB, dll)
+                        // Generate Initials
                         $initials = '';
                         $parts = explode(' ', $row['nama']);
                         foreach($parts as $part) { $initials .= strtoupper(substr($part, 0, 1)); }
@@ -301,9 +331,15 @@ $result = mysqli_stmt_get_result($stmt);
                     </td>
                     
                     <?php if ($_SESSION['role'] == 'admin'): ?>
-                    <td class="td-action" style="text-align: right;">
-                        <a href="?page=edit_student&id=<?= $row['id_siswa'] ?>" class="action-btn btn-edit">Edit</a>
-                        <a href="#" class="action-btn btn-delete" onclick="openWarning('?page=students&id_siswa=<?= $row['id_siswa'] ?>'); return false;">Hapus</a>
+                    <td class="td-action">
+                        <div class="action-btns">
+                            <a href="?page=edit_student&id=<?= $row['id_siswa'] ?>" class="icon-btn btn-edit-row" title="Edit">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                            </a>
+                            <a href="#" class="icon-btn btn-del-row" title="Hapus" onclick="openWarning('?page=students&delete_id=<?= $row['id_siswa'] ?>'); return false;">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                            </a>
+                        </div>
                     </td>
                     <?php endif; ?>
                 </tr>
