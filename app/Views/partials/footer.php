@@ -223,3 +223,61 @@
 
     </div>
 </footer>
+
+<script>
+    (function() {
+        if (window.innerWidth > 992) return;
+
+        var footer = document.querySelector('.site-footer');
+        if (!footer) return;
+
+        var GAP = 24;
+
+        // Candidates — we check which ones are actually position:fixed at runtime
+        var SELECTORS = [
+            '.action-bar-header',
+            '.action-bar',
+            '.action-bar-header .btn-primary'
+        ];
+
+        function getFixedEls() {
+            var fixed = [];
+            SELECTORS.forEach(function(sel) {
+                document.querySelectorAll(sel).forEach(function(el) {
+                    if (window.getComputedStyle(el).position === 'fixed') {
+                        fixed.push(el);
+                    }
+                });
+            });
+            return fixed;
+        }
+
+        var fixedEls = [];
+
+        function adjust() {
+            var footerTop = footer.getBoundingClientRect().top;
+            var viewH = window.innerHeight;
+            var overlap = viewH - footerTop;
+            var bottom = overlap > 0 ? overlap + GAP : GAP;
+            fixedEls.forEach(function(el) {
+                el.style.bottom = bottom + 'px';
+            });
+        }
+
+        function init() {
+            fixedEls = getFixedEls();
+            if (fixedEls.length) {
+                window.addEventListener('scroll', adjust, {
+                    passive: true
+                });
+                adjust();
+            }
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+    })();
+</script>

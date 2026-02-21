@@ -456,11 +456,8 @@ $result = mysqli_stmt_get_result($stmt);
 
         /* Perbaikan Tombol & Pencarian untuk Mobile */
         .action-bar-header {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-bottom: 20px;
+            display: block;
+            margin-bottom: 0;
         }
 
         /* Tombol Reset/Refresh disembunyikan agar simpel di mobile */
@@ -473,7 +470,7 @@ $result = mysqli_stmt_get_result($stmt);
             width: 100%;
             display: flex;
             gap: 8px;
-            margin: 0;
+            margin: 0 0 16px 0;
         }
 
         .search-input {
@@ -484,13 +481,16 @@ $result = mysqli_stmt_get_result($stmt);
         /* Tombol Floating Add (Pojok Kanan Bawah) */
         .action-bar-header .btn-primary:not(.btn-search-icon) {
             position: fixed;
-            bottom: 20px;
+            bottom: 24px;
             right: 20px;
-            z-index: 90;
+            z-index: 1000;
             border-radius: 50px;
             padding: 14px 24px;
             box-shadow: 0 10px 25px rgba(99, 102, 241, 0.4);
             font-size: 1rem;
+            white-space: nowrap;
+            width: auto;
+            transition: none;
         }
 
         .action-bar {
@@ -808,6 +808,25 @@ $result = mysqli_stmt_get_result($stmt);
                 setTimeout(() => alert.style.display = 'none', 300);
             });
         }, 3000);
+
+        // Floating Button — Footer Awareness (Mobile)
+        if (window.innerWidth <= 992) {
+            var fabBtn = document.querySelector('.action-bar-header .btn-primary:not(.btn-search-icon)');
+            var siteFooter = document.querySelector('.site-footer');
+            if (fabBtn && siteFooter) {
+                var FAB_GAP = 24;
+
+                function adjustFab() {
+                    var footerTop = siteFooter.getBoundingClientRect().top;
+                    var overlap = window.innerHeight - footerTop;
+                    fabBtn.style.bottom = (overlap > 0 ? overlap + FAB_GAP : FAB_GAP) + 'px';
+                }
+                window.addEventListener('scroll', adjustFab, {
+                    passive: true
+                });
+                adjustFab();
+            }
+        }
     });
 </script>
 

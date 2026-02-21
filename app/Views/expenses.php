@@ -476,13 +476,15 @@ $total_pengeluaran = $total_row['total'] ?? 0;
 
         /* Tombol Floating Add */
         .action-bar-header {
-            width: 100%;
             position: fixed;
-            bottom: 20px;
+            bottom: 24px;
             right: 20px;
-            z-index: 90;
+            left: auto;
+            z-index: 1000;
             justify-content: flex-end;
             pointer-events: none;
+            width: auto;
+            transition: none;
         }
 
         .action-bar-header .btn-primary {
@@ -491,6 +493,7 @@ $total_pengeluaran = $total_row['total'] ?? 0;
             padding: 14px 24px;
             box-shadow: 0 10px 25px rgba(37, 99, 235, 0.4);
             font-size: 1rem;
+            white-space: nowrap;
         }
 
         .action-bar-header .btn-outline {
@@ -854,6 +857,25 @@ $total_pengeluaran = $total_row['total'] ?? 0;
                 setTimeout(() => alert.style.display = 'none', 300);
             });
         }, 3000);
+
+        // Floating Button — Footer Awareness (Mobile)
+        if (window.innerWidth <= 992) {
+            var fabEl = document.querySelector('.action-bar-header');
+            var siteFooter = document.querySelector('.site-footer');
+            if (fabEl && siteFooter) {
+                var FAB_GAP = 24;
+
+                function adjustFab() {
+                    var footerTop = siteFooter.getBoundingClientRect().top;
+                    var overlap = window.innerHeight - footerTop;
+                    fabEl.style.bottom = (overlap > 0 ? overlap + FAB_GAP : FAB_GAP) + 'px';
+                }
+                window.addEventListener('scroll', adjustFab, {
+                    passive: true
+                });
+                adjustFab();
+            }
+        }
     });
 </script>
 

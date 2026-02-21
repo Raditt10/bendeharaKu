@@ -282,6 +282,8 @@ $result = mysqli_query($koneksi, $query);
     .action-bar {
         display: flex;
         justify-content: flex-end;
+        align-items: center;
+        gap: 16px;
         margin-bottom: 24px;
     }
 
@@ -498,28 +500,40 @@ $result = mysqli_query($koneksi, $query);
             width: 100%;
         }
 
-        /* MODIFIKASI TOMBOL FLOATING SEPERTI EXPENSE */
+        /* TOMBOL FLOATING STACKED DI MOBILE */
         .action-bar {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 90;
-            justify-content: flex-end;
-            pointer-events: none;
-            /* Container tidak menghalangi klik */
-            margin-bottom: 0;
+            position: fixed !important;
+            bottom: 24px;
+            right: 20px !important;
+            left: auto !important;
+            z-index: 1000 !important;
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 12px !important;
+            align-items: flex-end !important;
+            margin-bottom: 0 !important;
+            pointer-events: none !important;
+            justify-content: unset;
+            transition: none;
+        }
+
+        .action-bar .btn {
+            pointer-events: auto !important;
+            border-radius: 50px !important;
+            padding: 14px 22px !important;
+            width: auto !important;
+            white-space: nowrap !important;
+            font-size: 0.95rem !important;
+            margin-right: 0 !important;
         }
 
         .action-bar .btn-primary {
-            pointer-events: auto;
-            /* Tombol bisa diklik */
-            border-radius: 50px;
-            /* <--- Di HP tetap melengkung penuh (pill) */
-            padding: 14px 24px;
-            box-shadow: 0 10px 25px rgba(37, 99, 235, 0.4);
-            font-size: 1rem;
-            width: auto;
-            /* Jangan full width, ikuti konten */
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4) !important;
+        }
+
+        .action-bar .btn-outline {
+            background: white !important;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08) !important;
         }
 
         /* Table to Cards */
@@ -743,15 +757,15 @@ $result = mysqli_query($koneksi, $query);
         </div>
     </form>
 
-    <div class="action-bar" style="<?= $_SESSION['role'] !== 'admin' ? 'display:flex; justify-content:flex-end; margin-bottom:16px;' : '' ?>">
-        <a href="export_report.php?<?= $_SERVER['QUERY_STRING'] ?>" class="btn btn-outline" style="border-color: #10b981; color: #10b981; margin-right: <?= $_SESSION['role'] == 'admin' ? '12px' : '0' ?>; background-color: white;">
+    <div class="action-bar">
+        <a href="export_report.php?<?= $_SERVER['QUERY_STRING'] ?>" class="btn btn-outline btn-export">
             <span class="btn-icon-wrapper">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                     <polyline points="7 10 12 15 17 10"></polyline>
                     <line x1="12" y1="15" x2="12" y2="3"></line>
                 </svg>
-                Ekspor Excel
+                Ekspor Ke Excel
             </span>
         </a>
 
@@ -944,5 +958,24 @@ $result = mysqli_query($koneksi, $query);
 
         window.addEventListener('resize', checkMobile);
         checkMobile();
+
+        // 4. Floating Action Bar — Footer Awareness (Mobile)
+        if (window.innerWidth <= 992) {
+            var actionBar = document.querySelector('.action-bar');
+            var siteFooter = document.querySelector('.site-footer');
+            if (actionBar && siteFooter) {
+                var FAB_GAP = 24;
+
+                function adjustActionBar() {
+                    var footerTop = siteFooter.getBoundingClientRect().top;
+                    var overlap = window.innerHeight - footerTop;
+                    actionBar.style.bottom = (overlap > 0 ? overlap + FAB_GAP : FAB_GAP) + 'px';
+                }
+                window.addEventListener('scroll', adjustActionBar, {
+                    passive: true
+                });
+                adjustActionBar();
+            }
+        }
     });
 </script>
