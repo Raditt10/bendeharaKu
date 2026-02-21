@@ -374,42 +374,62 @@ $result = mysqli_stmt_get_result($stmt);
         border-color: #6366f1;
     }
 
-    /* Alerts */
+    /* Alerts Premium */
     .alert {
-        padding: 16px;
+        padding: 16px 20px;
         border-radius: 12px;
         margin-bottom: 24px;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        animation: slideIn 0.3s ease;
+        font-weight: 600;
+        font-size: 0.95rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        animation: slideDownFade 0.5s ease forwards;
+        gap: 12px;
     }
 
     .alert-success {
-        background: #ecfdf5;
+        background-color: #ecfdf5;
+        border: 1px solid #10b981;
         color: #065f46;
-        border: 1px solid #a7f3d0;
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
     }
 
     .alert-error {
-        background: #fef2f2;
+        background-color: #fef2f2;
+        border: 1px solid #ef4444;
         color: #991b1b;
-        border: 1px solid #fecaca;
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.15);
+    }
+
+    .alert-content {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex: 1;
     }
 
     .close-alert {
         background: transparent;
         border: none;
         cursor: pointer;
-        font-size: 1.2rem;
+        font-size: 1.5rem;
         color: inherit;
-        opacity: 0.7;
+        opacity: 0.6;
+        line-height: 1;
+        padding: 0 4px;
+        transition: opacity 0.2s;
     }
 
-    @keyframes slideIn {
+    .close-alert:hover {
+        opacity: 1;
+    }
+
+    @keyframes slideDownFade {
         from {
             opacity: 0;
-            transform: translateY(-10px);
+            transform: translateY(-15px);
         }
 
         to {
@@ -573,14 +593,27 @@ $result = mysqli_stmt_get_result($stmt);
 
     <?php if ($success_msg): ?>
         <div class="alert alert-success" id="alert-success">
-            <span><?= htmlspecialchars($success_msg) ?></span>
+            <div class="alert-content">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+                <span><?= htmlspecialchars($success_msg) ?></span>
+            </div>
             <button class="close-alert" onclick="document.getElementById('alert-success').style.display='none'">&times;</button>
         </div>
     <?php endif; ?>
 
     <?php if ($error_msg): ?>
         <div class="alert alert-error" id="alert-error">
-            <span><?= htmlspecialchars($error_msg) ?></span>
+            <div class="alert-content">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+                <span><?= htmlspecialchars($error_msg) ?></span>
+            </div>
             <button class="close-alert" onclick="document.getElementById('alert-error').style.display='none'">&times;</button>
         </div>
     <?php endif; ?>
