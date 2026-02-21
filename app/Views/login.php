@@ -1,76 +1,181 @@
 <style>
     /* Container Utama */
-    .auth-page { 
-        min-height: 80vh; 
-        display: flex; 
-        align-items: center; 
-        justify-content: center; 
-        padding: 20px; 
+    .auth-page {
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
     }
-    
-    .form-box { 
-        background: #fff; 
-        border-radius: 24px; 
-        box-shadow: 0 10px 40px -10px rgba(0,0,0,0.1); 
-        padding: 40px; 
-        max-width: 420px; 
-        width: 100%; 
-        border: 1px solid #e2e8f0; 
+
+    .form-box {
+        background: #fff;
+        border-radius: 24px;
+        box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.1);
+        padding: 40px;
+        max-width: 420px;
+        width: 100%;
+        border: 1px solid #e2e8f0;
         animation: fadeInAuth 0.5s ease-out;
     }
 
     /* CSS NOTIFIKASI ERROR */
-    .error-box { 
-        background: #fef2f2; 
-        border: 1px solid #fee2e2; 
-        color: #ef4444; 
-        border-radius: 12px; 
-        padding: 12px 16px; 
-        font-size: 0.9rem; 
-        display: flex; 
-        align-items: center; 
-        gap: 10px; 
-        margin-bottom: 20px; 
+    .error-box {
+        background: #fef2f2;
+        border: 1px solid #fee2e2;
+        color: #ef4444;
+        border-radius: 12px;
+        padding: 12px 16px;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 20px;
         animation: shake 0.4s ease-in-out;
     }
 
     @keyframes shake {
-        0%, 100% { transform: translateX(0); }
-        25% { transform: translateX(-6px); }
-        75% { transform: translateX(6px); }
+
+        0%,
+        100% {
+            transform: translateX(0);
+        }
+
+        25% {
+            transform: translateX(-6px);
+        }
+
+        75% {
+            transform: translateX(6px);
+        }
     }
 
-    .auth-header h2 { font-size: 1.75rem; font-weight: 800; text-align: center; color: #0f172a; margin-bottom: 8px; }
-    .auth-header p { color: #64748b; text-align: center; margin-bottom: 24px; }
-
-    .form-group { margin-bottom: 16px; }
-    .form-group label { font-weight: 600; font-size: 0.9rem; color: #334155; display: block; margin-bottom: 8px; }
-    
-    .input-wrapper { position: relative; }
-    .form-group input { 
-        width: 100%; padding: 14px 16px; border-radius: 12px; border: 1px solid #e2e8f0; 
-        background: #f8fafc; font-size: 1rem; transition: all 0.2s; outline: none;
-    }
-    .form-group input:focus { border-color: #4f46e5; background: #fff; box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1); }
-
-    .toggle-password { 
-        position: absolute; right: 16px; top: 50%; transform: translateY(-50%); 
-        background: none; border: none; cursor: pointer; color: #94a3b8; 
+    .auth-header h2 {
+        font-size: 1.75rem;
+        font-weight: 800;
+        text-align: center;
+        color: #0f172a;
+        margin-bottom: 8px;
     }
 
-    .btn-submit { 
-        width: 100%; padding: 14px; background: #4f46e5; color: #fff; 
-        border: none; border-radius: 12px; font-weight: 700; font-size: 1rem; cursor: pointer; transition: all 0.2s; 
+    .auth-header p {
+        color: #64748b;
+        text-align: center;
+        margin-bottom: 24px;
     }
-    .btn-submit:hover { background: #4338ca; transform: translateY(-1px); box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.2); }
 
-    .divider { display: flex; align-items: center; text-align: center; margin: 20px 0; color: #94a3b8; font-size: 0.85rem; }
-    .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid #e2e8f0; }
-    .divider::before { margin-right: 12px; }
-    .divider::after { margin-left: 12px; }
+    .form-group {
+        margin-bottom: 16px;
+    }
 
-    .auth-help { text-align: center; margin-top: 20px; font-size: 0.9rem; color: #64748b; }
-    .auth-help a { color: #4f46e5; font-weight: 600; text-decoration: none; }
+    .form-group label {
+        font-weight: 600;
+        font-size: 0.9rem;
+        color: #334155;
+        display: block;
+        margin-bottom: 8px;
+    }
+
+    .input-wrapper {
+        position: relative;
+    }
+
+    .form-group input {
+        width: 100%;
+        padding: 14px 16px;
+        border-radius: 12px;
+        border: 1px solid #e2e8f0;
+        background: #f8fafc;
+        font-size: 1rem;
+        transition: all 0.2s;
+        outline: none;
+    }
+
+    .form-group input:focus {
+        border-color: #4f46e5;
+        background: #fff;
+        box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+    }
+
+    .toggle-password {
+        position: absolute;
+        right: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: #94a3b8;
+    }
+
+    .btn-submit {
+        width: 100%;
+        padding: 14px;
+        background: #4f46e5;
+        color: #fff;
+        border: none;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .btn-submit:hover {
+        background: #4338ca;
+        transform: translateY(-1px);
+        box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.2);
+    }
+
+    .divider {
+        display: flex;
+        align-items: center;
+        text-align: center;
+        margin: 20px 0;
+        color: #94a3b8;
+        font-size: 0.85rem;
+    }
+
+    .divider::before,
+    .divider::after {
+        content: '';
+        flex: 1;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .divider::before {
+        margin-right: 12px;
+    }
+
+    .divider::after {
+        margin-left: 12px;
+    }
+
+    .auth-help {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 0.9rem;
+        color: #64748b;
+    }
+
+    .auth-help a {
+        color: #4f46e5;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    /* Google Sign-In Button */
+    .google-btn-wrapper {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+
+    @media (max-width: 480px) {
+        .form-box {
+            padding: 28px 20px;
+        }
+    }
 </style>
 
 <div class="auth-page">
@@ -93,7 +198,7 @@
                 // Hilangkan notifikasi otomatis setelah 5 detik
                 setTimeout(() => {
                     const err = document.getElementById('errorNotification');
-                    if(err) {
+                    if (err) {
                         err.style.opacity = '0';
                         err.style.transform = 'translateY(-10px)';
                         err.style.transition = 'all 0.5s ease';
@@ -108,7 +213,7 @@
                 <label for="nis">NIS (Nomor Induk Siswa)</label>
                 <input type="text" id="nis" name="nis" placeholder="Masukkan NIS Anda" required>
             </div>
-            
+
             <div class="form-group">
                 <label for="password">Password</label>
                 <div class="input-wrapper">
@@ -129,10 +234,10 @@
 
         <div class="google-btn-wrapper">
             <div id="g_id_onload"
-                 data-client_id="610440154596-0897o83ukejtnr5qlm20mih02bmman37.apps.googleusercontent.com"
-                 data-callback="handleGoogleLogin">
+                data-client_id="610440154596-0897o83ukejtnr5qlm20mih02bmman37.apps.googleusercontent.com"
+                data-callback="handleGoogleLogin">
             </div>
-            <div class="g_id_signin" data-type="standard" data-width="340"></div>
+            <div class="g_id_signin" data-type="standard" data-theme="outline" data-size="large"></div>
         </div>
 
         <div class="auth-help">
@@ -145,14 +250,33 @@
     <input type="hidden" name="credential" id="google-credential">
 </form>
 
+<script>
+    // Set Google button width dynamically to fit container
+    (function() {
+        function setGoogleBtnWidth() {
+            var wrapper = document.querySelector('.google-btn-wrapper');
+            var btn = document.querySelector('.g_id_signin');
+            if (wrapper && btn) {
+                var w = Math.min(340, wrapper.clientWidth);
+                btn.setAttribute('data-width', w);
+            }
+        }
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', setGoogleBtnWidth);
+        } else {
+            setGoogleBtnWidth();
+        }
+    })();
+</script>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <script>
-function togglePass() {
-    const p = document.getElementById('password');
-    p.type = p.type === 'password' ? 'text' : 'password';
-}
-function handleGoogleLogin(response) {
-    document.getElementById('google-credential').value = response.credential;
-    document.getElementById('google-login-form').submit();
-}
+    function togglePass() {
+        const p = document.getElementById('password');
+        p.type = p.type === 'password' ? 'text' : 'password';
+    }
+
+    function handleGoogleLogin(response) {
+        document.getElementById('google-credential').value = response.credential;
+        document.getElementById('google-login-form').submit();
+    }
 </script>
