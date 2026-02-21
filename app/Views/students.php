@@ -258,24 +258,20 @@ $result = mysqli_stmt_get_result($stmt);
             <p>Manajemen data anggota kelas XI RPL 1.</p>
         </div>
         
-        <div class="action-bar">
-            <form method="get" action="">
+        <div class="action-bar-header">
+            <form method="get" action="" style="display: flex; align-items: center; gap: 8px;">
                 <input type="hidden" name="page" value="students" />
                 <input type="text" name="q" value="<?= htmlspecialchars($q) ?>" placeholder="Cari Nama / NIS..." class="search-input" />
                 <button type="submit" class="btn btn-primary btn-search-icon">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
                 </button>
             </form>
-        </div>
-
-        <div class="action-bar-header">
             <?php if ($_SESSION['role'] == 'admin'): ?>
                 <a href="?page=add_student" class="btn btn-primary">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                     Tambah Data
                 </a>
             <?php endif; ?>
-            
             <?php if(!empty($q)): ?>
             <a href="?page=students" class="btn btn-outline">Reset</a>
             <?php else: ?>
