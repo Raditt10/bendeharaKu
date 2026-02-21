@@ -23,16 +23,6 @@
       <br><sub><b>Halaman Login</b></sub>
     </td>
   </tr>
-  <tr>
-    <td width="50%" align="center">
-      <img src="screenshot/Screenshot 2026-02-19 051945.png" alt="Dashboard" width="100%">
-      <br><sub><b>Dashboard Statistik</b></sub>
-    </td>
-    <td width="50%" align="center">
-      <img src="screenshot/Screenshot 2026-02-19 052003.png" alt="Laporan Kas" width="100%">
-      <br><sub><b>Laporan Kas</b></sub>
-    </td>
-  </tr>
 </table>
 
 ---
