@@ -770,7 +770,7 @@ $result = mysqli_query($koneksi, $query);
         </a>
 
         <?php if ($_SESSION['role'] == 'admin'): ?>
-            <a href="?page=add_dues" class="btn btn-primary">
+            <a href="?page=add_report" class="btn btn-primary">
                 <span class="btn-icon-wrapper">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <line x1="12" y1="5" x2="12" y2="19"></line>

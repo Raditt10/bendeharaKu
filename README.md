@@ -1,138 +1,194 @@
-# BendeharaKu - Sistem Manajemen Keuangan Kelas
+# BendeharaKu — Sistem Manajemen Keuangan Kelas
 
 ![PHP](https://img.shields.io/badge/PHP-777BB4?style=flat&logo=php&logoColor=white)
 ![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=flat&logo=mysql&logoColor=white)
 ![Architecture](https://img.shields.io/badge/Architecture-MVC-orange)
 ![License](https://img.shields.io/badge/License-MIT-green)
+![Google OAuth](https://img.shields.io/badge/Auth-Google%20OAuth-blue?logo=google)
 
-**BendeharaKu** adalah aplikasi manajemen keuangan kelas berbasis web yang dirancang dengan pola arsitektur **Model-View-Controller (MVC)**. Aplikasi ini bertujuan untuk membantu bendahara sekolah atau organisasi dalam mencatat iuran, pemasukan, dan pengeluaran secara transparan, akuntabel, dan sistematis.
-
----
-
-## 📌 Deskripsi Project
-
-Berbeda dengan sistem pencatatan tradisional, BendeharaKu memisahkan logika bisnis, antarmuka pengguna, dan akses database untuk memastikan kode yang lebih bersih dan mudah dikembangkan.
-
-* **Transparansi:** Seluruh anggota dapat melihat rekapitulasi keuangan secara real-time.
-* **Manajemen Data:** Memudahkan pengelolaan data siswa, riwayat iuran, serta kategori pengeluaran.
-* **Keamanan:** Dilengkapi dengan sistem autentikasi untuk membatasi akses fitur administratif.
-
-## 🛠️ Tech Stack
-
-Teknologi yang digunakan dalam pengembangan:
-
-* **Language:** PHP Native
-* **Architecture:** Pattern MVC (Model-View-Controller)
-* **Database:** MySQL
-* **Frontend:** HTML5, CSS3 (Bootstrap), JavaScript
-* **Server:** Apache (XAMPP/Laragon)
-
-## 🚀 Fitur Utama
-
-### 🔐 Autentikasi & Otorisasi
-* **Login & Register:** Sistem masuk bagi pengguna terdaftar untuk mengelola data.
-
-### 👥 Manajemen Siswa & Iuran
-* **Data Siswa:** Kelola informasi lengkap siswa yang ada di kelas.
-* **Detail Iuran:** Lacak status pembayaran iuran kas mingguan atau bulanan secara mendetail per individu.
-
-### 💰 Pencatatan Keuangan
-* **Manajemen Pemasukan:** Mencatat dana masuk dari berbagai sumber selain iuran rutin.
-* **Manajemen Pengeluaran:** Dokumentasi penggunaan dana untuk keperluan operasional kelas.
-
-### 📊 Laporan & Dashboard
-* **Dashboard Statistik:** Ringkasan total saldo, pemasukan, dan pengeluaran di halaman utama.
-* **Laporan Kas:** Rekapitulasi transaksi dalam format yang rapi dan mudah dibaca.
+**BendeharaKu** adalah aplikasi manajemen keuangan kelas berbasis web dengan desain premium modern. Dibangun menggunakan pola arsitektur **Model-View-Controller (MVC)**, aplikasi ini membantu bendahara kelas mencatat iuran, pemasukan, dan pengeluaran secara transparan, akuntabel, dan sistematis — lengkap dengan dukungan **Google Sign-In**.
 
 ---
 
 ## 🖼️ Preview Antarmuka
 
-Berikut adalah tampilan antarmuka aplikasi BendeharaKU:
-
 <table>
   <tr>
-    <td width="50%" align="center" valign="top">
-      <img src="screenshot/Screenshot 2026-02-19 052003.png" alt="Data Pengeluaran Kelas" width="100%">
-      <br>
-      <sub><b>Data Pengeluaran Kelas</b></sub>
+    <td width="50%" align="center">
+      <img src="screenshot/home.png" alt="Landing Page" width="100%">
+      <br><sub><b>Landing Page</b></sub>
     </td>
-    <td width="50%" align="center" valign="top">
-      <img src="screenshot/Screenshot 2026-02-19 051945.png" alt="Dashboard" width="100%">
-      <br>
-      <sub><b>Dashboard</b></sub>
+    <td width="50%" align="center">
+      <img src="screenshot/login.png" alt="Halaman Login" width="100%">
+      <br><sub><b>Halaman Login + Google OAuth</b></sub>
     </td>
   </tr>
   <tr>
-    <td colspan="2" align="center" valign="top">
-      <br>
-      <img src="screenshot/Screenshot 2026-02-19 051911.png" alt="Landing Page" height="450">
-      <br>
-      <sub><b>Landing Page</b></sub>
+    <td width="50%" align="center">
+      <img src="screenshot/Screenshot 2026-02-19 051945.png" alt="Dashboard" width="100%">
+      <br><sub><b>Dashboard Statistik</b></sub>
+    </td>
+    <td width="50%" align="center">
+      <img src="screenshot/Screenshot 2026-02-19 052003.png" alt="Laporan Kas" width="100%">
+      <br><sub><b>Laporan Kas</b></sub>
     </td>
   </tr>
 </table>
 
-<p align="center"><i>Semua gambar resolusi penuh dapat ditemukan di folder <b>screenshot/</b> pada repository ini.</i></p>
+---
+
+## 📌 Deskripsi Project
+
+BendeharaKu memisahkan logika bisnis, antarmuka pengguna, dan akses database demi kode yang bersih dan mudah dikembangkan.
+
+- **Transparansi:** Seluruh anggota dapat melihat rekapitulasi keuangan secara real-time.
+- **Manajemen Data:** Kelola data siswa, riwayat iuran mingguan, pemasukan, dan pengeluaran.
+- **Keamanan:** Autentikasi berbasis sesi + Google OAuth untuk akses yang aman.
+- **Responsif:** Desain mobile-first dengan floating action buttons dan card-based layout di HP.
+
+---
+
+## 🛠️ Tech Stack
+
+| Layer        | Teknologi                                            |
+| ------------ | ---------------------------------------------------- |
+| Language     | PHP Native                                           |
+| Architecture | MVC (Model-View-Controller)                          |
+| Database     | MySQL                                                |
+| Frontend     | HTML5, Vanilla CSS3, JavaScript (ES6)                |
+| Auth         | Session-based + Google Identity Services (OAuth 2.0) |
+| Server       | Apache (XAMPP / Laragon)                             |
+| Export       | PHP → Google Spreadsheet (CSV/Excel)                 |
+
+---
+
+## 🚀 Fitur Utama
+
+### 🔐 Autentikasi & Otorisasi
+
+- **Login & Register** — Sistem masuk dengan NIS + password.
+- **Google Sign-In** — Login cepat menggunakan akun Google (OAuth 2.0).
+- **Role-based Access** — Admin dan siswa memiliki akses fitur yang berbeda.
+
+### 📊 Dashboard
+
+- Ringkasan total saldo, total pemasukan, total pengeluaran.
+- Grafik statistik transaksi bulanan.
+- Informasi pembayaran iuran terbaru.
+
+### 👥 Manajemen Siswa (Admin)
+
+- CRUD data siswa (nama, NIS, nomor HP).
+- Pencarian siswa berdasarkan nama atau NIS.
+- Floating action button untuk tambah data di mobile.
+
+### 💰 Pemasukan & Pengeluaran
+
+- Catat dan kelola data pemasukan dari berbagai sumber.
+- Catat pengeluaran beserta bukti foto/dokumen.
+- Filter berdasarkan tahun.
+- Ekspor ke Spreadsheet (Excel).
+
+### 📋 Laporan Kas
+
+- Rekapitulasi pembayaran iuran mingguan per siswa per bulan.
+- Filter berdasarkan bulan dan status pembayaran.
+- Ekspor laporan ke Spreadsheet.
+- Admin dapat mengedit/hapus data langsung dari tabel.
+
+### 👤 Profil Pengguna
+
+- Lihat dan edit data profil (nama, email, foto profil).
+- Update nomor kontak.
 
 ---
 
 ## 📁 Struktur Folder
 
 ```text
-bendeharaKU/
+bendeharaKu/
 ├── app/
-│   ├── Controllers/   # Logika aplikasi (AuthController, BaseController)
-│   ├── Models/        # Logika Database (Database.php)
-│   └── Views/         # Tampilan Antarmuka (Home, Students, Reports)
-├── config/            # File konfigurasi database
-├── public/            # Aset publik (Index.php, CSS, JS, Images)
-├── db_bendehara.sql   # Dump Database MySQL
-└── index.php          # Entry point utama aplikasi
-
+│   ├── Controllers/        # Logika aplikasi (AuthController)
+│   ├── Models/             # Koneksi database (Database.php)
+│   └── Views/
+│       ├── admin/          # Halaman khusus admin (add/edit)
+│       ├── partials/       # Header, Footer, Warning modal
+│       ├── dashboard.php
+│       ├── income.php
+│       ├── expenses.php
+│       ├── report.php
+│       ├── students.php
+│       ├── profile.php
+│       ├── login.php
+│       └── register.php
+├── config/                 # Konfigurasi database
+├── public/
+│   ├── index.php           # Router utama + Landing Page
+│   ├── assets/css/         # File CSS global (base.css)
+│   └── images/             # Logo dan aset gambar
+├── export_report.php       # Handler ekspor ke Spreadsheet
+├── update_contact.php      # Handler update kontak
+├── db_bendehara.sql        # Dump database MySQL
+└── README.md
 ```
+
+---
 
 ## ⚙️ Instalasi & Setup
 
-1. **Clone Repository**
-```bash
-git clone [https://github.com/raditt10/bendeharaku.git](https://github.com/raditt10/bendeharaku.git)
-cd bendeharaku
+### 1. Clone Repository
 
+```bash
+git clone https://github.com/Raditt10/bendeharaKu.git
+cd bendeharaKu
 ```
 
+### 2. Pindahkan ke Server Lokal
 
-2. **Pindahkan ke Server Lokal**
 Pindahkan folder project ke `htdocs` (XAMPP) atau `www` (Laragon).
-3. **Setup Database**
-* Buka phpMyAdmin.
-* Buat database baru dengan nama `db_bendehara`.
-* Import file `db_bendehara.sql` yang tersedia di root folder.
 
+### 3. Setup Database
 
-4. **Konfigurasi Koneksi**
-Sesuaikan kredensial database Anda di file `config/config.php`:
+- Buka **phpMyAdmin**.
+- Buat database baru bernama `db_bendehara`.
+- Import file `db_bendehara.sql` dari root folder.
+
+### 4. Konfigurasi Koneksi
+
+Edit file `config/config.php`:
+
 ```php
 define('DB_HOST', 'localhost');
 define('DB_USER', 'root');
 define('DB_PASS', '');
 define('DB_NAME', 'db_bendehara');
-
 ```
 
+### 5. Konfigurasi Google OAuth (Opsional)
 
-5. **Jalankan Aplikasi**
-Buka browser dan akses: `http://localhost/bendeharaku`
+Ganti `data-client_id` di `app/Views/login.php` dengan Client ID Google OAuth milik Anda dari [Google Cloud Console](https://console.cloud.google.com/).
+
+### 6. Jalankan Aplikasi
+
+Buka browser dan akses:
+
+```
+http://localhost/bendeharaKu/public/
+```
+
+---
 
 ## 🤝 Kontribusi
 
-Aplikasi ini bersifat open-source. Jika Anda ingin memperbaiki bug atau menambahkan fitur baru (seperti ekspor PDF):
+Aplikasi ini bersifat open-source.
 
 1. Fork repository ini.
 2. Buat branch fitur (`git checkout -b fitur-baru`).
-3. Commit perubahan.
-4. Push ke branch.
+3. Commit perubahan (`git commit -m 'Tambah fitur X'`).
+4. Push ke branch (`git push origin fitur-baru`).
 5. Buat Pull Request.
+
+---
 
 ## 📄 Lisensi
 
@@ -140,4 +196,4 @@ Project ini dilisensikan di bawah **MIT License**.
 
 ---
 
-*Hak cipta sepenuhnya milik pengembang Raditt10.*
+_© 2026 BendeharaKu — Hak cipta milik pengembang [Raditt10](https://github.com/Raditt10)._
