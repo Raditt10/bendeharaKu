@@ -520,39 +520,49 @@ else if (isset($_GET['err'])) {
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         /* =========================================
-            DESIGN SYSTEM & RESET
+            PREMIUM DESIGN SYSTEM & RESET
            ========================================= */
         :root {
             --primary-50: #eef2ff;
             --primary-100: #e0e7ff;
             --primary-200: #c7d2fe;
+            --primary-300: #a5b4fc;
             --primary-400: #818cf8;
             --primary-500: #6366f1;
             --primary-600: #4f46e5;
             --primary-700: #4338ca;
-            --gray-50: #f9fafb;
-            --gray-100: #f3f4f6;
-            --gray-200: #e5e7eb;
-            --gray-300: #d1d5db;
-            --gray-500: #6b7280;
-            --gray-600: #4b5563;
-            --gray-900: #111827;
-            --bg-body: var(--gray-50);
-            --text-primary: var(--gray-900);
-            --radius-lg: 0.5rem;
-            --radius-xl: 0.75rem;
-            --radius-2xl: 1rem;
+            --primary-glow: rgba(99, 102, 241, 0.4);
+
+            --surface-50: #f8fafc;
+            --surface-100: #f1f5f9;
+            --surface-200: #e2e8f0;
+            --surface-300: #cbd5e1;
+
+            --text-100: #0f172a;
+            --text-200: #1e293b;
+            --text-300: #334155;
+            --text-400: #475569;
+            --text-500: #64748b;
+
+            --bg-body: #f8fafc;
+            --radius-sm: 0.5rem;
+            --radius-md: 0.75rem;
+            --radius-lg: 1rem;
+            --radius-xl: 1.5rem;
+            --radius-2xl: 2rem;
+
             --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
-            --transition-base: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+            --shadow-glow: 0 0 20px var(--primary-glow);
+
+            --transition-bounce: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         html {
             scroll-behavior: smooth;
-        }
-
-        section[id] {
-            scroll-margin-top: 100px;
         }
 
         * {
@@ -564,364 +574,466 @@ else if (isset($_GET['err'])) {
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
             background-color: var(--bg-body);
-            color: var(--gray-600);
+            color: var(--text-400);
             line-height: 1.6;
             overflow-x: hidden;
+            position: relative;
+        }
+
+        /* --- BACKGROUND MOTIF --- */
+        .bg-motif {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: -1;
+            background-color: var(--bg-body);
+            overflow: hidden;
+        }
+
+        /* Dot Grid */
+        .bg-motif::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: radial-gradient(var(--surface-300) 1px, transparent 1px);
+            background-size: 32px 32px;
+            opacity: 0.4;
+            mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
+        }
+
+        /* Glowing Blobs */
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.5;
+            animation: floatBlob 20s infinite alternate cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .blob-1 {
+            top: -10%;
+            left: -10%;
+            width: 500px;
+            height: 500px;
+            background: linear-gradient(to right, var(--primary-300), var(--primary-200));
+        }
+
+        .blob-2 {
+            top: 40%;
+            right: -20%;
+            width: 600px;
+            height: 600px;
+            background: linear-gradient(to left, var(--primary-100), #eef2ff);
+            animation-delay: -5s;
+        }
+
+        @keyframes floatBlob {
+            0% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            33% {
+                transform: translate(50px, -50px) scale(1.1);
+            }
+
+            66% {
+                transform: translate(-30px, 30px) scale(0.9);
+            }
+
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
         }
 
         h1,
         h2,
-        h3 {
-            color: var(--text-primary);
-            font-weight: 700;
-            letter-spacing: -0.02em;
+        h3,
+        h4 {
+            color: var(--text-100);
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            line-height: 1.2;
         }
 
         a {
-            color: var(--primary-600);
             text-decoration: none;
-            transition: var(--transition-base);
+            transition: var(--transition-smooth);
         }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0 1rem;
+            padding: 0 24px;
+            position: relative;
+            z-index: 10;
         }
 
+        /* --- BUTTONS --- */
         .btn {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            padding: 12px 28px;
+            gap: 10px;
+            padding: 14px 32px;
             border-radius: 50px;
             font-weight: 700;
-            font-size: 1rem;
+            font-size: 1.05rem;
             cursor: pointer;
-            border: 1px solid transparent;
-            transition: var(--transition-base);
+            border: 2px solid transparent;
+            transition: var(--transition-bounce);
             text-decoration: none;
+            position: relative;
+            overflow: hidden;
         }
 
         .btn-primary {
-            background-color: var(--primary-600);
+            background: linear-gradient(135deg, var(--primary-500), var(--primary-700));
             color: white;
-            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+            box-shadow: 0 10px 20px -5px var(--primary-glow);
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
         }
 
         .btn-primary:hover {
-            background-color: var(--primary-700);
-            transform: translateY(-2px);
-            color: white;
-            box-shadow: 0 6px 16px rgba(79, 70, 229, 0.4);
+            transform: translateY(-4px);
+            box-shadow: 0 15px 25px -5px var(--primary-glow);
         }
 
-        .form-control {
-            width: 100%;
-            padding: 10px 14px;
-            border: 1px solid var(--gray-300);
-            border-radius: var(--radius-lg);
-            font-size: 1rem;
-            margin-bottom: 16px;
+        .btn-primary:hover::before {
+            left: 100%;
         }
 
-        .form-control:focus {
-            border-color: var(--primary-500);
-            outline: none;
-            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+        .btn-outline {
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(10px);
+            border-color: var(--primary-200);
+            color: var(--primary-600);
         }
 
+        .btn-outline:hover {
+            background: white;
+            border-color: var(--primary-400);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* --- HERO SECTION --- */
         .hero {
-            padding: 100px 0 80px;
-            background: radial-gradient(circle at top right, var(--primary-50), transparent 70%);
+            padding: 160px 0 120px;
             text-align: center;
+            position: relative;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 16px;
+            background: white;
+            border: 1px solid var(--surface-200);
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--primary-600);
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-sm);
         }
 
         .hero h1 {
-            font-size: 3.5rem;
-            margin-bottom: 16px;
-            background: linear-gradient(135deg, var(--text-primary) 0%, var(--primary-600) 100%);
+            font-size: 4.5rem;
+            margin-bottom: 24px;
+            background: linear-gradient(to right, var(--text-100), var(--primary-600));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.05));
         }
 
         .hero p {
-            font-size: 1.15rem;
-            color: var(--gray-500);
-            max-width: 600px;
-            margin: 0 auto 32px;
+            font-size: 1.25rem;
+            color: var(--text-400);
+            max-width: 650px;
+            margin: 0 auto 40px;
+            font-weight: 500;
+        }
+
+        /* --- GLASS COMPONENT SYSTEM --- */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            border-radius: var(--radius-2xl);
+            box-shadow: var(--shadow-lg), inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+            transition: var(--transition-bounce);
         }
 
         .section-title {
             text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 60px;
         }
 
         .section-title h2 {
-            font-size: 2.25rem;
-            margin-bottom: 10px;
+            font-size: 2.75rem;
+            margin-bottom: 12px;
+            position: relative;
+            display: inline-block;
         }
 
+        .section-title h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background: var(--primary-500);
+            border-radius: 2px;
+        }
+
+        .section-title p {
+            font-size: 1.1rem;
+            color: var(--text-400);
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        /* --- FEATURES GRID --- */
         .features {
-            padding: 60px 0;
-            background: white;
+            padding: 100px 0;
         }
 
         .feature-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 24px;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 32px;
         }
 
         .feature-card {
-            padding: 32px;
-            border-radius: var(--radius-2xl);
-            border: 1px solid var(--gray-200);
-            transition: var(--transition-base);
-            background: var(--gray-50);
-        }
-
-        .feature-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-lg);
-            border-color: var(--primary-200);
-            background: white;
-        }
-
-        .about-section {
-            padding: 80px 0;
-            background: var(--gray-50);
-            border-top: 1px solid var(--gray-200);
-        }
-
-        .student-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 24px;
-            margin-top: 40px;
-        }
-
-        .student-card {
-            background: white;
-            border: 1px solid var(--gray-200);
-            border-radius: 16px;
-            padding: 24px;
-            text-align: center;
+            padding: 40px 32px;
+            text-align: left;
             position: relative;
             overflow: hidden;
-            transition: all 0.3s ease;
         }
 
-        .student-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px -10px rgba(79, 70, 229, 0.15);
-            border-color: var(--primary-200);
-        }
-
-        .card-deco {
+        .feature-card::before {
+            content: '';
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
-            height: 4px;
-            background: linear-gradient(90deg, var(--primary-400), var(--primary-600));
+            height: 100%;
+            background: radial-gradient(circle at top right, var(--primary-50), transparent);
+            opacity: 0;
+            transition: var(--transition-smooth);
         }
 
-        .student-avatar {
-            width: 70px;
-            height: 70px;
-            margin: 0 auto 16px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary-100), var(--primary-50));
-            color: var(--primary-700);
-            font-size: 1.5rem;
-            font-weight: 700;
+        .feature-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--primary-200);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .feature-card:hover::before {
+            opacity: 1;
+        }
+
+        .feature-icon-wrapper {
+            width: 64px;
+            height: 64px;
+            background: white;
+            border-radius: var(--radius-lg);
             display: flex;
             align-items: center;
             justify-content: center;
-            border: 2px solid white;
-            box-shadow: 0 0 0 2px var(--primary-100);
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-md);
+            color: var(--primary-600);
+            border: 1px solid var(--surface-100);
+            position: relative;
+            z-index: 2;
         }
 
-        .student-name {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: var(--gray-900);
-            margin-bottom: 4px;
+        .feature-card h3 {
+            font-size: 1.35rem;
+            margin-bottom: 12px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .feature-card p {
+            font-size: 1.05rem;
+            color: var(--text-400);
+            position: relative;
+            z-index: 2;
+        }
+
+        /* --- TEAM SECTION --- */
+        .about-section {
+            padding: 100px 0;
+        }
+
+        .student-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 32px;
+        }
+
+        .student-card {
+            padding: 32px 24px;
+            text-align: center;
+            border-width: 2px;
+            /* Thicker border for glass effect */
+        }
+
+        .student-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--primary-300);
+            box-shadow: 0 20px 40px -10px var(--primary-glow);
+        }
+
+        .student-avatar {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-300), var(--primary-600));
+            color: white;
+            font-size: 1.75rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 4px solid white;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition-bounce);
+        }
+
+        .student-card:hover .student-avatar {
+            transform: scale(1.1) rotate(5deg);
         }
 
         .student-nis {
             display: inline-block;
-            background: var(--gray-100);
-            color: var(--gray-500);
-            padding: 2px 10px;
+            background: var(--surface-100);
+            color: var(--text-400);
+            padding: 4px 12px;
             border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
+            font-size: 0.85rem;
+            font-weight: 700;
             margin-bottom: 12px;
+            border: 1px solid var(--surface-200);
         }
 
         .student-role {
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             color: var(--primary-600);
-            font-weight: 700;
-            letter-spacing: 0.5px;
+            font-weight: 800;
             text-transform: uppercase;
-            display: block;
-            margin-bottom: 16px;
+            letter-spacing: 1px;
         }
 
-        /* --- SYARAT & KETENTUAN CSS --- */
+        /* --- TERMS SECTION --- */
         .terms-section {
-            padding: 80px 0;
-            background: white;
-            border-top: 1px solid var(--gray-200);
+            padding: 100px 0;
         }
 
         .terms-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             gap: 24px;
-            margin-top: 40px;
         }
 
         .term-card {
             padding: 24px;
-            background: var(--gray-50);
-            border-radius: var(--radius-xl);
-            border: 1px solid var(--gray-200);
             display: flex;
+            gap: 20px;
             align-items: flex-start;
-            gap: 16px;
-            transition: var(--transition-base);
         }
 
         .term-card:hover {
-            transform: translateY(-3px);
-            box-shadow: var(--shadow-sm);
+            transform: scale(1.02);
             border-color: var(--primary-200);
-            background: white;
         }
 
         .term-icon {
             flex-shrink: 0;
-            width: 48px;
-            height: 48px;
-            background: var(--primary-100);
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--surface-50), white);
+            border: 1px solid var(--surface-200);
+            border-radius: var(--radius-md);
             color: var(--primary-600);
-            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
+            box-shadow: var(--shadow-sm);
         }
 
-        .term-content h3 {
-            font-size: 1.1rem;
-            margin-bottom: 6px;
-            color: var(--gray-900);
-        }
-
-        .term-content p {
-            font-size: 0.9rem;
-            color: var(--gray-500);
-            margin: 0;
-        }
-
-        /* --- HUBUNGI KAMI CSS --- */
+        /* --- CONTACT SECTION --- */
         .contact-section {
-            padding: 80px 0;
-            background: var(--primary-50);
+            padding: 100px 0 140px;
         }
 
         .contact-wrapper {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 48px;
-            background: white;
-            padding: 48px;
-            border-radius: var(--radius-2xl);
-            box-shadow: var(--shadow-lg);
-            border: 1px solid var(--gray-200);
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 60px 40px;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.6));
         }
 
-        .contact-info h2 {
-            font-size: 2rem;
-            margin-bottom: 12px;
+        .contact-wrapper h2 {
+            font-size: 2.5rem;
+            margin-bottom: 16px;
         }
 
-        .contact-info p {
-            color: var(--gray-500);
-            margin-bottom: 32px;
-            font-size: 1.05rem;
+        .contact-wrapper .btn-whatsapp {
+            background: #25D366;
+            color: white;
+            padding: 18px 40px;
+            font-size: 1.15rem;
+            border-radius: 50px;
+            box-shadow: 0 10px 25px rgba(37, 211, 102, 0.4);
+            margin: 32px 0;
         }
 
-        .contact-list {
-            list-style: none;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
+        .contact-wrapper .btn-whatsapp:hover {
+            background: #20C35B;
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 15px 35px rgba(37, 211, 102, 0.5);
         }
 
-        .contact-list li {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-
-        .contact-icon {
-            width: 44px;
-            height: 44px;
-            background: var(--primary-50);
-            color: var(--primary-600);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .contact-form {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .contact-form label {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: var(--gray-900);
-            margin-bottom: -8px;
-        }
-
-        .contact-form textarea {
-            resize: vertical;
-            min-height: 120px;
-            font-family: inherit;
-        }
-
-        /* Animation Classes */
+        /* --- ANIMATIONS --- */
         .reveal {
             opacity: 0;
-            transition: all 0.8s ease-out;
+            transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .fade-up {
-            transform: translateY(40px);
+            transform: translateY(50px);
         }
 
-        .fade-left {
-            transform: translateX(-40px);
-        }
-
-        .fade-right {
-            transform: translateX(40px);
+        .fade-in {
+            transform: scale(0.95);
         }
 
         .reveal.active {
             opacity: 1;
-            transform: translate(0, 0);
+            transform: translate(0, 0) scale(1);
         }
 
         .delay-100 {
@@ -932,20 +1044,48 @@ else if (isset($_GET['err'])) {
             transition-delay: 0.2s;
         }
 
+        .delay-300 {
+            transition-delay: 0.3s;
+        }
+
+        /* --- RESPONSIVE --- */
         @media (max-width: 768px) {
             .hero h1 {
-                font-size: 2.5rem;
+                font-size: 3rem;
+            }
+
+            .hero p {
+                font-size: 1.1rem;
+            }
+
+            .section-title h2 {
+                font-size: 2.25rem;
             }
 
             .contact-wrapper {
-                grid-template-columns: 1fr;
-                padding: 32px 24px;
+                padding: 40px 24px;
             }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .hero .btn {
+                width: auto;
+            }
+
+            /* Keep hero buttons inline if possible */
         }
     </style>
 </head>
 
 <body>
+
+    <div class="bg-motif">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
 
     <?php
     $headerPath = __DIR__ . '/../app/Views/partials/header.php';
@@ -956,11 +1096,26 @@ else if (isset($_GET['err'])) {
         <?php if ($page === 'home'): ?>
             <section class="hero">
                 <div class="container">
-                    <h1 class="reveal fade-up">Kas XI RPL 1</h1>
-                    <p class="reveal fade-up delay-100">Platform manajemen keuangan yang transparan, akuntabel, dan profesional untuk kemajuan kelas kita bersama.</p>
-                    <div class="reveal fade-up delay-200" style="display:flex; gap:12px; justify-content:center;">
+                    <div class="reveal fade-up">
+                        <div class="hero-badge">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                            </svg>
+                            Sistem Manajemen Modern
+                        </div>
+                    </div>
+                    <h1 class="reveal fade-up delay-100">Kas XI RPL 1</h1>
+                    <p class="reveal fade-up delay-200">Platform manajemen keuangan kelas yang dirancang dengan antarmuka elegan, transparan, dan akuntabel untuk kemudahan pengurus dan siswa.</p>
+                    <div class="reveal fade-up delay-300" style="display:flex; gap:16px; justify-content:center; flex-wrap: wrap;">
                         <?php if (!isset($_SESSION['nis'])): ?>
-                            <a href="?page=login" class="btn btn-primary">Mulai Jelajahi</a>
+                            <a href="?page=login" class="btn btn-primary">
+                                Mulai Jelajahi
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                    <polyline points="12 5 19 12 12 19"></polyline>
+                                </svg>
+                            </a>
+                            <a href="#features" class="btn btn-outline">Fitur Unggulan</a>
                         <?php else: ?>
                             <a href="?page=dashboard" class="btn btn-primary">Buka Dashboard</a>
                         <?php endif; ?>
@@ -972,20 +1127,40 @@ else if (isset($_GET['err'])) {
                 <div class="container">
                     <div class="section-title reveal fade-up">
                         <h2>Fitur & Keunggulan</h2>
-                        <p>Mengapa sistem ini dibuat untuk XI RPL 1?</p>
+                        <p>Sistem ini dirancang khusus untuk memenuhi kebutuhan administrasi kelas yang modern.</p>
                     </div>
                     <div class="feature-grid">
-                        <div class="feature-card reveal fade-left">
-                            <h3 style="color:var(--primary-600); margin-bottom:10px;">📊 Transparansi Penuh</h3>
-                            <p>Semua data pemasukan dan pengeluaran dicatat secara digital dan dapat diakses kapan saja.</p>
+                        <div class="feature-card glass-card reveal fade-up">
+                            <div class="feature-icon-wrapper">
+                                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path>
+                                    <path d="M22 12A10 10 0 0 0 12 2v10z"></path>
+                                </svg>
+                            </div>
+                            <h3>Transparansi Penuh</h3>
+                            <p>Semua data visualisasi grafik, pemasukan, dan pengeluaran disusun dengan rapi secara digital dan otomatis.</p>
                         </div>
-                        <div class="feature-card reveal fade-up delay-100">
-                            <h3 style="color:var(--primary-600); margin-bottom:10px;">👥 Database Terpusat</h3>
-                            <p>Data seluruh siswa tersimpan rapi, memudahkan pengecekan status iuran bulanan.</p>
+                        <div class="feature-card glass-card reveal fade-up delay-100">
+                            <div class="feature-icon-wrapper">
+                                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="9" cy="7" r="4"></circle>
+                                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                                </svg>
+                            </div>
+                            <h3>Database Terpusat</h3>
+                            <p>Seluruh daftar siswa, profil rekening, dan laporan iuran bulanan langsung terarsip dalam satu tempat yang aman.</p>
                         </div>
-                        <div class="feature-card reveal fade-right delay-200">
-                            <h3 style="color:var(--primary-600); margin-bottom:10px;">🔒 Aman & Terpercaya</h3>
-                            <p>Sistem login membatasi akses edit hanya untuk pengurus, data aman dari perubahan tak sah.</p>
+                        <div class="feature-card glass-card reveal fade-up delay-200">
+                            <div class="feature-icon-wrapper">
+                                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                                </svg>
+                            </div>
+                            <h3>Akses Aman</h3>
+                            <p>Pembatasan hak akses via Login khusus, memastikan kerahasiaan data dan mencegah modifikasi tanpa izin.</p>
                         </div>
                     </div>
                 </div>
@@ -994,8 +1169,8 @@ else if (isset($_GET['err'])) {
             <section id="about" class="about-section">
                 <div class="container">
                     <div class="section-title reveal fade-up">
-                        <h2>Anggota Kami</h2>
-                        <p>Developer muda dari XI RPL 1 yang siap berkarya.</p>
+                        <h2>Anggota Pengurus</h2>
+                        <p>Dibalik layar kekuatan kas kelas XI RPL 1.</p>
                     </div>
                     <div class="student-grid">
                         <?php
@@ -1012,11 +1187,11 @@ else if (isset($_GET['err'])) {
                                 $delayClass = 'delay-' . (($delayCounter % 3) * 100);
                                 $delayCounter++;
                         ?>
-                                <div class="student-card reveal fade-up <?= $delayClass ?>">
-                                    <div class="card-deco"></div>
+                                <div class="student-card glass-card reveal fade-in <?= $delayClass ?>">
                                     <div class="student-avatar"><?= $initials ?></div>
                                     <h3 class="student-name"><?= htmlspecialchars($row['nama']) ?></h3>
-                                    <span class="student-nis"><?= htmlspecialchars($row['nis']) ?></span>
+                                    <span class="student-nis">NIS: <?= htmlspecialchars($row['nis']) ?></span>
+                                    <br>
                                     <span class="student-role">Software Engineer</span>
                                 </div>
                             <?php endwhile;
@@ -1031,45 +1206,46 @@ else if (isset($_GET['err'])) {
                 <div class="container">
                     <div class="section-title reveal fade-up">
                         <h2>Syarat & Ketentuan</h2>
-                        <p>Aturan pengelolaan kas kelas XI RPL 1 yang telah disepakati bersama.</p>
+                        <p>Komitmen bersama untuk kelancaran kas kelas.</p>
                     </div>
                     <div class="terms-grid">
-                        <div class="term-card reveal fade-up">
+                        <div class="term-card glass-card reveal fade-up">
                             <div class="term-icon">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                                    <line x1="16" y1="2" x2="16" y2="6"></line>
-                                    <line x1="8" y1="2" x2="8" y2="6"></line>
-                                    <line x1="3" y1="10" x2="21" y2="10"></line>
-                                </svg>
-                            </div>
-                            <div class="term-content">
-                                <h3>Wajib Bayar Tepat Waktu</h3>
-                                <p>Iuran kas kelas wajib dibayarkan paling lambat tanggal 10 setiap bulannya.</p>
-                            </div>
-                        </div>
-                        <div class="term-card reveal fade-up delay-100">
-                            <div class="term-icon">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                                </svg>
-                            </div>
-                            <div class="term-content">
-                                <h3>Transparansi Laporan</h3>
-                                <p>Pengeluaran hanya untuk keperluan kelas dan laporan selalu diperbarui secara sistem.</p>
-                            </div>
-                        </div>
-                        <div class="term-card reveal fade-up delay-200">
-                            <div class="term-icon">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                     <circle cx="12" cy="12" r="10"></circle>
-                                    <line x1="15" y1="9" x2="9" y2="15"></line>
-                                    <line x1="9" y1="9" x2="15" y2="15"></line>
+                                    <polyline points="12 6 12 12 16 14"></polyline>
                                 </svg>
                             </div>
                             <div class="term-content">
-                                <h3>Kepentingan Bersama</h3>
-                                <p>Dana kas tidak dapat ditarik kembali secara sepihak untuk kepentingan pribadi.</p>
+                                <h3>Bayar Tepat Waktu</h3>
+                                <p>Setiap siswa diwajibkan melunaskan beban kas bulanannya sebelum tenggat waktu tiba.</p>
+                            </div>
+                        </div>
+                        <div class="term-card glass-card reveal fade-up delay-100">
+                            <div class="term-icon">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                    <polyline points="14 2 14 8 20 8"></polyline>
+                                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                                    <polyline points="10 9 9 9 8 9"></polyline>
+                                </svg>
+                            </div>
+                            <div class="term-content">
+                                <h3>Bebas Cetak Laporan</h3>
+                                <p>Silakan bebas eksport atau melihat laporan mutasi sebagai jaminan transparansi pengurus.</p>
+                            </div>
+                        </div>
+                        <div class="term-card glass-card reveal fade-up delay-200">
+                            <div class="term-icon">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+                                    <line x1="7" y1="7" x2="7.01" y2="7"></line>
+                                </svg>
+                            </div>
+                            <div class="term-content">
+                                <h3>Dana Kolektif</h3>
+                                <p>Sisa kas yang terakumulasi sepenuhnya tidak dapat direfund secara individual.</p>
                             </div>
                         </div>
                     </div>
@@ -1078,25 +1254,20 @@ else if (isset($_GET['err'])) {
 
             <section id="contact" class="contact-section">
                 <div class="container">
-                    <div class="contact-wrapper reveal fade-up" style="display: block; max-width: 600px; margin: 0 auto; text-align: center; padding: 48px 32px;">
-                        <div class="contact-info">
-                            <h2 style="margin-bottom: 8px;">Hubungi Kami</h2>
-                            <p style="margin-bottom: 24px;">Ada kendala soal pembayaran kas atau masalah login? Langsung saja hubungi pengurus kelas kami!</p>
+                    <div class="contact-wrapper glass-card reveal fade-up">
+                        <h2>Perlu Bantuan?</h2>
+                        <p style="font-size: 1.15rem; color: var(--text-500); margin-bottom: 20px;">Dapatkan dukungan komprehensif terkait kesulitan login atau kendala sistem.</p>
 
-                            <div style="margin-top: 32px; margin-bottom: 24px;">
-                                <a href="https://wa.me/6289661916855?text=Halo%20pengurus%20kas%20XI%20RPL%201%2C%20saya%20butuh%20bantuan%20terkait%20kas%20kelas%20%2F%20akun%20saya." target="_blank" class="btn btn-primary" style="background-color: #25D366; color: white; border: none; display: inline-flex; gap: 10px; padding: 14px 32px; box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);">
-                                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
-                                    </svg>
-                                    Hubungi Lewat WhatsApp
-                                </a>
-                            </div>
+                        <a href="https://wa.me/6289661916855?text=Halo%20pengurus%20kas%20XI%20RPL%201%2C%20saya%20butuh%20bantuan%20terkait%20kas%20kelas." target="_blank" class="btn btn-whatsapp">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                            </svg>
+                            Hubungi Administrator
+                        </a>
 
-                            <p style="font-size: 0.95rem; color: var(--gray-500);">
-                                Atau kirim email ke: <br>
-                                <a href="mailto:bendahara.rpl1@gmail.com" style="color: var(--primary-600); font-weight: 600; text-decoration: none;">bendahara.rpl1@gmail.com</a>
-                            </p>
-                        </div>
+                        <p style="font-size: 0.95rem; color: var(--text-400);">
+                            Atau via email di: <a href="mailto:bendahara.rpl1@gmail.com" style="color: var(--primary-600); font-weight: 700;">bendahara.rpl1@gmail.com</a>
+                        </p>
                     </div>
                 </div>
             </section>
@@ -1114,15 +1285,19 @@ else if (isset($_GET['err'])) {
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Intersection Observer for animations
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: "0px 0px -50px 0px"
+            };
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         entry.target.classList.add('active');
                     }
                 });
-            }, {
-                threshold: 0.1
-            });
+            }, observerOptions);
+
             document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
         });
     </script>
