@@ -39,7 +39,7 @@ if ($page === 'logout') {
 // ==========================================
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $page === 'login') {
     
-    // --- TAMBAHAN LOGIKA GOOGLE LOGIN ---
+    // --- LOGIKA GOOGLE LOGIN ---
     if (isset($_POST['credential'])) {
         $jwt = $_POST['credential'];
         $tokenParts = explode(".", $jwt);
@@ -61,44 +61,297 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $page === 'login') {
                 if ($user) {
                     if ($user['role'] === 'siswa') {
                         $_SESSION['user_id'] = $user['id_user'];
-                        $_SESSION['nama'] = $user['nama'];
-                        $_SESSION['nis'] = $user['nis'];
-                        $_SESSION['role'] = $user['role'];
+                        $_SESSION['nama']    = $user['nama'];
+                        $_SESSION['nis']     = $user['nis'];
+                        $_SESSION['role']    = $user['role'];
                         
-                        // POPUP SWEETALERT SEBELUM KE DASHBOARD
-                        echo "
-                        <!DOCTYPE html>
-                        <html lang='id'>
-                        <head>
-                            <meta charset='utf-8'>
-                            <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-                            <title>Login Berhasil</title>
-                            <script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
-                            <link href='https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap' rel='stylesheet'>
-                            <style>body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f8fafc; margin:0; padding:0; }</style>
-                        </head>
-                        <body>
-                            <script>
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'Berhasil Login!',
-                                    text: 'Selamat datang, " . addslashes($user['nama']) . "',
-                                    showConfirmButton: false,
-                                    timer: 1500
-                                }).then(function() {
-                                    window.location.href = '?page=dashboard';
-                                });
-                            </script>
-                        </body>
-                        </html>
-                        ";
+                        // Nama di-escape dengan htmlspecialchars untuk keamanan di HTML
+                        $namaAman = htmlspecialchars($user['nama'], ENT_QUOTES, 'UTF-8');
+                        ?>
+                    <!DOCTYPE html>
+                    <html lang="id">
+                    <head>
+                        <meta charset="utf-8">
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                        <!-- REDIRECT PALING RELIABLE: meta refresh sebagai fallback utama -->
+                        <meta http-equiv="refresh" content="2;url=?page=dashboard">
+                        <title>Login Berhasil</title>
+                        <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+                        <style>
+                            * { margin: 0; padding: 0; box-sizing: border-box; }
+                            body {
+                                font-family: 'Plus Jakarta Sans', sans-serif;
+                                background: #f8fafc;
+                                min-height: 100vh;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                overflow: hidden;
+                            }
+                            .overlay {
+                                position: fixed;
+                                inset: 0;
+                                background: rgba(15, 23, 42, 0.45);
+                                backdrop-filter: blur(6px);
+                                -webkit-backdrop-filter: blur(6px);
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                animation: fadeIn 0.3s ease forwards;
+                            }
+                            @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+                            .card {
+                                background: #ffffff;
+                                border-radius: 28px;
+                                padding: 52px 48px 44px;
+                                width: 420px;
+                                max-width: calc(100vw - 40px);
+                                text-align: center;
+                                position: relative;
+                                overflow: hidden;
+                                box-shadow:
+                                    0 0 0 1px rgba(79, 70, 229, 0.08),
+                                    0 24px 64px -12px rgba(79, 70, 229, 0.22),
+                                    0 8px 24px -4px rgba(0,0,0,0.08);
+                                animation: slideUp 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+                            }
+                            @keyframes slideUp {
+                                from { opacity: 0; transform: translateY(40px) scale(0.94); }
+                                to   { opacity: 1; transform: translateY(0) scale(1); }
+                            }
+
+                            /* Shimmer stripe di atas card */
+                            .card::before {
+                                content: '';
+                                position: absolute;
+                                top: 0; left: 0; right: 0;
+                                height: 4px;
+                                background: linear-gradient(90deg, #6366f1, #4f46e5, #818cf8, #4f46e5);
+                                background-size: 200% 100%;
+                                animation: shimmer 2s linear infinite;
+                            }
+                            @keyframes shimmer {
+                                0%   { background-position: 200% 0; }
+                                100% { background-position: -200% 0; }
+                            }
+
+                            /* Icon glow */
+                            .glow-ring {
+                                position: relative;
+                                width: 96px;
+                                height: 96px;
+                                margin: 0 auto 28px;
+                            }
+                            .glow-ring::before {
+                                content: '';
+                                position: absolute;
+                                inset: -10px;
+                                border-radius: 50%;
+                                background: radial-gradient(circle, rgba(99,102,241,0.18) 0%, transparent 70%);
+                                animation: pulse 2s ease-in-out infinite;
+                            }
+                            @keyframes pulse {
+                                0%, 100% { transform: scale(1);    opacity: 1; }
+                                50%       { transform: scale(1.12); opacity: 0.7; }
+                            }
+                            .icon-circle {
+                                width: 96px;
+                                height: 96px;
+                                border-radius: 50%;
+                                background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                position: relative;
+                                border: 2px solid rgba(99, 102, 241, 0.2);
+                                animation: popIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s both;
+                            }
+                            @keyframes popIn {
+                                from { transform: scale(0); opacity: 0; }
+                                to   { transform: scale(1); opacity: 1; }
+                            }
+                            .icon-circle svg {
+                                animation: drawCheck 0.5s ease 0.5s both;
+                            }
+                            @keyframes drawCheck {
+                                from { opacity: 0; transform: scale(0.5) rotate(-15deg); }
+                                to   { opacity: 1; transform: scale(1) rotate(0deg); }
+                            }
+
+                            /* Badge */
+                            .badge {
+                                display: inline-flex;
+                                align-items: center;
+                                gap: 6px;
+                                background: #eef2ff;
+                                color: #4f46e5;
+                                font-size: 0.72rem;
+                                font-weight: 700;
+                                letter-spacing: 0.08em;
+                                text-transform: uppercase;
+                                padding: 5px 12px;
+                                border-radius: 50px;
+                                margin-bottom: 16px;
+                                border: 1px solid #e0e7ff;
+                                animation: fadeUp 0.4s ease 0.4s both;
+                            }
+                            .badge-dot {
+                                width: 6px; height: 6px;
+                                border-radius: 50%;
+                                background: #4f46e5;
+                                animation: blink 1.2s ease-in-out infinite;
+                            }
+                            @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+                            /* Text */
+                            .title {
+                                font-size: 1.75rem;
+                                font-weight: 800;
+                                color: #0f172a;
+                                letter-spacing: -0.03em;
+                                margin-bottom: 8px;
+                                animation: fadeUp 0.4s ease 0.5s both;
+                            }
+                            .subtitle {
+                                font-size: 1rem;
+                                color: #64748b;
+                                font-weight: 500;
+                                margin-bottom: 32px;
+                                animation: fadeUp 0.4s ease 0.6s both;
+                            }
+                            .subtitle strong { color: #4f46e5; font-weight: 700; }
+                            @keyframes fadeUp {
+                                from { opacity: 0; transform: translateY(12px); }
+                                to   { opacity: 1; transform: translateY(0); }
+                            }
+
+                            /* Progress bar — animasi berjalan 1.8s, redirect di 2s */
+                            .progress-wrap {
+                                background: #f1f5f9;
+                                border-radius: 99px;
+                                height: 6px;
+                                overflow: hidden;
+                                margin-bottom: 14px;
+                                animation: fadeUp 0.4s ease 0.7s both;
+                            }
+                            .progress-bar {
+                                height: 100%;
+                                width: 0%;
+                                border-radius: 99px;
+                                background: linear-gradient(90deg, #6366f1, #818cf8);
+                                /* Tidak pakai CSS animation — digerakkan JS agar sinkron dengan redirect */
+                                transition: width 1.8s cubic-bezier(0.4, 0, 0.2, 1);
+                            }
+                            .progress-label {
+                                font-size: 0.8rem;
+                                color: #94a3b8;
+                                font-weight: 500;
+                                animation: fadeUp 0.4s ease 0.7s both;
+                            }
+
+                            /* Confetti */
+                            .particles { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+                            .particle {
+                                position: absolute;
+                                opacity: 0;
+                                animation: confetti 1.2s ease forwards;
+                            }
+                            @keyframes confetti {
+                                0%   { opacity: 1; transform: translate(0, 0) rotate(0deg) scale(1); }
+                                100% { opacity: 0; transform: translate(var(--tx), var(--ty)) rotate(var(--rot)) scale(0.3); }
+                            }
+                        </style>
+                    </head>
+                    <body>
+
+                    <div class="overlay">
+                        <div class="card">
+                            <div class="particles" id="particles"></div>
+
+                            <div class="glow-ring">
+                                <div class="icon-circle">
+                                    <svg width="42" height="42" viewBox="0 0 24 24" fill="none"
+                                        stroke="#4f46e5" stroke-width="2.5"
+                                        stroke-linecap="round" stroke-linejoin="round">
+                                        <polyline points="20 6 9 17 4 12"></polyline>
+                                    </svg>
+                                </div>
+                            </div>
+
+                            <div class="badge">
+                                <span class="badge-dot"></span>
+                                Autentikasi Berhasil
+                            </div>
+
+                            <h1 class="title">Selamat Datang! 👋</h1>
+                            <p class="subtitle">
+                                Halo, <strong><?= $namaAman ?></strong> — kamu berhasil masuk ke<br>
+                                Bendahara Kas XI RPL 1.
+                            </p>
+
+                            <div class="progress-wrap">
+                                <div class="progress-bar" id="progressBar"></div>
+                            </div>
+                            <p class="progress-label">Mengalihkan ke Dashboard...</p>
+                        </div>
+                    </div>
+
+                    <script>
+                    (function() {
+                        // ── Confetti ──
+                        var colors = ['#4f46e5','#818cf8','#6366f1','#a5b4fc','#c7d2fe','#34d399','#fbbf24'];
+                        var container = document.getElementById('particles');
+                        for (var i = 0; i < 28; i++) {
+                            var p = document.createElement('div');
+                            p.className = 'particle';
+                            var angle = Math.random() * 360;
+                            var dist  = 80 + Math.random() * 160;
+                            var tx = Math.cos(angle * Math.PI / 180) * dist;
+                            var ty = Math.sin(angle * Math.PI / 180) * dist - 60;
+                            var color = colors[Math.floor(Math.random() * colors.length)];
+                            var w = (5 + Math.random() * 7).toFixed(1);
+                            var h = (5 + Math.random() * 7).toFixed(1);
+                            var br = Math.random() > 0.5 ? '50%' : '2px';
+                            var delay = (0.3 + Math.random() * 0.4).toFixed(2);
+                            var dur   = (0.8 + Math.random() * 0.6).toFixed(2);
+                            p.style.left = '50%';
+                            p.style.top  = '50%';
+                            p.style.background = color;
+                            p.style.setProperty('--tx', tx.toFixed(1) + 'px');
+                            p.style.setProperty('--ty', ty.toFixed(1) + 'px');
+                            p.style.setProperty('--rot', (Math.random() * 540 - 270).toFixed(1) + 'deg');
+                            p.style.animationDelay    = delay + 's';
+                            p.style.animationDuration = dur + 's';
+                            p.style.width  = w + 'px';
+                            p.style.height = h + 'px';
+                            p.style.borderRadius = br;
+                            container.appendChild(p);
+                        }
+
+                        // ── Progress bar: mulai setelah 100ms agar transition terdeteksi browser ──
+                        var bar = document.getElementById('progressBar');
+                        setTimeout(function() {
+                            bar.style.width = '100%';
+                        }, 100);
+
+                        // ── Redirect setelah 2100ms (sedikit lebih dari transisi 1.8s + 100ms delay) ──
+                        setTimeout(function() {
+                            window.location.href = '?page=dashboard';
+                        }, 2100);
+                    })();
+                    </script>
+
+                    </body>
+                    </html>
+                    <?php
                         exit;
 
                     } else {
                         $_SESSION['error_msg'] = "Login Google hanya untuk siswa.";
                     }
                 } else {
-                    $_SESSION['error_msg'] = "Akun Google ($google_email) belum terdaftar.";
+                    $_SESSION['error_msg'] = "Akun Google ($google_email) belum terdaftar di sistem.";
                 }
                 $stmt->close();
             } else {
@@ -317,7 +570,6 @@ unset($_SESSION['error_msg']);
                                 <h3 class="student-name"><?= htmlspecialchars($row['nama']) ?></h3>
                                 <span class="student-nis"><?= htmlspecialchars($row['nis']) ?></span>
                                 <span class="student-role">Software Engineer</span>
-                                
                             </div>
                             <?php endwhile; ?>
                         <?php else: ?>
