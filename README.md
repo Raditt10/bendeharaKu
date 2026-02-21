@@ -20,7 +20,7 @@
     </td>
     <td width="50%" align="center">
       <img src="screenshot/login.png" alt="Halaman Login" width="100%">
-      <br><sub><b>Halaman Login + Google OAuth</b></sub>
+      <br><sub><b>Halaman Login</b></sub>
     </td>
   </tr>
   <tr>
