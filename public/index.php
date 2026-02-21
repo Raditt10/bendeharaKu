@@ -11,12 +11,12 @@ require_once __DIR__ . '/../app/Models/Database.php';
 
 // Helper: Get Page
 $page = isset($_GET['page']) && is_string($_GET['page']) ? trim($_GET['page']) : 'home';
-$safePage = basename($page); 
+$safePage = basename($page);
 
 // ==========================================
 // 2. ROUTING LOGIC & AUTHENTICATION
 // ==========================================
-$authRequired = ['dashboard','income','expenses','students','add_income','add_expense','add_student','edit_income','edit_expense','edit_student','report', 'add_dues', 'edit_dues', 'delete_report', 'profile', 'edit_profile'];
+$authRequired = ['dashboard', 'income', 'expenses', 'students', 'add_income', 'add_expense', 'add_student', 'edit_income', 'edit_expense', 'edit_student', 'report', 'add_dues', 'edit_dues', 'delete_report', 'profile', 'edit_profile'];
 
 if (in_array($page, $authRequired, true)) {
     if (!isset($_SESSION['nis'])) {
@@ -42,11 +42,12 @@ if ($page === 'login_success') {
         header("Location: ?page=login");
         exit;
     }
-    
+
     $namaAman = htmlspecialchars($_SESSION['nama'], ENT_QUOTES, 'UTF-8');
-    ?>
+?>
     <!DOCTYPE html>
     <html lang="id">
+
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -54,36 +55,284 @@ if ($page === 'login_success') {
         <title>Login Berhasil</title>
         <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
         <style>
-            * { margin: 0; padding: 0; box-sizing: border-box; }
-            body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f8fafc; min-height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-            .overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.45); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; animation: fadeIn 0.3s ease forwards; }
-            @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-            .card { background: #ffffff; border-radius: 28px; padding: 52px 48px 44px; width: 420px; max-width: calc(100vw - 40px); text-align: center; position: relative; overflow: hidden; box-shadow: 0 0 0 1px rgba(79, 70, 229, 0.08), 0 24px 64px -12px rgba(79, 70, 229, 0.22), 0 8px 24px -4px rgba(0,0,0,0.08); animation: slideUp 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
-            @keyframes slideUp { from { opacity: 0; transform: translateY(40px) scale(0.94); } to { opacity: 1; transform: translateY(0) scale(1); } }
-            .card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, #6366f1, #4f46e5, #818cf8, #4f46e5); background-size: 200% 100%; animation: shimmer 2s linear infinite; }
-            @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
-            .glow-ring { position: relative; width: 96px; height: 96px; margin: 0 auto 28px; }
-            .glow-ring::before { content: ''; position: absolute; inset: -10px; border-radius: 50%; background: radial-gradient(circle, rgba(99,102,241,0.18) 0%, transparent 70%); animation: pulse 2s ease-in-out infinite; }
-            @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.12); opacity: 0.7; } }
-            .icon-circle { width: 96px; height: 96px; border-radius: 50%; background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%); display: flex; align-items: center; justify-content: center; position: relative; border: 2px solid rgba(99, 102, 241, 0.2); animation: popIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s both; }
-            @keyframes popIn { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-            .icon-circle svg { animation: drawCheck 0.5s ease 0.5s both; }
-            @keyframes drawCheck { from { opacity: 0; transform: scale(0.5) rotate(-15deg); } to { opacity: 1; transform: scale(1) rotate(0deg); } }
-            .badge { display: inline-flex; align-items: center; gap: 6px; background: #eef2ff; color: #4f46e5; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 5px 12px; border-radius: 50px; margin-bottom: 16px; border: 1px solid #e0e7ff; animation: fadeUp 0.4s ease 0.4s both; }
-            .badge-dot { width: 6px; height: 6px; border-radius: 50%; background: #4f46e5; animation: blink 1.2s ease-in-out infinite; }
-            @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-            .title { font-size: 1.75rem; font-weight: 800; color: #0f172a; letter-spacing: -0.03em; margin-bottom: 8px; animation: fadeUp 0.4s ease 0.5s both; }
-            .subtitle { font-size: 1rem; color: #64748b; font-weight: 500; margin-bottom: 32px; animation: fadeUp 0.4s ease 0.6s both; }
-            .subtitle strong { color: #4f46e5; font-weight: 700; }
-            @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
-            .progress-wrap { background: #f1f5f9; border-radius: 99px; height: 6px; overflow: hidden; margin-bottom: 14px; animation: fadeUp 0.4s ease 0.7s both; }
-            .progress-bar { height: 100%; width: 0%; border-radius: 99px; background: linear-gradient(90deg, #6366f1, #818cf8); transition: width 1.8s cubic-bezier(0.4, 0, 0.2, 1); }
-            .progress-label { font-size: 0.8rem; color: #94a3b8; font-weight: 500; animation: fadeUp 0.4s ease 0.7s both; }
-            .particles { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
-            .particle { position: absolute; opacity: 0; animation: confetti 1.2s ease forwards; }
-            @keyframes confetti { 0% { opacity: 1; transform: translate(0, 0) rotate(0deg) scale(1); } 100% { opacity: 0; transform: translate(var(--tx), var(--ty)) rotate(var(--rot)) scale(0.3); } }
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                font-family: 'Plus Jakarta Sans', sans-serif;
+                background: #f8fafc;
+                min-height: 100vh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                overflow: hidden;
+            }
+
+            .overlay {
+                position: fixed;
+                inset: 0;
+                background: rgba(15, 23, 42, 0.45);
+                backdrop-filter: blur(6px);
+                -webkit-backdrop-filter: blur(6px);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                animation: fadeIn 0.3s ease forwards;
+            }
+
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                }
+
+                to {
+                    opacity: 1;
+                }
+            }
+
+            .card {
+                background: #ffffff;
+                border-radius: 28px;
+                padding: 52px 48px 44px;
+                width: 420px;
+                max-width: calc(100vw - 40px);
+                text-align: center;
+                position: relative;
+                overflow: hidden;
+                box-shadow: 0 0 0 1px rgba(79, 70, 229, 0.08), 0 24px 64px -12px rgba(79, 70, 229, 0.22), 0 8px 24px -4px rgba(0, 0, 0, 0.08);
+                animation: slideUp 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            }
+
+            @keyframes slideUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(40px) scale(0.94);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0) scale(1);
+                }
+            }
+
+            .card::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 4px;
+                background: linear-gradient(90deg, #6366f1, #4f46e5, #818cf8, #4f46e5);
+                background-size: 200% 100%;
+                animation: shimmer 2s linear infinite;
+            }
+
+            @keyframes shimmer {
+                0% {
+                    background-position: 200% 0;
+                }
+
+                100% {
+                    background-position: -200% 0;
+                }
+            }
+
+            .glow-ring {
+                position: relative;
+                width: 96px;
+                height: 96px;
+                margin: 0 auto 28px;
+            }
+
+            .glow-ring::before {
+                content: '';
+                position: absolute;
+                inset: -10px;
+                border-radius: 50%;
+                background: radial-gradient(circle, rgba(99, 102, 241, 0.18) 0%, transparent 70%);
+                animation: pulse 2s ease-in-out infinite;
+            }
+
+            @keyframes pulse {
+
+                0%,
+                100% {
+                    transform: scale(1);
+                    opacity: 1;
+                }
+
+                50% {
+                    transform: scale(1.12);
+                    opacity: 0.7;
+                }
+            }
+
+            .icon-circle {
+                width: 96px;
+                height: 96px;
+                border-radius: 50%;
+                background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                position: relative;
+                border: 2px solid rgba(99, 102, 241, 0.2);
+                animation: popIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s both;
+            }
+
+            @keyframes popIn {
+                from {
+                    transform: scale(0);
+                    opacity: 0;
+                }
+
+                to {
+                    transform: scale(1);
+                    opacity: 1;
+                }
+            }
+
+            .icon-circle svg {
+                animation: drawCheck 0.5s ease 0.5s both;
+            }
+
+            @keyframes drawCheck {
+                from {
+                    opacity: 0;
+                    transform: scale(0.5) rotate(-15deg);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: scale(1) rotate(0deg);
+                }
+            }
+
+            .badge {
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                background: #eef2ff;
+                color: #4f46e5;
+                font-size: 0.72rem;
+                font-weight: 700;
+                letter-spacing: 0.08em;
+                text-transform: uppercase;
+                padding: 5px 12px;
+                border-radius: 50px;
+                margin-bottom: 16px;
+                border: 1px solid #e0e7ff;
+                animation: fadeUp 0.4s ease 0.4s both;
+            }
+
+            .badge-dot {
+                width: 6px;
+                height: 6px;
+                border-radius: 50%;
+                background: #4f46e5;
+                animation: blink 1.2s ease-in-out infinite;
+            }
+
+            @keyframes blink {
+
+                0%,
+                100% {
+                    opacity: 1;
+                }
+
+                50% {
+                    opacity: 0.3;
+                }
+            }
+
+            .title {
+                font-size: 1.75rem;
+                font-weight: 800;
+                color: #0f172a;
+                letter-spacing: -0.03em;
+                margin-bottom: 8px;
+                animation: fadeUp 0.4s ease 0.5s both;
+            }
+
+            .subtitle {
+                font-size: 1rem;
+                color: #64748b;
+                font-weight: 500;
+                margin-bottom: 32px;
+                animation: fadeUp 0.4s ease 0.6s both;
+            }
+
+            .subtitle strong {
+                color: #4f46e5;
+                font-weight: 700;
+            }
+
+            @keyframes fadeUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(12px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .progress-wrap {
+                background: #f1f5f9;
+                border-radius: 99px;
+                height: 6px;
+                overflow: hidden;
+                margin-bottom: 14px;
+                animation: fadeUp 0.4s ease 0.7s both;
+            }
+
+            .progress-bar {
+                height: 100%;
+                width: 0%;
+                border-radius: 99px;
+                background: linear-gradient(90deg, #6366f1, #818cf8);
+                transition: width 1.8s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+
+            .progress-label {
+                font-size: 0.8rem;
+                color: #94a3b8;
+                font-weight: 500;
+                animation: fadeUp 0.4s ease 0.7s both;
+            }
+
+            .particles {
+                position: absolute;
+                inset: 0;
+                pointer-events: none;
+                overflow: hidden;
+            }
+
+            .particle {
+                position: absolute;
+                opacity: 0;
+                animation: confetti 1.2s ease forwards;
+            }
+
+            @keyframes confetti {
+                0% {
+                    opacity: 1;
+                    transform: translate(0, 0) rotate(0deg) scale(1);
+                }
+
+                100% {
+                    opacity: 0;
+                    transform: translate(var(--tx), var(--ty)) rotate(var(--rot)) scale(0.3);
+                }
+            }
         </style>
     </head>
+
     <body>
         <div class="overlay">
             <div class="card">
@@ -110,43 +359,48 @@ if ($page === 'login_success') {
             </div>
         </div>
         <script>
-        (function() {
-            var colors = ['#4f46e5','#818cf8','#6366f1','#a5b4fc','#c7d2fe','#34d399','#fbbf24'];
-            var container = document.getElementById('particles');
-            for (var i = 0; i < 28; i++) {
-                var p = document.createElement('div');
-                p.className = 'particle';
-                var angle = Math.random() * 360;
-                var dist  = 80 + Math.random() * 160;
-                var tx = Math.cos(angle * Math.PI / 180) * dist;
-                var ty = Math.sin(angle * Math.PI / 180) * dist - 60;
-                var color = colors[Math.floor(Math.random() * colors.length)];
-                var w = (5 + Math.random() * 7).toFixed(1);
-                var h = (5 + Math.random() * 7).toFixed(1);
-                var br = Math.random() > 0.5 ? '50%' : '2px';
-                var delay = (0.3 + Math.random() * 0.4).toFixed(2);
-                var dur   = (0.8 + Math.random() * 0.6).toFixed(2);
-                p.style.left = '50%';
-                p.style.top  = '50%';
-                p.style.background = color;
-                p.style.setProperty('--tx', tx.toFixed(1) + 'px');
-                p.style.setProperty('--ty', ty.toFixed(1) + 'px');
-                p.style.setProperty('--rot', (Math.random() * 540 - 270).toFixed(1) + 'deg');
-                p.style.animationDelay    = delay + 's';
-                p.style.animationDuration = dur + 's';
-                p.style.width  = w + 'px';
-                p.style.height = h + 'px';
-                p.style.borderRadius = br;
-                container.appendChild(p);
-            }
-            var bar = document.getElementById('progressBar');
-            setTimeout(function() { bar.style.width = '100%'; }, 100);
-            setTimeout(function() { window.location.href = '?page=dashboard'; }, 2100);
-        })();
+            (function() {
+                var colors = ['#4f46e5', '#818cf8', '#6366f1', '#a5b4fc', '#c7d2fe', '#34d399', '#fbbf24'];
+                var container = document.getElementById('particles');
+                for (var i = 0; i < 28; i++) {
+                    var p = document.createElement('div');
+                    p.className = 'particle';
+                    var angle = Math.random() * 360;
+                    var dist = 80 + Math.random() * 160;
+                    var tx = Math.cos(angle * Math.PI / 180) * dist;
+                    var ty = Math.sin(angle * Math.PI / 180) * dist - 60;
+                    var color = colors[Math.floor(Math.random() * colors.length)];
+                    var w = (5 + Math.random() * 7).toFixed(1);
+                    var h = (5 + Math.random() * 7).toFixed(1);
+                    var br = Math.random() > 0.5 ? '50%' : '2px';
+                    var delay = (0.3 + Math.random() * 0.4).toFixed(2);
+                    var dur = (0.8 + Math.random() * 0.6).toFixed(2);
+                    p.style.left = '50%';
+                    p.style.top = '50%';
+                    p.style.background = color;
+                    p.style.setProperty('--tx', tx.toFixed(1) + 'px');
+                    p.style.setProperty('--ty', ty.toFixed(1) + 'px');
+                    p.style.setProperty('--rot', (Math.random() * 540 - 270).toFixed(1) + 'deg');
+                    p.style.animationDelay = delay + 's';
+                    p.style.animationDuration = dur + 's';
+                    p.style.width = w + 'px';
+                    p.style.height = h + 'px';
+                    p.style.borderRadius = br;
+                    container.appendChild(p);
+                }
+                var bar = document.getElementById('progressBar');
+                setTimeout(function() {
+                    bar.style.width = '100%';
+                }, 100);
+                setTimeout(function() {
+                    window.location.href = '?page=dashboard';
+                }, 2100);
+            })();
         </script>
     </body>
+
     </html>
-    <?php
+<?php
     exit;
 }
 
@@ -158,7 +412,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $page === 'edit_profile') {
     if (isset($_POST['simpan_profil'])) {
         $nama_baru  = trim($_POST['nama']);
         $email_baru = trim($_POST['email']);
-        $id_user = $_SESSION['user_id']; 
+        $id_user = $_SESSION['user_id'];
         $conn = Database::getInstance()->getConnection();
         $stmt = $conn->prepare("UPDATE users SET nama = ?, email = ? WHERE id_user = ?");
         $stmt->bind_param("ssi", $nama_baru, $email_baru, $id_user);
@@ -226,7 +480,8 @@ if ($page === 'income' && isset($_GET['id']) && $_SESSION['role'] === 'admin') {
     $stmt = $conn->prepare("DELETE FROM pemasukan WHERE id_pemasukan = ?");
     $stmt->bind_param("i", $_GET['id']);
     $stmt->execute();
-    header('Location: ?page=income'); exit;
+    header('Location: ?page=income');
+    exit;
 }
 
 // ==========================================
@@ -246,7 +501,7 @@ $error_msg = '';
 if (isset($_SESSION['error_msg'])) {
     $error_msg = $_SESSION['error_msg'];
     unset($_SESSION['error_msg']);
-} 
+}
 // 2. Tangkap error dari URL (Sesuai screenshot kamu yang pakai ?err=...)
 else if (isset($_GET['err'])) {
     $error_msg = $_GET['err'];
@@ -254,6 +509,7 @@ else if (isset($_GET['err'])) {
 ?>
 <!doctype html>
 <html lang="id">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -267,94 +523,431 @@ else if (isset($_GET['err'])) {
             DESIGN SYSTEM & RESET
            ========================================= */
         :root {
-            --primary-50: #eef2ff; --primary-100: #e0e7ff; --primary-200: #c7d2fe;
-            --primary-400: #818cf8; --primary-500: #6366f1; --primary-600: #4f46e5; --primary-700: #4338ca;
-            --gray-50: #f9fafb; --gray-100: #f3f4f6; --gray-200: #e5e7eb; --gray-300: #d1d5db;
-            --gray-500: #6b7280; --gray-600: #4b5563; --gray-900: #111827;
-            --bg-body: var(--gray-50); --text-primary: var(--gray-900);
-            --radius-lg: 0.5rem; --radius-xl: 0.75rem; --radius-2xl: 1rem;
+            --primary-50: #eef2ff;
+            --primary-100: #e0e7ff;
+            --primary-200: #c7d2fe;
+            --primary-400: #818cf8;
+            --primary-500: #6366f1;
+            --primary-600: #4f46e5;
+            --primary-700: #4338ca;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-900: #111827;
+            --bg-body: var(--gray-50);
+            --text-primary: var(--gray-900);
+            --radius-lg: 0.5rem;
+            --radius-xl: 0.75rem;
+            --radius-2xl: 1rem;
             --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
             --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
             --transition-base: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        html { scroll-behavior: smooth; }
-        section[id] { scroll-margin-top: 100px; }
+        html {
+            scroll-behavior: smooth;
+        }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--bg-body); color: var(--gray-600); line-height: 1.6; overflow-x: hidden; }
-        h1, h2, h3 { color: var(--text-primary); font-weight: 700; letter-spacing: -0.02em; }
-        a { color: var(--primary-600); text-decoration: none; transition: var(--transition-base); }
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 1rem; }
+        section[id] {
+            scroll-margin-top: 100px;
+        }
 
-        .btn { display: inline-flex; align-items: center; justify-content: center; padding: 12px 28px; border-radius: 50px; font-weight: 700; font-size: 1rem; cursor: pointer; border: 1px solid transparent; transition: var(--transition-base); text-decoration: none; }
-        .btn-primary { background-color: var(--primary-600); color: white; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3); }
-        .btn-primary:hover { background-color: var(--primary-700); transform: translateY(-2px); color: white; box-shadow: 0 6px 16px rgba(79, 70, 229, 0.4); }
-        
-        .form-control { width: 100%; padding: 10px 14px; border: 1px solid var(--gray-300); border-radius: var(--radius-lg); font-size: 1rem; margin-bottom: 16px; }
-        .form-control:focus { border-color: var(--primary-500); outline: none; box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1); }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-        .hero { padding: 100px 0 80px; background: radial-gradient(circle at top right, var(--primary-50), transparent 70%); text-align: center; }
-        .hero h1 { font-size: 3.5rem; margin-bottom: 16px; background: linear-gradient(135deg, var(--text-primary) 0%, var(--primary-600) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .hero p { font-size: 1.15rem; color: var(--gray-500); max-width: 600px; margin: 0 auto 32px; }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--gray-600);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
 
-        .section-title { text-align: center; margin-bottom: 40px; }
-        .section-title h2 { font-size: 2.25rem; margin-bottom: 10px; }
+        h1,
+        h2,
+        h3 {
+            color: var(--text-primary);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
 
-        .features { padding: 60px 0; background: white; }
-        .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
-        .feature-card { padding: 32px; border-radius: var(--radius-2xl); border: 1px solid var(--gray-200); transition: var(--transition-base); background: var(--gray-50); }
-        .feature-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); border-color: var(--primary-200); background: white; }
+        a {
+            color: var(--primary-600);
+            text-decoration: none;
+            transition: var(--transition-base);
+        }
 
-        .about-section { padding: 80px 0; background: var(--gray-50); border-top: 1px solid var(--gray-200); }
-        .student-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 24px; margin-top: 40px; }
-        .student-card { background: white; border: 1px solid var(--gray-200); border-radius: 16px; padding: 24px; text-align: center; position: relative; overflow: hidden; transition: all 0.3s ease; }
-        .student-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px -10px rgba(79, 70, 229, 0.15); border-color: var(--primary-200); }
-        .card-deco { position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: linear-gradient(90deg, var(--primary-400), var(--primary-600)); }
-        .student-avatar { width: 70px; height: 70px; margin: 0 auto 16px; border-radius: 50%; background: linear-gradient(135deg, var(--primary-100), var(--primary-50)); color: var(--primary-700); font-size: 1.5rem; font-weight: 700; display: flex; align-items: center; justify-content: center; border: 2px solid white; box-shadow: 0 0 0 2px var(--primary-100); }
-        .student-name { font-size: 1.1rem; font-weight: 700; color: var(--gray-900); margin-bottom: 4px; }
-        .student-nis { display: inline-block; background: var(--gray-100); color: var(--gray-500); padding: 2px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; margin-bottom: 12px; }
-        .student-role { font-size: 0.85rem; color: var(--primary-600); font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; display: block; margin-bottom: 16px;}
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 28px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: var(--transition-base);
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-600);
+            color: white;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-700);
+            transform: translateY(-2px);
+            color: white;
+            box-shadow: 0 6px 16px rgba(79, 70, 229, 0.4);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--radius-lg);
+            font-size: 1rem;
+            margin-bottom: 16px;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-500);
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+        }
+
+        .hero {
+            padding: 100px 0 80px;
+            background: radial-gradient(circle at top right, var(--primary-50), transparent 70%);
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--primary-600) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.15rem;
+            color: var(--gray-500);
+            max-width: 600px;
+            margin: 0 auto 32px;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .section-title h2 {
+            font-size: 2.25rem;
+            margin-bottom: 10px;
+        }
+
+        .features {
+            padding: 60px 0;
+            background: white;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+        }
+
+        .feature-card {
+            padding: 32px;
+            border-radius: var(--radius-2xl);
+            border: 1px solid var(--gray-200);
+            transition: var(--transition-base);
+            background: var(--gray-50);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary-200);
+            background: white;
+        }
+
+        .about-section {
+            padding: 80px 0;
+            background: var(--gray-50);
+            border-top: 1px solid var(--gray-200);
+        }
+
+        .student-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 24px;
+            margin-top: 40px;
+        }
+
+        .student-card {
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .student-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px -10px rgba(79, 70, 229, 0.15);
+            border-color: var(--primary-200);
+        }
+
+        .card-deco {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-400), var(--primary-600));
+        }
+
+        .student-avatar {
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 16px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-100), var(--primary-50));
+            color: var(--primary-700);
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid white;
+            box-shadow: 0 0 0 2px var(--primary-100);
+        }
+
+        .student-name {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: 4px;
+        }
+
+        .student-nis {
+            display: inline-block;
+            background: var(--gray-100);
+            color: var(--gray-500);
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .student-role {
+            font-size: 0.85rem;
+            color: var(--primary-600);
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            display: block;
+            margin-bottom: 16px;
+        }
 
         /* --- SYARAT & KETENTUAN CSS --- */
-        .terms-section { padding: 80px 0; background: white; border-top: 1px solid var(--gray-200); }
-        .terms-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; margin-top: 40px; }
-        .term-card { padding: 24px; background: var(--gray-50); border-radius: var(--radius-xl); border: 1px solid var(--gray-200); display: flex; align-items: flex-start; gap: 16px; transition: var(--transition-base); }
-        .term-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-sm); border-color: var(--primary-200); background: white; }
-        .term-icon { flex-shrink: 0; width: 48px; height: 48px; background: var(--primary-100); color: var(--primary-600); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
-        .term-content h3 { font-size: 1.1rem; margin-bottom: 6px; color: var(--gray-900); }
-        .term-content p { font-size: 0.9rem; color: var(--gray-500); margin: 0; }
+        .terms-section {
+            padding: 80px 0;
+            background: white;
+            border-top: 1px solid var(--gray-200);
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-top: 40px;
+        }
+
+        .term-card {
+            padding: 24px;
+            background: var(--gray-50);
+            border-radius: var(--radius-xl);
+            border: 1px solid var(--gray-200);
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            transition: var(--transition-base);
+        }
+
+        .term-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-sm);
+            border-color: var(--primary-200);
+            background: white;
+        }
+
+        .term-icon {
+            flex-shrink: 0;
+            width: 48px;
+            height: 48px;
+            background: var(--primary-100);
+            color: var(--primary-600);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .term-content h3 {
+            font-size: 1.1rem;
+            margin-bottom: 6px;
+            color: var(--gray-900);
+        }
+
+        .term-content p {
+            font-size: 0.9rem;
+            color: var(--gray-500);
+            margin: 0;
+        }
 
         /* --- HUBUNGI KAMI CSS --- */
-        .contact-section { padding: 80px 0; background: var(--primary-50); }
-        .contact-wrapper { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; background: white; padding: 48px; border-radius: var(--radius-2xl); box-shadow: var(--shadow-lg); border: 1px solid var(--gray-200); }
-        .contact-info h2 { font-size: 2rem; margin-bottom: 12px; }
-        .contact-info p { color: var(--gray-500); margin-bottom: 32px; font-size: 1.05rem; }
-        .contact-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 20px; }
-        .contact-list li { display: flex; align-items: center; gap: 16px; font-weight: 600; color: var(--text-primary); }
-        .contact-icon { width: 44px; height: 44px; background: var(--primary-50); color: var(--primary-600); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
-        .contact-form { display: flex; flex-direction: column; gap: 16px; }
-        .contact-form label { font-size: 0.9rem; font-weight: 600; color: var(--gray-900); margin-bottom: -8px; }
-        .contact-form textarea { resize: vertical; min-height: 120px; font-family: inherit; }
+        .contact-section {
+            padding: 80px 0;
+            background: var(--primary-50);
+        }
+
+        .contact-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 48px;
+            background: white;
+            padding: 48px;
+            border-radius: var(--radius-2xl);
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--gray-200);
+        }
+
+        .contact-info h2 {
+            font-size: 2rem;
+            margin-bottom: 12px;
+        }
+
+        .contact-info p {
+            color: var(--gray-500);
+            margin-bottom: 32px;
+            font-size: 1.05rem;
+        }
+
+        .contact-list {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .contact-list li {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .contact-icon {
+            width: 44px;
+            height: 44px;
+            background: var(--primary-50);
+            color: var(--primary-600);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .contact-form {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .contact-form label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-bottom: -8px;
+        }
+
+        .contact-form textarea {
+            resize: vertical;
+            min-height: 120px;
+            font-family: inherit;
+        }
 
         /* Animation Classes */
-        .reveal { opacity: 0; transition: all 0.8s ease-out; }
-        .fade-up { transform: translateY(40px); }
-        .fade-left { transform: translateX(-40px); }
-        .fade-right { transform: translateX(40px); }
-        .reveal.active { opacity: 1; transform: translate(0, 0); }
-        .delay-100 { transition-delay: 0.1s; }
-        .delay-200 { transition-delay: 0.2s; }
+        .reveal {
+            opacity: 0;
+            transition: all 0.8s ease-out;
+        }
+
+        .fade-up {
+            transform: translateY(40px);
+        }
+
+        .fade-left {
+            transform: translateX(-40px);
+        }
+
+        .fade-right {
+            transform: translateX(40px);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translate(0, 0);
+        }
+
+        .delay-100 {
+            transition-delay: 0.1s;
+        }
+
+        .delay-200 {
+            transition-delay: 0.2s;
+        }
 
         @media (max-width: 768px) {
-            .hero h1 { font-size: 2.5rem; }
-            .contact-wrapper { grid-template-columns: 1fr; padding: 32px 24px; }
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .contact-wrapper {
+                grid-template-columns: 1fr;
+                padding: 32px 24px;
+            }
         }
     </style>
 </head>
+
 <body>
 
-    <?php 
+    <?php
     $headerPath = __DIR__ . '/../app/Views/partials/header.php';
     if (is_file($headerPath)) include $headerPath;
     ?>
@@ -408,23 +1001,26 @@ else if (isset($_GET['err'])) {
                         <?php
                         $conn = Database::getInstance()->getConnection();
                         $querySiswa = mysqli_query($conn, "SELECT * FROM siswa ORDER BY nama ASC");
-                        if ($querySiswa && mysqli_num_rows($querySiswa) > 0): 
+                        if ($querySiswa && mysqli_num_rows($querySiswa) > 0):
                             $delayCounter = 0;
-                            while ($row = mysqli_fetch_assoc($querySiswa)): 
+                            while ($row = mysqli_fetch_assoc($querySiswa)):
                                 $initials = '';
                                 $parts = explode(' ', $row['nama']);
-                                for($i=0; $i<min(2, count($parts)); $i++) { $initials .= strtoupper(substr($parts[$i], 0, 1)); }
+                                for ($i = 0; $i < min(2, count($parts)); $i++) {
+                                    $initials .= strtoupper(substr($parts[$i], 0, 1));
+                                }
                                 $delayClass = 'delay-' . (($delayCounter % 3) * 100);
                                 $delayCounter++;
                         ?>
-                            <div class="student-card reveal fade-up <?= $delayClass ?>">
-                                <div class="card-deco"></div>
-                                <div class="student-avatar"><?= $initials ?></div>
-                                <h3 class="student-name"><?= htmlspecialchars($row['nama']) ?></h3>
-                                <span class="student-nis"><?= htmlspecialchars($row['nis']) ?></span>
-                                <span class="student-role">Software Engineer</span>
-                            </div>
-                        <?php endwhile; else: ?>
+                                <div class="student-card reveal fade-up <?= $delayClass ?>">
+                                    <div class="card-deco"></div>
+                                    <div class="student-avatar"><?= $initials ?></div>
+                                    <h3 class="student-name"><?= htmlspecialchars($row['nama']) ?></h3>
+                                    <span class="student-nis"><?= htmlspecialchars($row['nis']) ?></span>
+                                    <span class="student-role">Software Engineer</span>
+                                </div>
+                            <?php endwhile;
+                        else: ?>
                             <div style="grid-column: 1 / -1; text-align: center; padding: 40px;">Belum ada data siswa.</div>
                         <?php endif; ?>
                     </div>
@@ -440,7 +1036,12 @@ else if (isset($_GET['err'])) {
                     <div class="terms-grid">
                         <div class="term-card reveal fade-up">
                             <div class="term-icon">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                                </svg>
                             </div>
                             <div class="term-content">
                                 <h3>Wajib Bayar Tepat Waktu</h3>
@@ -449,7 +1050,9 @@ else if (isset($_GET['err'])) {
                         </div>
                         <div class="term-card reveal fade-up delay-100">
                             <div class="term-icon">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                                </svg>
                             </div>
                             <div class="term-content">
                                 <h3>Transparansi Laporan</h3>
@@ -458,7 +1061,11 @@ else if (isset($_GET['err'])) {
                         </div>
                         <div class="term-card reveal fade-up delay-200">
                             <div class="term-icon">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <line x1="15" y1="9" x2="9" y2="15"></line>
+                                    <line x1="9" y1="9" x2="15" y2="15"></line>
+                                </svg>
                             </div>
                             <div class="term-content">
                                 <h3>Kepentingan Bersama</h3>
@@ -471,34 +1078,35 @@ else if (isset($_GET['err'])) {
 
             <section id="contact" class="contact-section">
                 <div class="container">
-                    <div class="contact-wrapper reveal fade-up">
+                    <div class="contact-wrapper reveal fade-up" style="display: block; max-width: 600px; margin: 0 auto; text-align: center; padding: 48px 32px;">
                         <div class="contact-info">
-                            <h2>Hubungi kami</h2>
-                            <p>Ada kendala soal pembayaran kas atau masalah login? Hubungi pengurus kelas kami.</p>
-                            <ul class="contact-list">
-                                <li><div class="contact-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg></div> +62 896-6191-6855 (WA)</li>
-                                <li><div class="contact-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></div> bendahara.rpl1@gmail.com</li>
-                            </ul>
-                        </div>
-                        <div>
-                            <form class="contact-form">
-                                <label>Nama Lengkap</label>
-                                <input type="text" class="form-control" placeholder="Nama kamu" required>
-                                <label>Pesan</label>
-                                <textarea class="form-control" placeholder="Apa yang bisa kami bantu?" required></textarea>
-                                <button type="button" class="btn btn-primary" onclick="alert('Pesan terkirim (Demo)')">Kirim Pesan</button>
-                            </form>
+                            <h2 style="margin-bottom: 8px;">Hubungi Kami</h2>
+                            <p style="margin-bottom: 24px;">Ada kendala soal pembayaran kas atau masalah login? Langsung saja hubungi pengurus kelas kami!</p>
+
+                            <div style="margin-top: 32px; margin-bottom: 24px;">
+                                <a href="https://wa.me/6289661916855?text=Halo%20pengurus%20kas%20XI%20RPL%201%2C%20saya%20butuh%20bantuan%20terkait%20kas%20kelas%20%2F%20akun%20saya." target="_blank" class="btn btn-primary" style="background-color: #25D366; color: white; border: none; display: inline-flex; gap: 10px; padding: 14px 32px; box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);">
+                                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                                    </svg>
+                                    Hubungi Lewat WhatsApp
+                                </a>
+                            </div>
+
+                            <p style="font-size: 0.95rem; color: var(--gray-500);">
+                                Atau kirim email ke: <br>
+                                <a href="mailto:bendahara.rpl1@gmail.com" style="color: var(--primary-600); font-weight: 600; text-decoration: none;">bendahara.rpl1@gmail.com</a>
+                            </p>
                         </div>
                     </div>
                 </div>
             </section>
 
-        <?php else: 
-            if (is_file($viewPath)) include $viewPath; 
+        <?php else:
+            if (is_file($viewPath)) include $viewPath;
         endif; ?>
     </main>
 
-    <?php 
+    <?php
     // LOAD FOOTER TERPISAH DARI FOLDER PARTIALS
     $footerPath = __DIR__ . '/../app/Views/partials/footer.php';
     if (is_file($footerPath)) include $footerPath;
@@ -512,9 +1120,12 @@ else if (isset($_GET['err'])) {
                         entry.target.classList.add('active');
                     }
                 });
-            }, { threshold: 0.1 });
+            }, {
+                threshold: 0.1
+            });
             document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
         });
     </script>
 </body>
+
 </html>
