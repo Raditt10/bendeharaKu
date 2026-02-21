@@ -230,7 +230,7 @@ if ($page === 'income' && isset($_GET['id']) && $_SESSION['role'] === 'admin') {
 }
 
 // ==========================================
-// 4. VIEW RENDERING
+// 4. VIEW RENDERING & ERROR HANDLING
 // ==========================================
 $viewPath = __DIR__ . '/../app/Views/' . $safePage . '.php';
 $altAdminView = __DIR__ . '/../app/Views/admin/' . $safePage . '.php';
@@ -239,8 +239,18 @@ if (!is_file($viewPath) && is_file($altAdminView)) {
     $viewPath = $altAdminView;
 }
 
-$error_msg = $_SESSION['error_msg'] ?? '';
-unset($_SESSION['error_msg']);
+// Inisialisasi pesan error
+$error_msg = '';
+
+// 1. Tangkap error dari Session (biasanya dari proses POST login)
+if (isset($_SESSION['error_msg'])) {
+    $error_msg = $_SESSION['error_msg'];
+    unset($_SESSION['error_msg']);
+} 
+// 2. Tangkap error dari URL (Sesuai screenshot kamu yang pakai ?err=...)
+else if (isset($_GET['err'])) {
+    $error_msg = $_GET['err'];
+}
 ?>
 <!doctype html>
 <html lang="id">
