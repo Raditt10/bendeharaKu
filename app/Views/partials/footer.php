@@ -195,7 +195,7 @@
 
         <div class="footer-bottom">
             <div class="copyright">
-                &copy; <?php echo date('Y'); ?> BendeharaKu. Dibuat dengan ❤️ oleh Raditt10.
+                &copy; <?php echo date('Y'); ?> BendeharaKu. All rights reserved.
             </div>
             
             <div class="status-badge">

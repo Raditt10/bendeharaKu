@@ -26,7 +26,7 @@ if (in_array($page, $authRequired, true)) {
     }
 }
 
-// Handler Controller
+// Handler Controller (Logout)
 if ($page === 'logout') {
     require_once __DIR__ . '/../app/Controllers/AuthController.php';
     $auth = new AuthController();
@@ -35,9 +35,86 @@ if ($page === 'logout') {
 }
 
 // ==========================================
-// 3. BACKEND HANDLERS
+// 3. BACKEND HANDLERS (TERMASUK GOOGLE LOGIN)
 // ==========================================
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $page === 'login') {
+    
+    // --- TAMBAHAN LOGIKA GOOGLE LOGIN ---
+    if (isset($_POST['credential'])) {
+        $jwt = $_POST['credential'];
+        $tokenParts = explode(".", $jwt);
+        
+        if (isset($tokenParts[1])) {
+            $tokenPayload = base64_decode($tokenParts[1]);
+            $jwtPayload = json_decode($tokenPayload);
+            $google_email = $jwtPayload->email ?? null;
+            
+            if ($google_email) {
+                $conn = Database::getInstance()->getConnection();
+                
+                $stmt = $conn->prepare("SELECT id_user, nama, nis, role FROM users WHERE email = ?");
+                $stmt->bind_param('s', $google_email);
+                $stmt->execute();
+                $result = $stmt->get_result();
+                $user = $result->fetch_assoc();
+                
+                if ($user) {
+                    if ($user['role'] === 'siswa') {
+                        $_SESSION['user_id'] = $user['id_user'];
+                        $_SESSION['nama'] = $user['nama'];
+                        $_SESSION['nis'] = $user['nis'];
+                        $_SESSION['role'] = $user['role'];
+                        
+                        // POPUP SWEETALERT SEBELUM KE DASHBOARD
+                        echo "
+                        <!DOCTYPE html>
+                        <html lang='id'>
+                        <head>
+                            <meta charset='utf-8'>
+                            <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+                            <title>Login Berhasil</title>
+                            <script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
+                            <link href='https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap' rel='stylesheet'>
+                            <style>body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f8fafc; margin:0; padding:0; }</style>
+                        </head>
+                        <body>
+                            <script>
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Berhasil Login!',
+                                    text: 'Selamat datang, " . addslashes($user['nama']) . "',
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                }).then(function() {
+                                    window.location.href = '?page=dashboard';
+                                });
+                            </script>
+                        </body>
+                        </html>
+                        ";
+                        exit;
+
+                    } else {
+                        $_SESSION['error_msg'] = "Login Google hanya untuk siswa.";
+                    }
+                } else {
+                    $_SESSION['error_msg'] = "Akun Google ($google_email) belum terdaftar.";
+                }
+                $stmt->close();
+            } else {
+                $_SESSION['error_msg'] = "Gagal memverifikasi akun Google.";
+            }
+        } else {
+            $_SESSION['error_msg'] = "Token Google tidak valid.";
+        }
+        
+        // Jika gagal, kembalikan ke halaman login
+        header("Location: ?page=login");
+        exit;
+    }
+    // --- AKHIR LOGIKA GOOGLE LOGIN ---
+
+    // Jika bukan Google (Login Manual), lanjutkan ke Controller bawaanmu
     require_once __DIR__ . '/../app/Controllers/AuthController.php';
     $auth = new AuthController();
     $auth->login();
@@ -216,7 +293,7 @@ unset($_SESSION['error_msg']);
             <section id="about" class="about-section">
                 <div class="container">
                     <div class="section-title reveal fade-up">
-                        <h2>Anggota Profesional</h2>
+                        <h2>Anggota Kami</h2>
                         <p>Developer muda dari XI RPL 1 yang siap berkarya.</p>
                     </div>
 
