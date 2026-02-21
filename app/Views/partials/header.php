@@ -677,7 +677,7 @@ if (!function_exists('isActive')) {
 
                 <a href="?page=home" class="nav-link <?= isActive('home') ?>">Beranda</a>
                 <a href="?page=home#features" class="nav-link">Fitur</a>
-                <a href="?page=home#terms" class="nav-link">Syarat</a> <a href="?page=#contact" class="nav-link">Hubungi Kami</a>
+                <a href="?page=home#terms" class="nav-link">Syarat</a> <a href="?page=home#contact" class="nav-link">Hubungi Kami</a>
                 <div class="auth-actions">
                     <a href="?page=register" class="btn-header btn-login">Daftar Sekarang</a>
                     <a href="?page=login" class="btn-header btn-register">Masuk</a>
