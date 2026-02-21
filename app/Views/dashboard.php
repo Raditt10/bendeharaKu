@@ -17,9 +17,18 @@ $koneksi = Database::getInstance()->getConnection();
 $tahun_ini = date('Y');
 $bulan_ini_angka = date('m');
 $bulan_ini_nama_ind = [
-    '01' => 'Januari', '02' => 'Februari', '03' => 'Maret', '04' => 'April',
-    '05' => 'Mei', '06' => 'Juni', '07' => 'Juli', '08' => 'Agustus',
-    '09' => 'September', '10' => 'Oktober', '11' => 'November', '12' => 'Desember'
+    '01' => 'Januari',
+    '02' => 'Februari',
+    '03' => 'Maret',
+    '04' => 'April',
+    '05' => 'Mei',
+    '06' => 'Juni',
+    '07' => 'Juli',
+    '08' => 'Agustus',
+    '09' => 'September',
+    '10' => 'Oktober',
+    '11' => 'November',
+    '12' => 'Desember'
 ][$bulan_ini_angka];
 
 // --- LOGIC DATABASE ---
@@ -39,7 +48,7 @@ $res_siswa = mysqli_query($koneksi, $q_siswa);
 $total_siswa = ($res_siswa) ? mysqli_fetch_assoc($res_siswa)['total'] : 0;
 
 // D. Grafik
-$data_bulan = array_fill_keys(['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'], 0);
+$data_bulan = array_fill_keys(['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'], 0);
 $q_chart = "SELECT bulan, SUM(jumlah) as total FROM pemasukan WHERE tahun = '$tahun_ini' GROUP BY bulan";
 $res_chart = mysqli_query($koneksi, $q_chart);
 
@@ -55,46 +64,58 @@ $values_bulan = json_encode(array_values($data_bulan));
 
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Dashboard Bendahara</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
+
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
         :root {
-            --primary: #4f46e5;      /* Indigo 600 */
-            --primary-dark: #4338ca; /* Indigo 700 */
-            --bg-body: #f8fafc;      /* Slate 50 */
-            --text-main: #0f172a;    /* Slate 900 */
-            --text-muted: #64748b;   /* Slate 500 */
+            --primary: #4f46e5;
+            /* Indigo 600 */
+            --primary-dark: #4338ca;
+            /* Indigo 700 */
+            --bg-body: #f8fafc;
+            /* Slate 50 */
+            --text-main: #0f172a;
+            /* Slate 900 */
+            --text-muted: #64748b;
+            /* Slate 500 */
             --white: #ffffff;
             --success: #10b981;
             --danger: #ef4444;
             --radius-card: 20px;
-            --shadow-soft: 0 10px 40px -10px rgba(0,0,0,0.05);
+            --shadow-soft: 0 10px 40px -10px rgba(0, 0, 0, 0.05);
         }
 
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
             background-color: var(--bg-body);
             color: var(--text-main);
             margin: 0;
-            padding-bottom: 90px; /* Space for bottom nav */
+            padding-bottom: 90px;
+            /* Space for bottom nav */
         }
 
         /* --- CONTENT WRAPPER --- */
         .main-content {
-            padding: 24px; /* Padding standar agar tidak nempel pojok */
+            padding: 24px;
+            /* Padding standar agar tidak nempel pojok */
             max-width: 1000px;
             margin: 0 auto;
-            padding-top: 30px; /* Tambahan jarak atas karena header dihapus */
+            padding-top: 30px;
+            /* Tambahan jarak atas karena header dihapus */
         }
 
         /* --- HORIZONTAL SCROLL CARDS (Mobile Feel) --- */
@@ -104,12 +125,15 @@ $values_bulan = json_encode(array_values($data_bulan));
             overflow-x: auto;
             padding-bottom: 20px;
             scroll-snap-type: x mandatory;
-            margin: 0 -24px; 
-            padding: 0 24px 20px 24px; 
+            margin: 0 -24px;
+            padding: 0 24px 20px 24px;
             -ms-overflow-style: none;
             scrollbar-width: none;
         }
-        .stats-scroller::-webkit-scrollbar { display: none; }
+
+        .stats-scroller::-webkit-scrollbar {
+            display: none;
+        }
 
         .stat-card {
             min-width: 260px;
@@ -123,8 +147,10 @@ $values_bulan = json_encode(array_values($data_bulan));
             overflow: hidden;
             transition: transform 0.2s;
         }
-        
-        .stat-card:active { transform: scale(0.98); }
+
+        .stat-card:active {
+            transform: scale(0.98);
+        }
 
         .stat-header {
             display: flex;
@@ -132,16 +158,31 @@ $values_bulan = json_encode(array_values($data_bulan));
             align-items: flex-start;
             margin-bottom: 16px;
         }
-        
+
         .icon-box {
-            width: 40px; height: 40px;
+            width: 40px;
+            height: 40px;
             border-radius: 12px;
-            display: flex; align-items: center; justify-content: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-size: 1.2rem;
         }
-        .bg-blue { background: #eff6ff; color: #2563eb; }
-        .bg-orange { background: #fff7ed; color: #f97316; }
-        .bg-purple { background: #f5f3ff; color: #8b5cf6; }
+
+        .bg-blue {
+            background: #eff6ff;
+            color: #2563eb;
+        }
+
+        .bg-orange {
+            background: #fff7ed;
+            color: #f97316;
+        }
+
+        .bg-purple {
+            background: #f5f3ff;
+            color: #8b5cf6;
+        }
 
         .stat-label {
             font-size: 0.85rem;
@@ -150,7 +191,7 @@ $values_bulan = json_encode(array_values($data_bulan));
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
-        
+
         .stat-value {
             font-size: 1.75rem;
             font-weight: 800;
@@ -166,8 +207,14 @@ $values_bulan = json_encode(array_values($data_bulan));
             align-items: center;
             gap: 4px;
         }
-        .text-up { color: var(--success); }
-        .text-neutral { color: var(--text-muted); }
+
+        .text-up {
+            color: var(--success);
+        }
+
+        .text-neutral {
+            color: var(--text-muted);
+        }
 
         /* --- CHART SECTION --- */
         .chart-section {
@@ -178,6 +225,7 @@ $values_bulan = json_encode(array_values($data_bulan));
             margin-top: 10px;
             position: relative;
         }
+
         .section-title {
             font-size: 1.1rem;
             font-weight: 700;
@@ -186,6 +234,7 @@ $values_bulan = json_encode(array_values($data_bulan));
             justify-content: space-between;
             align-items: center;
         }
+
         .chart-wrapper {
             position: relative;
             height: 300px;
@@ -201,8 +250,8 @@ $values_bulan = json_encode(array_values($data_bulan));
             background: var(--white);
             display: flex;
             justify-content: space-around;
-            padding: 12px 0 20px 0; 
-            box-shadow: 0 -4px 20px rgba(0,0,0,0.05);
+            padding: 12px 0 20px 0;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.05);
             z-index: 1000;
             border-top: 1px solid #f1f5f9;
         }
@@ -227,6 +276,7 @@ $values_bulan = json_encode(array_values($data_bulan));
         .nav-item.active {
             color: var(--primary);
         }
+
         .nav-item.active i {
             transform: translateY(-2px);
             transition: transform 0.2s;
@@ -243,12 +293,12 @@ $values_bulan = json_encode(array_values($data_bulan));
             padding: 12px 24px;
             border-radius: 50px;
             font-size: 0.9rem;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
             z-index: 2000;
             display: flex;
             align-items: center;
             gap: 10px;
-            transition: top 0.5s cubic-bezier(0.4,0,0.2,1), opacity 0.5s cubic-bezier(0.4,0,0.2,1);
+            transition: top 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             width: max-content;
             min-width: 180px;
             max-width: 96vw;
@@ -259,14 +309,17 @@ $values_bulan = json_encode(array_values($data_bulan));
             padding-left: 24px;
             padding-right: 24px;
         }
+
         .alert-float.show {
-            animation: slideDown 0.5s cubic-bezier(0.4,0,0.2,1);
+            animation: slideDown 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
+
         .alert-float.hide {
             top: -80px !important;
             opacity: 0 !important;
             pointer-events: none;
         }
+
         @media (max-width: 480px) {
             .alert-float {
                 font-size: 0.98rem;
@@ -282,7 +335,16 @@ $values_bulan = json_encode(array_values($data_bulan));
                 gap: 10px;
             }
         }
-        @keyframes slideDown { from { top: -60px; } to { top: 20px; } }
+
+        @keyframes slideDown {
+            from {
+                top: -60px;
+            }
+
+            to {
+                top: 20px;
+            }
+        }
 
         @media (min-width: 768px) {
             .stats-scroller {
@@ -292,25 +354,36 @@ $values_bulan = json_encode(array_values($data_bulan));
                 margin: 0;
                 padding: 0;
             }
-            .stat-card { min-width: auto; }
-            .bottom-nav { display: none; }
-            body { padding-bottom: 20px; }
+
+            .stat-card {
+                min-width: auto;
+            }
+
+            .bottom-nav {
+                display: none;
+            }
+
+            body {
+                padding-bottom: 20px;
+            }
         }
     </style>
 </head>
+
 <body>
 
     <?php if (!empty($_SESSION['success_msg'])): ?>
-    <div class="alert-float" id="alertBox">
-        <i class="fas fa-check-circle" style="color: #4ade80;"></i>
-        <span><?= htmlspecialchars($_SESSION['success_msg']) ?></span>
-    </div>
-    <?php unset($_SESSION['success_msg']); endif; ?>
+        <div class="alert-float" id="alertBox">
+            <i class="fas fa-check-circle" style="color: #4ade80;"></i>
+            <span><?= htmlspecialchars($_SESSION['success_msg']) ?></span>
+        </div>
+    <?php unset($_SESSION['success_msg']);
+    endif; ?>
 
     <div class="main-content">
-        
+
         <div class="stats-scroller">
-            
+
             <div class="stat-card">
                 <div class="stat-header">
                     <div>
@@ -324,7 +397,6 @@ $values_bulan = json_encode(array_values($data_bulan));
                 <div class="stat-trend text-neutral">
                     <i class="far fa-calendar-alt"></i> Data per <?= $bulan_ini_nama_ind ?>
                 </div>
-                <div style="position:absolute; right:-20px; bottom:-20px; width:100px; height:100px; background:#eff6ff; border-radius:50%; z-index:0;"></div>
             </div>
 
             <div class="stat-card">
@@ -402,11 +474,19 @@ $values_bulan = json_encode(array_values($data_bulan));
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
-                    legend: { display: false },
+                    legend: {
+                        display: false
+                    },
                     tooltip: {
                         backgroundColor: '#1e293b',
-                        titleFont: { family: "'Plus Jakarta Sans', sans-serif", size: 13 },
-                        bodyFont: { family: "'Plus Jakarta Sans', sans-serif", size: 13 },
+                        titleFont: {
+                            family: "'Plus Jakarta Sans', sans-serif",
+                            size: 13
+                        },
+                        bodyFont: {
+                            family: "'Plus Jakarta Sans', sans-serif",
+                            size: 13
+                        },
                         padding: 10,
                         cornerRadius: 8,
                         displayColors: false,
@@ -419,22 +499,34 @@ $values_bulan = json_encode(array_values($data_bulan));
                 },
                 scales: {
                     y: {
-                        border: { display: false },
-                        grid: { color: '#f1f5f9' },
+                        border: {
+                            display: false
+                        },
+                        grid: {
+                            color: '#f1f5f9'
+                        },
                         ticks: {
-                            font: { family: "'Plus Jakarta Sans', sans-serif", size: 11 },
+                            font: {
+                                family: "'Plus Jakarta Sans', sans-serif",
+                                size: 11
+                            },
                             color: '#94a3b8',
                             callback: function(value) {
-                                if(value >= 1000000) return (value/1000000) + 'jt';
-                                if(value >= 1000) return (value/1000) + 'rb';
+                                if (value >= 1000000) return (value / 1000000) + 'jt';
+                                if (value >= 1000) return (value / 1000) + 'rb';
                                 return value;
                             }
                         }
                     },
                     x: {
-                        grid: { display: false },
+                        grid: {
+                            display: false
+                        },
                         ticks: {
-                            font: { family: "'Plus Jakarta Sans', sans-serif", size: 11 },
+                            font: {
+                                family: "'Plus Jakarta Sans', sans-serif",
+                                size: 11
+                            },
                             color: '#94a3b8',
                             maxRotation: 0,
                             autoSkip: true,
@@ -447,16 +539,17 @@ $values_bulan = json_encode(array_values($data_bulan));
 
         // --- SHOW ANIMATION ON LOAD ---
         const alertBox = document.getElementById('alertBox');
-        if(alertBox) {
+        if (alertBox) {
             alertBox.classList.add('show');
         }
         // --- AUTO HIDE ALERT ---
         setTimeout(() => {
-            if(alertBox) {
+            if (alertBox) {
                 alertBox.classList.remove('show');
                 alertBox.classList.add('hide');
             }
         }, 4000);
     </script>
 </body>
+
 </html>

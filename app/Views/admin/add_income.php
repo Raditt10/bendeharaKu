@@ -77,7 +77,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         /* LAYOUT WRAPPER */
         .form-page-wrapper {
-            padding: 40px 20px 80px;
+            padding: 100px 20px 80px;
             max-width: 700px;
             margin: 0 auto;
             min-height: calc(100vh - 70px);

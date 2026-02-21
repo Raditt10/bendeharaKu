@@ -15,11 +15,14 @@ $koneksi = Database::getInstance()->getConnection();
 if (isset($_GET['delete_id']) && isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
     $id_hapus = mysqli_real_escape_string($koneksi, $_GET['delete_id']);
 
+    // Hapus data iuran yang berelasi dengan siswa ini terlebih dahulu
+    mysqli_query($koneksi, "DELETE FROM iuran WHERE id_siswa = '$id_hapus'");
+
     $deleteQuery = "DELETE FROM siswa WHERE id_siswa = '$id_hapus'";
     if (mysqli_query($koneksi, $deleteQuery)) {
         $_SESSION['success_msg'] = "Data siswa berhasil dihapus.";
     } else {
-        $_SESSION['error_msg'] = "Gagal menghapus data siswa.";
+        $_SESSION['error_msg'] = "Gagal menghapus data siswa: " . mysqli_error($koneksi);
     }
 
     // Redirect agar URL bersih

@@ -10,6 +10,19 @@ require_once __DIR__ . '/../Models/Database.php';
 $koneksi = Database::getInstance()->getConnection();
 
 // --- 1. LOGIC PHP & QUERY ---
+if (isset($_GET['delete_id']) && isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
+    $id_hapus = mysqli_real_escape_string($koneksi, $_GET['delete_id']);
+
+    $deleteQuery = "DELETE FROM iuran WHERE id_iuran = '$id_hapus'";
+    if (mysqli_query($koneksi, $deleteQuery)) {
+        $_SESSION['success_msg'] = "Data laporan iuran berhasil dihapus.";
+    } else {
+        $_SESSION['error_msg'] = "Gagal menghapus data laporan iuran: " . mysqli_error($koneksi);
+    }
+
+    echo "<script>window.location.href='?page=report';</script>";
+    exit;
+}
 
 // Flash Messages
 $success_msg = $_SESSION['success_msg'] ?? null;
@@ -390,29 +403,68 @@ $result = mysqli_query($koneksi, $query);
         color: #b91c1c;
     }
 
-    /* Alert */
-    .custom-alert {
-        padding: 16px;
-        border-radius: var(--radius-lg);
+    /* Alerts Premium */
+    .alert {
+        padding: 16px 20px;
+        border-radius: 12px;
         margin-bottom: 24px;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        font-size: 0.9rem;
-        font-weight: 500;
-        animation: slideDown 0.4s ease;
+        font-weight: 600;
+        font-size: 0.95rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        animation: slideDownFade 0.5s ease forwards;
+        gap: 12px;
     }
 
     .alert-success {
-        background: #ecfdf5;
-        border: 1px solid #a7f3d0;
+        background-color: #ecfdf5;
+        border: 1px solid #10b981;
         color: #065f46;
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
     }
 
     .alert-error {
-        background: #fef2f2;
-        border: 1px solid #fecaca;
+        background-color: #fef2f2;
+        border: 1px solid #ef4444;
         color: #991b1b;
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.15);
+    }
+
+    .alert-content {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex: 1;
+    }
+
+    .close-alert {
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        font-size: 1.5rem;
+        color: inherit;
+        opacity: 0.6;
+        line-height: 1;
+        padding: 0 4px;
+        transition: opacity 0.2s;
+    }
+
+    .close-alert:hover {
+        opacity: 1;
+    }
+
+    @keyframes slideDownFade {
+        from {
+            opacity: 0;
+            transform: translateY(-15px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 
     @keyframes slideDown {
@@ -591,9 +643,29 @@ $result = mysqli_query($koneksi, $query);
 <div class="container" style="padding-top: 40px; padding-bottom: 60px;">
 
     <?php if ($success_msg): ?>
-        <div class="custom-alert alert-success" id="alert-box">
-            <span><?= htmlspecialchars($success_msg) ?></span>
-            <button onclick="document.getElementById('alert-box').remove()" style="background:none;border:none;cursor:pointer;font-size:1.2rem;opacity:0.6;">&times;</button>
+        <div class="alert alert-success" id="alert-success">
+            <div class="alert-content">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+                <span><?= htmlspecialchars($success_msg) ?></span>
+            </div>
+            <button class="close-alert" onclick="document.getElementById('alert-success').style.display='none'">&times;</button>
+        </div>
+    <?php endif; ?>
+
+    <?php if ($error_msg): ?>
+        <div class="alert alert-error" id="alert-error">
+            <div class="alert-content">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+                <span><?= htmlspecialchars($error_msg) ?></span>
+            </div>
+            <button class="close-alert" onclick="document.getElementById('alert-error').style.display='none'">&times;</button>
         </div>
     <?php endif; ?>
 
