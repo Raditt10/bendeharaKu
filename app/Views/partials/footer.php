@@ -186,7 +186,7 @@
                 <h4>Dukungan</h4>
                 <ul class="footer-links">
                     <li><a href="#">Syarat Ketentuan</a></li>
-                    <li><a href="#">Hubungi Pengurus</a></li>
+                    <li><a href="#">Hubungi Kami</a></li>
                 </ul>
             </div>
         </div>
