@@ -14,14 +14,14 @@ if (!function_exists('isActive')) {
 
 <style>
     /* =========================================
-       1. VARIABLES & RESET
+        1. VARIABLES & RESET
        ========================================= */
     :root {
         --header-height: 70px;
         --primary-color: #2563eb;
         --text-main: #0f172a;
         --text-muted: #64748b;
-        --z-overlay: 990;      /* Di belakang sidebar agar tidak menghalangi klik */
+        --z-overlay: 990;
         --z-drawer: 1055;
         --z-toggle: 1060;
     }
@@ -29,14 +29,14 @@ if (!function_exists('isActive')) {
     body { padding-top: var(--header-height); margin: 0; }
 
     /* =========================================
-       2. HEADER STYLES (DESKTOP BASE)
+        2. HEADER STYLES (DESKTOP BASE)
        ========================================= */
     .site-header {
         background: #ffffff;
         position: fixed;
         top: 0; left: 0; right: 0;
         height: var(--header-height);
-        z-index: 1000;         /* Harus lebih tinggi dari z-overlay */
+        z-index: 1000;
         border-bottom: 1px solid #e2e8f0;
         transition: box-shadow 0.3s ease;
     }
@@ -107,7 +107,6 @@ if (!function_exists('isActive')) {
     }
     .nav-link.active::after, .nav-link:hover::after { width: 100%; }
 
-    /* Sembunyikan link profile ini di desktop (karena di desktop pakai dropdown) */
     .mobile-profile-link { display: none !important; }
 
     .auth-actions { display: flex; align-items: center; gap: 12px; }
@@ -130,19 +129,15 @@ if (!function_exists('isActive')) {
 
     .mobile-toggle { display: none; background: none; border: none; cursor: pointer; padding: 8px; color: var(--text-main); }
     
-    /* Overlay background transparan agar tidak sumpek */
     .mobile-overlay { 
         display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; 
         background: transparent; z-index: var(--z-overlay); 
         opacity: 0; visibility: hidden; transition: all 0.3s ease; 
     }
 
-    /* Sembunyikan tombol logout khusus mobile jika dibuka di Desktop */
     .mobile-logout-wrapper { display: none; }
 
-    /* =========================================
-       3. PROFILE DROPDOWN COMPONENT (DESKTOP)
-       ========================================= */
+    /* Profile Dropdown Desktop */
     .profile-dropdown-container {
         position: relative;
         margin-left: 10px;
@@ -179,7 +174,7 @@ if (!function_exists('isActive')) {
 
     .profile-info { text-align: left; }
     .profile-name { display: block; font-weight: 700; color: var(--text-main); font-size: 0.95rem; }
-    .profile-role-mobile { display: none; } /* Hanya muncul di mobile */
+    .profile-role-mobile { display: none; }
     
     .chevron-icon { color: var(--text-muted); transition: transform 0.3s; }
     .profile-dropdown-container.open .chevron-icon { transform: rotate(180deg); }
@@ -226,7 +221,7 @@ if (!function_exists('isActive')) {
     .text-danger:hover svg { color: #dc2626 !important; }
 
     /* =========================================
-       4. MOBILE RESPONSIVE
+        4. MOBILE RESPONSIVE
        ========================================= */
     @media (max-width: 992px) {
         .mobile-toggle { display: flex; align-items: center; justify-content: center; z-index: var(--z-toggle); }
@@ -255,10 +250,8 @@ if (!function_exists('isActive')) {
         .nav-link.active { background: #f0f9ff; color: var(--primary-color); border-left: 4px solid var(--primary-color); font-weight: 700; }
         .nav-link.active::before { content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%232563eb' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='9 18 15 12 9 6'%3E%3C/polyline%3E%3C/svg%3E"); }
 
-        /* Munculkan link profile khusus mobile di dalam list navigasi */
         .mobile-profile-link { display: flex !important; }
 
-        /* Khusus Header Menu Mobile untuk GUEST (Belum Login) */
         .mobile-profile-header {
             width: 100%; padding: 70px 24px 24px 24px;
             background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
@@ -268,14 +261,12 @@ if (!function_exists('isActive')) {
         .user-greeting { display: block; font-size: 1.2rem; font-weight: 800; color: #1e293b; margin-bottom: 4px; }
         .user-role { font-size: 0.9rem; color: #64748b; font-weight: 500; }
         
-        /* Auth Buttons Guest Mobile */
         .auth-actions { flex-direction: column; width: 100%; padding: 24px; margin-top: auto; box-sizing: border-box; }
         .btn-header { width: 100%; padding: 14px; border-radius: 12px; font-size: 1rem; }
         .btn-login { border: 1px solid #e2e8f0; background: #fff; }
 
-        /* Bagian Atas Sidebar User (Menampilkan Nama & Role statis) */
         .profile-dropdown-container {
-            order: -1; /* Paksa pindah ke urutan paling atas di Sidebar */
+            order: -1;
             width: 100%; margin: 0 0 10px 0;
             padding: 60px 24px 20px 24px;
             background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
@@ -283,25 +274,21 @@ if (!function_exists('isActive')) {
         }
         .profile-trigger {
             width: 100%; padding: 0; border: none; background: transparent !important; justify-content: space-between;
-            pointer-events: none; /* Matikan klik pada profil atas di mobile */
+            pointer-events: none;
         }
         .profile-trigger .profile-avatar { width: 48px; height: 48px; font-size: 1.3rem; }
         .profile-info { flex-grow: 1; margin-left: 14px; }
         .profile-name { font-size: 1.15rem; color: #1e293b; }
         .profile-role-mobile { display: block; font-size: 0.85rem; color: #64748b; font-weight: 500; margin-top: 2px; }
         
-        /* Hilangkan chevron panah & dropdown menu bawaan desktop */
         .chevron-icon { display: none !important; }
         .profile-dropdown-menu { display: none !important; }
 
-        /* =========================================
-           TOMBOL LOGOUT KHUSUS MOBILE (DI BAWAH)
-           ========================================= */
         .mobile-logout-wrapper {
             display: flex;
             width: 100%;
             padding: 24px;
-            margin-top: auto; /* Ini yang membuat tombol terdorong ke paling bawah layar */
+            margin-top: auto;
             box-sizing: border-box;
         }
         .btn-logout-mobile {
@@ -324,9 +311,8 @@ if (!function_exists('isActive')) {
             background: #fee2e2;
             color: #dc2626;
         }
-    } /* Akhir penutup max-width: 992px */
+    }
 
-    /* Sembunyikan profil header statis mobile jika di desktop */
     @media (min-width: 993px) {
         .mobile-profile-header { display: none !important; }
     }
@@ -362,9 +348,7 @@ if (!function_exists('isActive')) {
 
                 <a href="?page=home" class="nav-link <?= isActive('home') ?>">Beranda</a>
                 <a href="#features" class="nav-link">Fitur</a>
-                <a href="#about" class="nav-link">Tentang</a>
-
-                <div class="auth-actions">
+                <a href="#terms" class="nav-link">Syarat</a> <a href="#contact" class="nav-link">Hubungi Kami</a> <div class="auth-actions">
                     <a href="?page=register" class="btn-header btn-login">Daftar Sekarang</a>
                     <a href="?page=login" class="btn-header btn-register">Masuk</a>
                 </div>
@@ -378,6 +362,9 @@ if (!function_exists('isActive')) {
                 <?php if(isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
                 <a href="?page=students" class="nav-link <?= isActive('students') ?>">Data Siswa</a>
                 <?php endif; ?>
+
+                <a href="?page=home#terms" class="nav-link">Syarat</a>
+                <a href="?page=home#contact" class="nav-link">Hubungi Kami</a>
 
                 <a href="?page=profile" class="nav-link mobile-profile-link <?= isActive('profile') ?>">Profil Saya</a>
 
@@ -466,7 +453,6 @@ if (!function_exists('isActive')) {
         if(toggle) toggle.addEventListener('click', (e) => { e.stopPropagation(); toggleMenu(); });
         if(overlay) overlay.addEventListener('click', () => toggleMenu(false));
 
-        // Tutup menu saat link diklik agar proses loading ke halaman baru terlihat rapi
         if (menu) {
             const navLinks = menu.querySelectorAll('.nav-link');
             navLinks.forEach(link => {
@@ -478,13 +464,12 @@ if (!function_exists('isActive')) {
             });
         }
 
-        // Logic Profile Dropdown (Hanya aktif di Desktop)
         const profileTrigger = document.getElementById('profileTrigger');
         const profileContainer = document.getElementById('profileDropdownContainer');
         
         if (profileTrigger && profileContainer) {
             profileTrigger.addEventListener('click', function(e) {
-                if (window.innerWidth <= 992) return; // Abaikan klik jika di mobile
+                if (window.innerWidth <= 992) return;
                 e.preventDefault();
                 e.stopPropagation();
                 const isOpen = profileContainer.classList.contains('open');
@@ -492,7 +477,6 @@ if (!function_exists('isActive')) {
                 profileTrigger.setAttribute('aria-expanded', !isOpen);
             });
 
-            // Tutup dropdown jika klik di luar area profile container
             document.addEventListener('click', function(e) {
                 if (!profileContainer.contains(e.target) && profileContainer.classList.contains('open')) {
                     profileContainer.classList.remove('open');
@@ -501,14 +485,12 @@ if (!function_exists('isActive')) {
             });
         }
 
-        // Handle Resize agar dropdown/menu tidak stuck
         window.addEventListener('resize', function() {
             if (window.innerWidth > 992 && menu?.classList.contains('open')) {
                 toggleMenu(false);
             }
         });
 
-        // Efek Scroll Header
         window.addEventListener('scroll', function() {
             if (window.scrollY > 10) header.classList.add('scrolled');
             else header.classList.remove('scrolled');
