@@ -1,3 +1,13 @@
+<?php
+// Pastikan session aktif & cek login
+if (session_status() === PHP_SESSION_NONE) session_start();
+
+if (!isset($_SESSION['nis'])) {
+    header("Location: ?page=login");
+    exit;
+}
+?>
+
 <style>
     /* =========================================
        PROFILE PAGE STYLES & NOTIFICATION
@@ -214,7 +224,7 @@
 </style>
 
 <div class="profile-wrapper">
-    
+
     <?php if (isset($_GET['status']) && $_GET['status'] == 'sukses'): ?>
     <div class="alert-success">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
