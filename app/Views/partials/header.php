@@ -264,6 +264,7 @@ if (!function_exists('isActive')) {
             background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
             border-bottom: 1px solid #e2e8f0; margin-bottom: 10px; box-sizing: border-box;
         }
+
         .user-greeting { display: block; font-size: 1.2rem; font-weight: 800; color: #1e293b; margin-bottom: 4px; }
         .user-role { font-size: 0.9rem; color: #64748b; font-weight: 500; }
         
@@ -323,6 +324,11 @@ if (!function_exists('isActive')) {
             background: #fee2e2;
             color: #dc2626;
         }
+    } /* Akhir penutup max-width: 992px */
+
+    /* Sembunyikan profil header statis mobile jika di desktop */
+    @media (min-width: 993px) {
+        .mobile-profile-header { display: none !important; }
     }
 </style>
 
