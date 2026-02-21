@@ -248,7 +248,7 @@ $result = mysqli_query($koneksi, $query);
     /* Action Buttons (Row) */
     .action-btns { display: flex; gap: 8px; justify-content: flex-end; }
     .icon-btn {
-        width: 32px; height: 32px; border-radius: var(--radius-md); 
+        width: 32px; height: 32px; border-radius: 8px;
         display: flex; align-items: center; justify-content: center;
         transition: var(--transition-base); border: none; cursor: pointer;
     }
