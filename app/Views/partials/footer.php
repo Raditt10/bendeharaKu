@@ -176,8 +176,8 @@
                 <h4>Navigasi</h4>
                 <ul class="footer-links">
                     <li><a href="?page=home">Beranda</a></li>
-                    <li><a href="#features">Fitur Utama</a></li>
-                    <li><a href="?page=login">Login Siswa</a></li>
+                    <li><a href="#features">Fitur & Keunggulan</a></li>
+                    <li><a href="?page=login">Login</a></li>
                     <li><a href="?page=register">Daftar</a></li>
                 </ul>
             </div>
@@ -185,10 +185,8 @@
             <div class="footer-col">
                 <h4>Dukungan</h4>
                 <ul class="footer-links">
-                    <li><a href="#">Pusat Bantuan</a></li>
-                    <li><a href="#">Keamanan & Privasi</a></li>
                     <li><a href="#">Syarat Ketentuan</a></li>
-                    <li><a href="#">Hubungi Kami</a></li>
+                    <li><a href="#">Hubungi Pengurus</a></li>
                 </ul>
             </div>
         </div>
