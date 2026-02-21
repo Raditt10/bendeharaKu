@@ -54,10 +54,10 @@ class AuthController extends BaseController
                 $_SESSION['role'] = $user['role'];
                 $_SESSION['nama'] = $user['nama'];
                 $_SESSION['login_success'] = true;
-                $_SESSION['success_msg'] = "Kamu berhasil login!";
-                // Redirect explicitly to the dashboard after successful login
+                
+                // Redirect ke route animasi sukses
                 $script = $_SERVER['PHP_SELF'] ?? './';
-                header('Location: ' . $script . '?page=dashboard');
+                header('Location: ' . $script . '?page=login_success');
                 exit;
             }
         }

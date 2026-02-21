@@ -77,6 +77,39 @@ $result = mysqli_query($koneksi, $query);
         margin: 0;
     }
 
+    /* --- BUTTON STYLING (Disamakan dengan Expense: border-radius 8px) --- */
+    .btn { 
+        padding: 10px 18px; 
+        border-radius: 8px; /* <-- Ini yang bikin kotak melengkung sama seperti Expense */
+        font-weight: 600; 
+        text-decoration: none; 
+        display: inline-flex; 
+        align-items: center; 
+        justify-content: center; 
+        transition: all 0.2s; 
+        font-size: 0.95rem; 
+        border: none;
+        cursor: pointer;
+    }
+    .btn-primary { 
+        background: #2563eb; 
+        color: white; 
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2); 
+    }
+    .btn-primary:hover { 
+        background: #1d4ed8; 
+        transform: translateY(-1px); 
+    }
+    .btn-outline { 
+        background: white; 
+        border: 1px solid #cbd5e1; 
+        color: #475569; 
+    }
+    .btn-outline:hover { 
+        background: #f1f5f9; 
+        color: #1e293b; 
+    }
+
     /* --- CUSTOM FILTER COMPONENT --- */
     .filter-wrapper {
         background: white;
@@ -171,7 +204,7 @@ $result = mysqli_query($koneksi, $query);
     .btn-action-group { display: flex; gap: 10px; flex-wrap: wrap; }
     .btn-icon-wrapper { display: flex; align-items: center; gap: 8px; }
 
-    /* --- FLOATING ACTION BUTTON (NEW STYLE LIKE EXPENSES) --- */
+    /* --- FLOATING ACTION BUTTON CONTAINER --- */
     .action-bar { 
         display: flex; 
         justify-content: flex-end; 
@@ -254,7 +287,7 @@ $result = mysqli_query($koneksi, $query);
         }
         .action-bar .btn-primary {
             pointer-events: auto; /* Tombol bisa diklik */
-            border-radius: 50px; 
+            border-radius: 50px; /* <--- Di HP tetap melengkung penuh (pill) */
             padding: 14px 24px; 
             box-shadow: 0 10px 25px rgba(37, 99, 235, 0.4); 
             font-size: 1rem;
@@ -444,7 +477,6 @@ $result = mysqli_query($koneksi, $query);
         }
         ?>
 
-        <!-- Keterangan Bulan Aktif (Mobile Only) -->
         <?php if ($keteranganBulan): ?>
         <div class="bulan-keterangan-mobile">
             <?= $keteranganBulan ?>

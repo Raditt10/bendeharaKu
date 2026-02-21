@@ -206,25 +206,3 @@
 
     </div>
 </footer>
-<script>
-// IntersectionObserver to reveal elements with slide-in classes
-document.addEventListener('DOMContentLoaded', function(){
-    const io = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('in-view');
-                // if parent has .reveal-stagger, stagger children
-                const parent = entry.target.parentElement;
-                if (parent && parent.classList.contains('reveal-stagger')) {
-                    Array.from(parent.children).forEach((child, i) => {
-                        setTimeout(() => child.classList.add('in-view'), i * 90);
-                    });
-                }
-                io.unobserve(entry.target);
-            }
-        });
-    }, { threshold: 0.12 });
-
-    document.querySelectorAll('.reveal, .slide-in-left, .slide-in-right, .reveal-stagger').forEach(el => io.observe(el));
-});
-</script>
