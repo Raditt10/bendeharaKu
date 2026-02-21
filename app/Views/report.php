@@ -743,8 +743,19 @@ $result = mysqli_query($koneksi, $query);
         </div>
     </form>
 
-    <?php if ($_SESSION['role'] == 'admin'): ?>
-        <div class="action-bar">
+    <div class="action-bar" style="<?= $_SESSION['role'] !== 'admin' ? 'display:flex; justify-content:flex-end; margin-bottom:16px;' : '' ?>">
+        <a href="export_report.php?<?= $_SERVER['QUERY_STRING'] ?>" class="btn btn-outline" style="border-color: #10b981; color: #10b981; margin-right: <?= $_SESSION['role'] == 'admin' ? '12px' : '0' ?>; background-color: white;">
+            <span class="btn-icon-wrapper">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                Ekspor Excel
+            </span>
+        </a>
+
+        <?php if ($_SESSION['role'] == 'admin'): ?>
             <a href="?page=add_dues" class="btn btn-primary">
                 <span class="btn-icon-wrapper">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -754,8 +765,8 @@ $result = mysqli_query($koneksi, $query);
                     Catat Iuran Baru
                 </span>
             </a>
-        </div>
-    <?php endif; ?>
+        <?php endif; ?>
+    </div>
 
     <?php
     // Ambil nama bulan aktif dari filter, jika ada
